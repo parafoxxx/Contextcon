@@ -1,0 +1,9 @@
+anthropic>=2.5.0
+fastapi>=0.115
+uvicorn[standard]
+python-multipart
+httpx
+pydantic>=2
+python-dotenv
+fpdf2
+rapidfuzz

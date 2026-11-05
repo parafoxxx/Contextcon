@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pramaan</title>
+<style>
+:root{
+  --bg:#f6f7f9;--card:#fff;--ink:#14171f;--muted:#5d6472;--line:#e3e6eb;--accent:#3b5bdb;
+  --good:#1f9d55;--good-bg:#e7f6ee;--bad:#d64545;--bad-bg:#fdecec;--warn:#c27c0e;--warn-bg:#fff4e0;
+  --info:#5d6472;--info-bg:#eef0f3;--pend:#6b4fd8;--pend-bg:#efebff;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1115;--card:#171a21;--ink:#e8eaee;--muted:#9aa1ad;--line:#2a2f3a;--accent:#7c95ff;
+  --good:#4cc38a;--good-bg:#14301f;--bad:#ff7b7b;--bad-bg:#3a1a1a;--warn:#f0b452;--warn-bg:#36290f;
+  --info:#9aa1ad;--info-bg:#22262f;--pend:#a996ff;--pend-bg:#251f40;}}
+:root[data-theme="dark"]{
+  --bg:#0f1115;--card:#171a21;--ink:#e8eaee;--muted:#9aa1ad;--line:#2a2f3a;--accent:#7c95ff;
+  --good:#4cc38a;--good-bg:#14301f;--bad:#ff7b7b;--bad-bg:#3a1a1a;--warn:#f0b452;--warn-bg:#36290f;
+  --info:#9aa1ad;--info-bg:#22262f;--pend:#a996ff;--pend-bg:#251f40;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{display:flex;align-items:center;gap:16px;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--card);flex-wrap:wrap}
+header h1{font-size:20px;margin:0;letter-spacing:.3px}
+header .tag{color:var(--muted)}
+.mode{margin-left:auto;font-size:12px;padding:3px 8px;border-radius:99px;background:var(--info-bg);color:var(--muted)}
+nav{display:flex;gap:4px;padding:10px 20px}
+nav button{border:0;background:none;padding:8px 12px;border-radius:8px;cursor:pointer;color:var(--muted);font:inherit}
+nav button.on{background:var(--card);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+main{padding:0 20px 40px;max-width:1400px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:22px;text-align:center;cursor:pointer}
+.drop.hover{border-color:var(--accent)}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:9px 16px;font:inherit;cursor:pointer}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.ghost{background:none;color:var(--accent);border:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:minmax(280px,380px) 1fr;gap:16px}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+.timeline{max-height:75vh;overflow:auto;font-size:13px}
+.ev{padding:6px 8px;border-left:3px solid var(--line);margin:4px 0;border-radius:0 6px 6px 0}
+.ev.good{border-color:var(--good)}.ev.bad{border-color:var(--bad);background:var(--bad-bg)}.ev.warn{border-color:var(--warn)}
+.ev.error{border-color:var(--bad);color:var(--bad)}
+.ev .k{font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.5px;margin-right:6px}
+.banner{border-radius:12px;padding:14px 16px;margin-bottom:12px;font-weight:600;font-size:16px}
+.banner small{display:block;font-weight:400;font-size:13px;opacity:.85}
+.b-clear{background:var(--good-bg);color:var(--good)}.b-discrepancies_found{background:var(--bad-bg);color:var(--bad)}
+.b-needs_review{background:var(--warn-bg);color:var(--warn)}.b-awaiting_responses{background:var(--pend-bg);color:var(--pend)}
+.b-failed{background:var(--bad-bg);color:var(--bad)}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;min-width:100px}
+.stat b{display:block;font-size:20px}.stat span{color:var(--muted);font-size:12px}
+.pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+.s-verified{background:var(--good-bg);color:var(--good)}.s-consistent{background:var(--info-bg);color:var(--info)}
+.s-discrepancy{background:var(--bad-bg);color:var(--bad)}.s-review{background:var(--warn-bg);color:var(--warn)}
+.s-unverified{background:var(--info-bg);color:var(--muted)}.s-pending{background:var(--pend-bg);color:var(--pend)}
+.group h3{margin:0 0 8px;font-size:15px}
+.v{display:grid;grid-template-columns:110px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.v:first-of-type{border-top:0}
+.v .claim{font-weight:600}.v .reason{color:var(--ink)}
+details{margin-top:6px}summary{cursor:pointer;color:var(--accent);font-size:12px}
+.evi{font-size:12px;padding:6px 8px;background:var(--bg);border-radius:6px;margin-top:4px}
+.evi .src{font-family:ui-monospace,Consolas,monospace;color:var(--muted)}
+.ctl{font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-right:6px;text-transform:uppercase}
+.c-candidate{background:var(--info-bg);color:var(--muted)}.c-company{background:#e3e9ff;color:#3b5bdb}
+.c-third_party{background:var(--good-bg);color:var(--good)}.c-internal{background:var(--pend-bg);color:var(--pend)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .c-company{background:#1e2547;color:#9db0ff}}
+.mail{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0}
+.mail pre{white-space:pre-wrap;font:12px/1.5 ui-monospace,Consolas,monospace;background:var(--bg);padding:8px;border-radius:6px}
+textarea{width:100%;min-height:70px;font:inherit;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.hidden{display:none}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:6px 0 12px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Pramaan</h1>
+  <span class="tag">Background checks against evidence the candidate can't edit</span>
+  <span class="mode" id="mode">…</span>
+</header>
+<nav>
+  <button class="on" data-tab="verify">Verify</button>
+  <button data-tab="score">Scoreboard</button>
+  <button data-tab="history">History</button>
+</nav>
+<main>
+<section id="tab-verify">
+  <div class="card" id="uploadCard">
+    <div class="drop" id="drop">
+      <b>Drop a resume here</b> <span class="muted">(PDF, image or text) or click to choose</span>
+      <input type="file" id="file" accept=".pdf,.png,.jpg,.jpeg,.txt" hidden>
+      <div id="fname" class="muted"></div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <label><input type="checkbox" id="consent"> Candidate has signed the background-check consent form</label>
+      <button class="btn" id="go" disabled>Start verification</button>
+    </div>
+  </div>
+  <div class="grid hidden" id="work">
+    <div class="card"><h3 style="margin-top:0">Live</h3><div class="timeline" id="timeline"></div></div>
+    <div id="report"></div>
+  </div>
+</section>
+<section id="tab-score" class="hidden"><div id="score"></div></section>
+<section id="tab-history" class="hidden"><div class="card" id="history"></div></section>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let file = null, runId = null;
+
+fetch("/api/config").then(r => r.json()).then(c => {
+  $("#mode").textContent = (c.mode === "fixture" ? "Offline test data" : c.mode === "replay" ? "Replay (cached)" : "Live Crustdata") +
+    (c.demo_inbox ? " · emails → demo inbox" : c.smtp ? " · SMTP on" : " · emails logged only");
+});
+
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
+  ["verify","score","history"].forEach(t => $("#tab-" + t).classList.toggle("hidden", t !== b.dataset.tab));
+  if (b.dataset.tab === "score") loadScore();
+  if (b.dataset.tab === "history") loadHistory();
+});
+
+const drop = $("#drop");
+drop.onclick = () => $("#file").click();
+drop.ondragover = e => { e.preventDefault(); drop.classList.add("hover"); };
+drop.ondragleave = () => drop.classList.remove("hover");
+drop.ondrop = e => { e.preventDefault(); drop.classList.remove("hover"); setFile(e.dataTransfer.files[0]); };
+$("#file").onchange = e => setFile(e.target.files[0]);
+$("#consent").onchange = upd;
+function setFile(f){ file = f; $("#fname").textContent = f ? f.name : ""; upd(); }
+function upd(){ $("#go").disabled = !(file && $("#consent").checked); }
+
+$("#go").onclick = async () => {
+  $("#go").disabled = true;
+  const fd = new FormData(); fd.append("file", file); fd.append("consent", "true");
+  const r = await fetch("/api/verify", {method:"POST", body:fd});
+  if (!r.ok) { alert((await r.json()).detail); upd(); return; }
+  runId = (await r.json()).run_id;
+  $("#work").classList.remove("hidden"); $("#timeline").innerHTML = ""; $("#report").innerHTML = "";
+  const es = new EventSource("/api/stream/" + runId);
+  const t0 = Date.now();
+  es.onmessage = m => {
+    const e = JSON.parse(m.data);
+    const d = document.createElement("div");
+    d.className = "ev " + (e.level || "");
+    d.innerHTML = `<span class="k">${((Date.now()-t0)/1000).toFixed(1)}s · ${esc(e.kind)}</span>${esc(e.msg)}`;
+    $("#timeline").appendChild(d); $("#timeline").scrollTop = 1e9;
+    if (e.kind === "done") { es.close(); showReport(runId); upd(); }
+  };
+};
+
+const STATUS_LABEL = {verified:"Verified", consistent:"Matches profile", discrepancy:"Discrepancy", review:"Human review", unverified:"Unverified", pending:"Awaiting reply"};
+const CTL_LABEL = {candidate:"candidate-edited", company:"company record", third_party:"third party", internal:"resume itself"};
+const OVERALL = {clear:"Clear: every checked claim holds up", discrepancies_found:"Discrepancies found", needs_review:"Needs a human decision", awaiting_responses:"Waiting on employer replies", failed:"Could not complete", pending:"Running"};
+
+function evidenceHtml(ev){
+  if (!ev || !ev.length) return "";
+  return `<details><summary>${ev.length} source${ev.length>1?"s":""}</summary>` + ev.map(x => `
+    <div class="evi"><span class="ctl c-${x.controlled_by}">${CTL_LABEL[x.controlled_by]||x.controlled_by}</span>
+    <span class="src">${esc(x.source)}${x.record?" · "+esc(x.record):""}${x.field?" · "+esc(x.field):""}</span><br>
+    ${esc(x.value)}${x.note?` <span class="muted">— ${esc(x.note)}</span>`:""}
+    ${x.url?` · <a href="${esc(x.url)}" target="_blank" rel="noopener">link</a>`:""}
+    <span class="muted"> · ${esc(x.retrieved_at)}</span></div>`).join("") + `</details>`;
+}
+function vRow(v){
+  return `<div class="v"><div><span class="pill s-${v.status}">${STATUS_LABEL[v.status]||v.status}</span><div class="muted" style="font-size:11px;margin-top:4px">${esc(v.check)} · ${esc(v.confidence)}</div></div>
+    <div><div class="claim">${esc(v.claim_text)}</div><div class="reason">${esc(v.reason)}</div>${evidenceHtml(v.evidence)}</div></div>`;
+}
+
+async function showReport(id){
+  const r = await (await fetch("/api/report/" + id)).json();
+  const c = s => r.verdicts.filter(v => v.status === s).length;
+  const jobs = (r.claims && r.claims.jobs) || [];
+  const groups = {};
+  r.verdicts.forEach(v => { const k = v.claim_id.split(".")[0]; (groups[k] = groups[k] || []).push(v); });
+  const label = k => { const m = k.match(/^job(\d+)$/); if (m) { const j = jobs[+m[1]-1]; return j ? `${j.title} · ${j.company} (${j.start||"?"} – ${j.end||"?"})` : k; }
+    if (k.startsWith("edu")) return "Education"; if (k.startsWith("ref")) return "References"; if (k==="identity") return "Identity"; return "Cross-checks"; };
+  const queue = r.verdicts.filter(v => v.status === "discrepancy" || v.status === "review");
+  const idn = r.identity || {};
+  let html = `<div class="banner b-${r.overall}">${OVERALL[r.overall]||r.overall}<small>${esc(r.candidate)} · ${esc(r.summary)}</small></div>
+  <div class="stats">
+    <div class="stat"><b>${r.duration_s}s</b><span>end to end</span></div>
+    <div class="stat"><b>${r.verdicts.length}</b><span>claims checked</span></div>
+    <div class="stat"><b style="color:var(--good)">${c("verified")}</b><span>independent proof</span></div>
+    <div class="stat"><b style="color:var(--bad)">${c("discrepancy")}</b><span>discrepancies</span></div>
+    <div class="stat"><b style="color:var(--warn)">${c("review")}</b><span>for a human</span></div>
+    <div class="stat"><b>${idn.api_calls ?? "–"}</b><span>data lookups</span></div>
+  </div>
+  <div class="card"><b>Identity:</b> ${esc(idn.status)} ${idn.method?`via ${esc(idn.method)}`:""} ${idn.confidence?`(${esc(idn.confidence)} confidence)`:""}
+    ${idn.profile_url?` · <a href="${esc(idn.profile_url)}" target="_blank" rel="noopener">profile</a>`:""}
+    ${idn.candidates_considered?` · ${idn.candidates_considered} people considered`:""}
+    ${(idn.notes||[]).map(n=>`<div class="muted">${esc(n)}</div>`).join("")}</div>`;
+  if (queue.length) html += `<div class="card"><h3 style="margin-top:0">For HR (${queue.length})</h3>${queue.map(vRow).join("")}</div>`;
+  html += `<div class="legend">Evidence source: <span class="ctl c-company">company record</span><span class="ctl c-third_party">third party</span><span class="ctl c-candidate">candidate-edited</span><span class="ctl c-internal">resume itself</span> · A claim is only <b>Verified</b> when evidence the candidate can't edit agrees.</div>`;
+  for (const [k, vs] of Object.entries(groups)) html += `<div class="card group"><h3>${esc(label(k))}</h3>${vs.map(vRow).join("")}</div>`;
+  if (r.outreach && r.outreach.length) {
+    html += `<div class="card"><h3 style="margin-top:0">Outreach</h3>` + r.outreach.map(o => `
+      <div class="mail"><div class="row"><b>${o.kind === "candidate" ? "To candidate" : esc(o.company)}</b>
+      <span class="muted">${o.contact && o.contact.name ? esc(o.contact.name) + (o.contact.title ? ", " + esc(o.contact.title) : "") : ""}</span>
+      <span class="pill ${o.guard.passed ? "s-verified" : "s-discrepancy"}">${o.guard.passed ? "guard passed" : "blocked"}</span>
+      <span class="muted">${esc(o.delivery)} → ${esc(o.to)}</span></div>
+      ${o.guard.problems.length ? `<div style="color:var(--bad)">${o.guard.problems.map(esc).join("; ")}</div>` : ""}
+      <details><summary>Email</summary><pre>${esc(o.subject)}\n\n${esc(o.body)}</pre></details>
+      ${o.guard.passed && !o.reply ? `<div style="margin-top:8px"><textarea id="rep-${o.id}" placeholder="Paste the reply received…"></textarea>
+        <button class="btn ghost" onclick="sendReply('${o.id}')">Record reply</button></div>` : ""}
+      ${o.reply ? `<div class="evi"><b>Reply read:</b> ${esc(o.reply.reading.summary)} <span class="muted">"${esc(o.reply.reading.quote)}"</span></div>` : ""}
+      </div>`).join("") + `</div>`;
+  }
+  $("#report").innerHTML = html;
+}
+async function sendReply(oid){
+  const fd = new FormData(); fd.append("text", $("#rep-" + oid).value);
+  const r = await fetch(`/api/reply/${runId}/${oid}`, {method:"POST", body:fd});
+  if (!r.ok) { alert("Failed"); return; }
+  showReport(runId);
+}
+
+async function loadHistory(){
+  const rs = await (await fetch("/api/runs")).json();
+  $("#history").innerHTML = `<table><tr><th>Candidate</th><th>Result</th><th>When</th></tr>` +
+    rs.map(r => `<tr><td><a href="#" onclick="openRun('${r.run_id}');return false">${esc(r.candidate)}</a></td><td><span class="pill b-${r.overall}">${esc(OVERALL[r.overall]||r.overall)}</span></td><td class="muted">${esc(r.created_at)}</td></tr>`).join("") + `</table>`;
+}
+function openRun(id){ runId = id; document.querySelector('nav button[data-tab="verify"]').click(); $("#work").classList.remove("hidden"); $("#timeline").innerHTML = "<div class='muted'>Saved run</div>"; showReport(id); }
+
+async function loadScore(){
+  const s = await (await fetch("/api/scoreboard")).json();
+  if (!s.runs || !s.runs.length) { $("#score").innerHTML = `<div class="card muted">No scoreboard yet. Run <code>python -m redteam.score</code>.</div>`; return; }
+  const t = s.totals;
+  $("#score").innerHTML = `<div class="stats">
+    <div class="stat"><b style="color:var(--good)">${t.caught}/${t.planted}</b><span>planted lies caught</span></div>
+    <div class="stat"><b style="color:${t.false_flags ? "var(--bad)" : "var(--good)"}">${t.false_flags}</b><span>honest claims flagged</span></div>
+    <div class="stat"><b>${t.honest_to_review}</b><span>honest claims sent to a human</span></div>
+    <div class="stat"><b>${t.median_s}s</b><span>median time per resume</span></div>
+    <div class="stat"><b>${s.runs.length}</b><span>test resumes</span></div></div>
+  <div class="card"><table><tr><th>Resume</th><th>Planted lie</th><th>Caught?</th><th>By check</th><th>False flags</th><th>Time</th></tr>` +
+  s.runs.map(r => `<tr><td>${esc(r.name)}</td><td>${esc(r.lie || "none (honest)")}</td>
+    <td>${r.lie ? (r.caught ? '<span class="pill s-verified">caught</span>' : '<span class="pill s-discrepancy">missed</span>') : "–"}</td>
+    <td class="muted">${esc(r.caught_by || "")}</td><td>${r.false_flags.length ? `<span style="color:var(--bad)">${r.false_flags.map(esc).join("<br>")}</span>` : "0"}</td>
+    <td>${r.duration_s}s</td></tr>`).join("") + `</table><p class="muted">Generated ${esc(s.generated_at)} · mode ${esc(s.mode)}</p></div>`;
+}
+</script>
+</body>
+</html>
