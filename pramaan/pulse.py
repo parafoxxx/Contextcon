@@ -209,7 +209,9 @@ def news_signals(name: str, log) -> tuple[list[Signal], Optional[NewsReading], l
         for i in idx[:3]:
             out.append(sig("shutdown", i, f"Shutdown reported: “{title(i)}”"))
     if reading.acquired_by:
-        out.append(sig("acquired", idx[0], f"Acquired by {reading.acquired_by}: “{title(idx[0])}”"))
+        for i in idx[:3]:  # one signal per supporting source, so a single article can't make it 'acquired'
+            out.append(sig("acquired", i, f"Acquired by {reading.acquired_by}: “{title(i)}”",
+                           "strong" if len(idx) >= 2 else "support"))
     if reading.renamed_to:
         out.append(sig("renamed", idx[0], f"Renamed to {reading.renamed_to}: “{title(idx[0])}”"))
     if reading.layoffs_only:
@@ -233,7 +235,11 @@ def decide(signals: list[Signal], reading: Optional[NewsReading], found: bool) -
     if k["renamed"]:
         return "RENAMED", next(s.says for s in signals if s.kind == "renamed")
     if k["acquired"] and not k["shutdown"]:
-        return "ACQUIRED", next(s.says for s in signals if s.kind == "acquired")
+        redirect = any(s.kind == "website" and "redirects" in (s.value or "") for s in signals)
+        if k["acquired"] >= 2 or redirect:
+            return "ACQUIRED", next(s.says for s in signals if s.kind == "acquired")
+        return "REVIEW", "One source reports an acquisition (" + next(s.says for s in signals if s.kind == "acquired") + \
+            "); not confirmed by a second source or a website redirect. A person decides."
     if k["shutdown"] >= 2 or (k["shutdown"] and k["insolvency"]):
         if alive_veto:
             return "REVIEW", "Press reports a shutdown, but the company still has open jobs and a working website. A person decides."
@@ -269,7 +275,7 @@ def check_company(name: str, domain: Optional[str], cache: checks.CompanyCache, 
     signals += news
     status, why = decide(signals, reading, bool(c))
     crust_status = (raw or {}).get("basic_info", {}).get("status") if raw else None
-    zombie = status in ("DEAD", "ACQUIRED") and (crust_status in (None, "active", "operating")) and bool(c)
+    zombie = status == "DEAD" and (crust_status in (None, "active", "operating")) and bool(c)
     since = next((s.date for s in signals if s.kind in ("legal", "insolvency", "shutdown", "acquired", "renamed") and s.date), None) or \
         next((s.date for s in signals if s.kind in ("exodus", "headcount_drop") and s.date), None)
     return {

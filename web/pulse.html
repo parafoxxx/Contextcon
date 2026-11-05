@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pulse</title>
+<style>
+:root{
+  --bg:#f6f7f9;--card:#fff;--ink:#14171f;--muted:#5d6472;--line:#e3e6eb;--accent:#3b5bdb;
+  --good:#1f9d55;--good-bg:#e7f6ee;--bad:#d64545;--bad-bg:#fdecec;--warn:#c27c0e;--warn-bg:#fff4e0;
+  --info-bg:#eef0f3;--purple:#7b4fd8;--purple-bg:#efe9ff;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1115;--card:#171a21;--ink:#e8eaee;--muted:#9aa1ad;--line:#2a2f3a;--accent:#7c95ff;
+  --good:#4cc38a;--good-bg:#14301f;--bad:#ff7b7b;--bad-bg:#3a1a1a;--warn:#f0b452;--warn-bg:#36290f;
+  --info-bg:#22262f;--purple:#a98bff;--purple-bg:#251f40;}}
+:root[data-theme="dark"]{
+  --bg:#0f1115;--card:#171a21;--ink:#e8eaee;--muted:#9aa1ad;--line:#2a2f3a;--accent:#7c95ff;
+  --good:#4cc38a;--good-bg:#14301f;--bad:#ff7b7b;--bad-bg:#3a1a1a;--warn:#f0b452;--warn-bg:#36290f;
+  --info-bg:#22262f;--purple:#a98bff;--purple-bg:#251f40;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{display:flex;align-items:center;gap:16px;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--card);flex-wrap:wrap}
+header h1{font-size:20px;margin:0}
+header .tag{color:var(--muted)}
+main{padding:16px 20px 40px;max-width:1440px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:9px 16px;font:inherit;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ghost{background:none;color:var(--accent);border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+select,input[type=file]{font:inherit;color:var(--ink)}
+select{padding:7px;border-radius:8px;border:1px solid var(--line);background:var(--card)}
+.hero{border-radius:14px;padding:22px 24px;margin-bottom:16px;background:var(--bad-bg);color:var(--ink);border:1px solid var(--line)}
+.hero h2{margin:0 0 6px;font-size:26px;color:var(--bad)}
+.hero p{margin:0;font-size:16px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 14px;min-width:110px}
+.stat b{display:block;font-size:22px}.stat span{color:var(--muted);font-size:12px}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;letter-spacing:.4px;white-space:nowrap}
+.s-DEAD{background:var(--bad-bg);color:var(--bad)}.s-INSOLVENT{background:var(--bad-bg);color:var(--bad)}
+.s-ACQUIRED,.s-RENAMED{background:var(--purple-bg);color:var(--purple)}
+.s-DISTRESSED,.s-REVIEW{background:var(--warn-bg);color:var(--warn)}
+.s-ALIVE{background:var(--good-bg);color:var(--good)}.s-CANT_TELL{background:var(--info-bg);color:var(--muted)}
+.z{font-size:10px;font-weight:800;color:#fff;background:var(--bad);border-radius:4px;padding:1px 5px;margin-left:4px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600}
+tr.merged td{opacity:.55}
+details summary{cursor:pointer;color:var(--accent);font-size:12px}
+.sig{font-size:12px;margin:3px 0;padding:4px 6px;border-radius:6px;background:var(--bg)}
+.sig .k{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-right:6px}
+.sig a{color:var(--accent)}
+.muted{color:var(--muted)}
+pre{white-space:pre-wrap;font:12px/1.5 ui-monospace,Consolas,monospace;background:var(--bg);padding:10px;border-radius:8px;max-height:280px;overflow:auto}
+.log{max-height:120px;overflow:auto;font-size:12px;color:var(--muted)}
+.log .bad{color:var(--bad)}.log .good{color:var(--good)}.log .warn{color:var(--warn)}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>Pulse</h1>
+  <span class="tag">Is every company in your CRM still alive? Evidence-backed, cited, and fixed for you.</span>
+</header>
+<main>
+  <div class="card">
+    <div class="row">
+      <input type="file" id="file" accept=".csv">
+      <button class="btn" id="go">Check my CRM</button>
+      <button class="btn ghost" id="sample">Use sample CRM (18 accounts)</button>
+      <span class="muted" style="margin-left:auto">or open a saved run</span>
+      <select id="saved"><option value="">…</option></select>
+    </div>
+    <div class="muted" style="font-size:12px;margin-top:6px">CSV with an <b>account</b> (or company) column and ideally <b>website</b>. Optional: <b>active_sequence_contacts</b> (outreach in progress).</div>
+  </div>
+
+  <div id="work" class="hidden">
+    <div id="hero"></div>
+    <div class="stats" id="stats"></div>
+    <div class="card"><div class="row"><h3 style="margin:0">Accounts</h3><span class="muted" id="progress"></span></div>
+      <div class="log" id="log"></div>
+      <div id="table" style="margin-top:8px"></div></div>
+    <div class="card" id="outputs"></div>
+  </div>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const LBL = {DEAD:"Dead", INSOLVENT:"Insolvent", ACQUIRED:"Acquired", RENAMED:"Renamed", DISTRESSED:"Distressed", REVIEW:"Needs a person", ALIVE:"Alive", CANT_TELL:"Can't tell"};
+const KIND = {legal:"court record", insolvency:"insolvency", shutdown:"shutdown", acquired:"acquired", renamed:"renamed", website:"website",
+  hiring_freeze:"hiring", headcount_drop:"headcount", exodus:"exodus", stale_funding:"funding", alive:"sign of life", layoffs:"layoffs",
+  restructuring:"restructuring", court_mention:"court mention"};
+
+fetch("/api/pulses").then(r => r.json()).then(js => js.filter(j => j.done).forEach(j =>
+  $("#saved").insertAdjacentHTML("beforeend", `<option value="${esc(j.job_id)}">${esc(j.job_id)} · ${j.summary.accounts} accounts · ${j.summary.zombies} zombies</option>`)));
+$("#saved").onchange = e => e.target.value && show(e.target.value);
+const qp = new URLSearchParams(location.search).get("job"); if (qp) show(qp);
+$("#go").onclick = () => { const f = $("#file").files[0]; if (!f) { alert("Choose a CSV first, or use the sample."); return; } start(f, false); };
+$("#sample").onclick = () => start(null, true);
+
+async function start(file, sample){
+  const fd = new FormData(); if (file) fd.append("file", file); fd.append("sample", sample ? "true" : "false");
+  const r = await fetch("/api/pulse", {method: "POST", body: fd});
+  if (!r.ok) { alert((await r.json()).detail); return; }
+  const {job_id, count} = await r.json();
+  $("#work").classList.remove("hidden"); $("#hero").innerHTML = ""; $("#stats").innerHTML = ""; $("#outputs").innerHTML = "";
+  $("#log").innerHTML = ""; $("#table").innerHTML = `<table id="live"><tr><th>Account</th><th>Status</th><th>Why</th></tr></table>`;
+  let n = 0; $("#progress").textContent = `0 / ${count} checked`;
+  const es = new EventSource("/api/stream/" + job_id);
+  es.onmessage = m => {
+    const e = JSON.parse(m.data);
+    if (e.kind === "account" && e.data) { n++; $("#progress").textContent = `${n} / ${count} checked`;
+      const [name, rest] = [e.msg.split(":")[0], e.msg.split(" — ").slice(1).join(" — ")];
+      $("#live").insertAdjacentHTML("beforeend", `<tr><td>${esc(name)}</td><td><span class="pill s-${e.data.status}">${LBL[e.data.status] || e.data.status}</span>${e.data.zombie ? '<span class="z">ZOMBIE</span>' : ""}</td><td>${esc(rest)}</td></tr>`); }
+    else { const d = document.createElement("div"); d.className = e.level || ""; d.textContent = e.msg; $("#log").prepend(d); }
+    if (e.kind === "done" && e.data && e.data.job_id === job_id) { es.close(); setTimeout(() => show(job_id), 300); }
+  };
+}
+
+async function show(id){
+  const r = await (await fetch("/api/pulse/" + id)).json();
+  $("#work").classList.remove("hidden");
+  const S = r.summary, c = S.counts || {};
+  const zs = r.accounts.filter(a => a.zombie && !a.merged_into_row);
+  $("#hero").innerHTML = zs.length ? `<div class="hero"><h2>${zs.length} companies in this CRM are dead. The data still says they're active.</h2>
+    <p><b>${S.zombie_people_still_current.toLocaleString()}</b> people still list them as their current job: ${zs.map(a => `<b>${esc(a.input.name)}</b> (since ${esc(a.since || "?")})`).join(", ")}.
+    ${(c.ACQUIRED || 0) + (c.RENAMED || 0) + (c.INSOLVENT || 0) ? `Plus ${(c.ACQUIRED || 0) + (c.RENAMED || 0)} ownership / name change(s) and ${c.INSOLVENT || 0} in insolvency.` : ""}</p></div>`
+    : `<div class="hero" style="background:var(--good-bg)"><h2 style="color:var(--good)">No zombie companies found.</h2></div>`;
+  $("#stats").innerHTML = [
+    [S.accounts, "accounts in CRM"], [S.unique_companies, "unique companies"], [S.duplicates_merged, "duplicates merged"],
+    [(c.DEAD || 0), "dead", "--bad"], [(c.INSOLVENT || 0), "insolvent", "--bad"], [(c.ACQUIRED || 0) + (c.RENAMED || 0), "acquired / renamed", "--purple"],
+    [(c.REVIEW || 0) + (c.DISTRESSED || 0), "for a person", "--warn"], [(c.ALIVE || 0), "alive", "--good"],
+    [S.contacts_paused, "outreach contacts paused"], [r.corrections.length, "corrections for the data provider"], [S.duration_s + "s", "end to end"],
+  ].map(([v, l, col]) => `<div class="stat"><b ${col ? `style="color:var(${col})"` : ""}>${v}</b><span>${l}</span></div>`).join("");
+  $("#progress").textContent = `${S.accounts} checked · ${S.api_calls} data lookups`;
+  const order = {DEAD: 0, INSOLVENT: 1, ACQUIRED: 2, RENAMED: 3, REVIEW: 4, DISTRESSED: 5, CANT_TELL: 6, ALIVE: 7};
+  const acts = {}; (r.actions || []).forEach(x => (acts[x.row] = acts[x.row] || []).push(x));
+  const rows = [...r.accounts].sort((a, b) => (order[a.status] - order[b.status]) || (a.row - b.row));
+  $("#table").innerHTML = `<table><tr><th>Account</th><th>Status</th><th>Crustdata says</th><th>Since</th><th>Why (cited)</th><th>Done for you</th></tr>` + rows.map(a => {
+    const cn = a.canonical || {}, sigs = (a.signals || []).filter(s => s.kind !== "stale_funding" || a.status !== "ALIVE");
+    return `<tr class="${a.merged_into_row ? "merged" : ""}"><td><b>${esc(a.input.name)}</b><div class="muted" style="font-size:11px">${esc(a.input.domain || "")}${a.merged_into_row ? ` · merged into row ${a.merged_into_row}` : ""}</div></td>
+      <td><span class="pill s-${a.status}">${LBL[a.status] || a.status}</span>${a.zombie ? '<span class="z">ZOMBIE</span>' : ""}</td>
+      <td class="muted" style="font-size:12px">${cn.crustdata_company_id ? `status <b>${esc(cn.crustdata_status || "?")}</b><br>${(cn.headcount_now || 0).toLocaleString()} employees<br>${((a.people || {}).still_current || 0).toLocaleString()} list it as current` : "no record"}</td>
+      <td>${esc(a.since || "")}</td>
+      <td>${esc(a.why)}<details><summary>${sigs.length} piece${sigs.length === 1 ? "" : "s"} of evidence</summary>${sigs.map(s =>
+        `<div class="sig"><span class="k">${esc(KIND[s.kind] || s.kind)}</span>${esc(s.says)}${s.url ? ` · <a href="${esc(s.url)}" target="_blank" rel="noopener">source</a>` : ""}
+         <span class="muted"> · ${esc(s.source)}${s.record ? " · " + esc(s.record) : ""} · ${esc(s.retrieved_at)}</span></div>`).join("")}</details></td>
+      <td style="font-size:12px">${(acts[a.row] || []).map(x => `<div>✔ ${esc(x.text)}${x.result !== "done" ? ` <span class="muted">(${esc(x.result)})</span>` : ""}</div>`).join("")}</td></tr>`;
+  }).join("") + `</table>`;
+  $("#outputs").innerHTML = `<h3 style="margin-top:0">Outputs</h3>
+    <div class="row"><a class="btn" href="/api/pulse/${id}/file/cleaned.csv">Download cleaned CRM (.csv)</a>
+    <a class="btn ghost" href="/api/pulse/${id}/file/corrections.jsonl">Correction feed for the data provider (.jsonl)</a>
+    <a class="btn ghost" href="/api/pulse/${id}/file/report.json">Full evidence (.json)</a></div>
+    <p class="muted" style="font-size:12px">Every CRM action is recorded in a ledger before it runs, so re-running this job never pauses or merges anything twice.</p>
+    <pre>${esc(r.corrections.slice(0, 2).map(x => JSON.stringify(x, null, 1)).join("\n\n"))}</pre>`;
+}
+</script>
+</body>
+</html>

@@ -62,7 +62,7 @@ svg text{font:11px system-ui,sans-serif;fill:var(--ink)}
 <header>
   <h1>Pramaan</h1>
   <span class="tag">Check a whole pile of applications, and catch what one-at-a-time checks can't see</span>
-  <a href="/">Single resume →</a>
+  <a href="/resume">Single resume →</a>
 </header>
 <main>
   <div class="card">
@@ -220,7 +220,7 @@ function draw(){
     s += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${c}" stroke-width="${e.strong ? 2.2 : 1.6}" ${e.kind === "shared_employer" ? 'stroke-dasharray="5 4"' : ""} opacity=".8"><title>${esc(e.detail)}</title></line>`; }
   for (const n of nodes.values()) {
     const first = n.name.split(" ")[0];
-    s += `<g style="cursor:pointer" onclick="window.open('/?run=${n.id}','_blank')"><circle cx="${n.x}" cy="${n.y}" r="9" fill="${col[n.decision] || css("--muted")}" stroke="${css("--card")}" stroke-width="2"><title>${esc(n.name)}: ${esc(n.decision || "checking")}</title></circle>
+    s += `<g style="cursor:pointer" onclick="window.open('/resume?run=${n.id}','_blank')"><circle cx="${n.x}" cy="${n.y}" r="9" fill="${col[n.decision] || css("--muted")}" stroke="${css("--card")}" stroke-width="2"><title>${esc(n.name)}: ${esc(n.decision || "checking")}</title></circle>
       <text x="${n.x}" y="${n.y + 22}" text-anchor="middle">${esc(first)}</text></g>`; }
   $("#graph").innerHTML = s;
 }
@@ -258,7 +258,7 @@ async function showSaved(id){
   const rows = Object.entries(D).sort((x, y) => order[x[1].decision] - order[y[1].decision]);
   $("#table").innerHTML = `<table><tr><th>Applicant</th><th>Decision</th><th>Why (cited)</th><th></th></tr>` + rows.map(([rid, d]) =>
     `<tr><td>${nm(rid)}<div style="color:var(--muted);font-size:11px">${esc((A[rid] || {}).file)}</div></td><td><span class="pill d-${d.decision}">${d.decision}</span></td>
-     <td>${esc(d.why)}</td><td><a href="/?run=${rid}" target="_blank">report →</a></td></tr>`).join("") + `</table>`;
+     <td>${esc(d.why)}</td><td><a href="/resume?run=${rid}" target="_blank">report →</a></td></tr>`).join("") + `</table>`;
 }
 </script>
 </body>

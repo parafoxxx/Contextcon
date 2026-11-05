@@ -11,7 +11,7 @@ from pathlib import Path
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse
 
-from pramaan import batch as batchmod, config, pipeline
+from pramaan import batch as batchmod, config, pipeline, pulse_batch
 
 app = FastAPI(title="Pramaan")
 WEB = Path(__file__).parent / "web"
@@ -28,6 +28,11 @@ def _emitter(run_id: str):
 
 @app.get("/", response_class=HTMLResponse)
 def index():
+    return (WEB / "pulse.html").read_text(encoding="utf-8")
+
+
+@app.get("/resume", response_class=HTMLResponse)
+def resume_page():
     return (WEB / "index.html").read_text(encoding="utf-8")
 
 
@@ -220,3 +225,74 @@ def batch_list(all: bool = False):
 def batch_page():
     p = WEB / "batch.html"
     return p.read_text(encoding="utf-8") if p.exists() else "<p>web/batch.html not built yet</p>"
+
+
+# ---------------- Pulse: is every company in this CRM still alive? ----------------
+
+@app.get("/pulse", response_class=HTMLResponse)
+def pulse_page():
+    return (WEB / "pulse.html").read_text(encoding="utf-8")
+
+
+@app.post("/api/pulse")
+async def pulse_start(file: UploadFile = File(None), sample: bool = Form(False)):
+    if sample or file is None:
+        text = (Path(__file__).parent / "redteam" / "crm_sample.csv").read_text(encoding="utf-8")
+    else:
+        text = (await file.read()).decode("utf-8", errors="replace")
+    rows = pulse_batch.parse_csv(text)
+    if not rows:
+        raise HTTPException(400, "No accounts found. The CSV needs an 'account' (or 'company') column, and ideally 'website'.")
+    job_id = "P" + uuid.uuid4().hex[:8]
+    (pulse_batch.PULSE_DIR / job_id).mkdir(parents=True, exist_ok=True)
+    (pulse_batch.PULSE_DIR / job_id / "input.csv").write_text(text, encoding="utf-8")
+    _start_pulse(job_id, text)
+    return {"job_id": job_id, "count": len(rows)}
+
+
+def _start_pulse(job_id, text):
+    emit = _emitter(job_id)
+
+    def work():
+        try:
+            pulse_batch.run(text, emit=emit, job_id=job_id)
+        except Exception as e:  # noqa: BLE001
+            emit("error", f"Run crashed: {type(e).__name__}: {e}", level="error")
+            emit("done", "Stopped", data={"job_id": job_id})
+    threading.Thread(target=work, daemon=True).start()
+
+
+@app.post("/api/pulse/{job_id}/resume")
+def pulse_resume(job_id: str):
+    f = pulse_batch.PULSE_DIR / job_id / "input.csv"
+    if not f.exists():
+        raise HTTPException(404)
+    _start_pulse(job_id, f.read_text(encoding="utf-8"))
+    return {"job_id": job_id, "resumed": True}
+
+
+@app.get("/api/pulse/{job_id}")
+def pulse_get(job_id: str):
+    r = pulse_batch.load(job_id)
+    if not r:
+        raise HTTPException(404, "Not finished or no such job")
+    return JSONResponse(r)
+
+
+@app.get("/api/pulse/{job_id}/file/{name}")
+def pulse_file(job_id: str, name: str):
+    if name not in ("cleaned.csv", "corrections.jsonl", "report.json"):
+        raise HTTPException(404)
+    p = pulse_batch.PULSE_DIR / job_id / name
+    if not p.exists():
+        raise HTTPException(404)
+    return FileResponse(p, filename=f"{job_id}_{name}")
+
+
+@app.get("/api/pulses")
+def pulse_list():
+    out = []
+    for d in sorted([d for d in pulse_batch.PULSE_DIR.iterdir() if d.is_dir()], key=lambda p: -p.stat().st_mtime)[:20]:
+        r = pulse_batch.load(d.name)
+        out.append({"job_id": d.name, "done": bool(r), "summary": (r or {}).get("summary")})
+    return out
