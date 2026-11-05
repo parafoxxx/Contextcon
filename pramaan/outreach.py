@@ -5,15 +5,17 @@ Guard rules (each send is checked; failures are logged, never silently skipped):
   2. Never contact the candidate's CURRENT employer.
   3. Minimum data: only the candidate's name and the claim being checked for that employer.
      The guard scans the body for other employers' names, phone numbers and emails.
-  4. During the demo, every message is redirected to DEMO_INBOX.
-  5. At most one message per recipient per run.
+  4. Event rule: agents only talk to our own team, so every message goes to DEMO_INBOX (a team inbox).
+     With no DEMO_INBOX set, nothing is emailed at all.
+  5. At most one message per recipient per run, and exactly-once delivery via an on-disk ledger.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import smtplib
-import uuid
+import threading
 from datetime import datetime, timezone
 from email.message import EmailMessage
 
@@ -45,15 +47,64 @@ def guard(report: Report, to: str, body: str, about_company: str | None, sent_to
         problems.append("body contains candidate phone number")
     if re.search(r"\b\d{10}\b", body):
         problems.append("body contains a 10-digit number")
-    actual_to = config.DEMO_INBOX or to
-    if actual_to in sent_to:
-        problems.append(f"already contacted {actual_to} in this run")
-    return (not problems), problems, actual_to
+    # Event rule: agents only ever talk to our own team. Every message goes to the team inbox.
+    actual_to = config.DEMO_INBOX
+    if config.SMTP_HOST and not actual_to:
+        problems.append("no team inbox (DEMO_INBOX) set: refusing to email anyone outside the team")
+    if to in sent_to:
+        problems.append(f"already contacted {to} in this run")
+    return (not problems), problems, actual_to or f"(not sent; intended {to})"
+
+
+# ---------- exactly-once delivery ----------
+# A ledger on disk records every send *before* it is attempted. After a crash or a retry,
+# a message marked 'sending' or 'sent' is never sent again.
+
+LEDGER = config.OUTBOX_DIR / "ledger.json"
+_ledger_lock = threading.Lock()
+
+
+def _ledger() -> dict:
+    try:
+        return json.loads(LEDGER.read_text(encoding="utf-8"))
+    except (FileNotFoundError, ValueError):
+        return {}
+
+
+def _ledger_set(key: str, entry: dict):
+    with _ledger_lock:
+        led = _ledger()
+        led[key] = {**led.get(key, {}), **entry}
+        tmp = LEDGER.with_suffix(".tmp")
+        tmp.write_text(json.dumps(led, indent=1), encoding="utf-8")
+        tmp.replace(LEDGER)
+
+
+def idem_key(run_id: str, kind: str, company: str | None, claim_ids: list[str]) -> str:
+    raw = "|".join([run_id, kind, (company or "").lower(), ",".join(sorted(claim_ids))])
+    return hashlib.sha256(raw.encode()).hexdigest()[:16]
+
+
+def deliver_once(key: str, to: str, subject: str, body: str) -> str:
+    prev = _ledger().get(key)
+    if prev and prev.get("status") == "sent":
+        return f"already sent at {prev.get('at')} (not resent)"
+    if prev and prev.get("status") == "sending":
+        return "a previous attempt may have sent this; not resending (check the team inbox)"
+    _ledger_set(key, {"status": "sending", "to": to, "subject": subject,
+                      "at": datetime.now(timezone.utc).isoformat(timespec="seconds")})
+    try:
+        result = _send(to, subject, body, key)
+    except Exception as e:  # noqa: BLE001 - delivery failure must not crash the run
+        _ledger_set(key, {"status": "failed", "error": str(e)})
+        return f"failed: {e}"
+    _ledger_set(key, {"status": "sent" if result == "sent" else "logged"})
+    return result
 
 
 def _send(to: str, subject: str, body: str, ref: str) -> str:
-    if not config.SMTP_HOST:
-        return "logged (SMTP not configured)"
+    if not config.SMTP_HOST or not config.DEMO_INBOX:
+        return "logged (not emailed)"
     msg = EmailMessage()
     msg["From"], msg["To"], msg["Subject"] = config.SMTP_FROM or config.SMTP_USER, to, subject
     msg["X-Pramaan-Ref"] = ref
@@ -151,18 +202,16 @@ def plan_and_send(report: Report, log, emit=lambda *a, **k: None) -> list[dict]:
         subject, body = employer_email(report, company, items, contact)
         intended = f"hr@{company.lower().split()[0]}.example"  # real address would come from contact enrichment
         ok, problems, actual_to = guard(report, intended, body, company, sent_to)
-        rec = {"id": uuid.uuid4().hex[:10], "kind": "employer", "company": company, "contact": contact,
+        cids = sorted({cid for it in items for cid in it["claim_ids"]})
+        rec = {"id": idem_key(report.run_id, "employer", company, cids), "kind": "employer", "company": company, "contact": contact,
                "intended_to": intended, "to": actual_to, "subject": subject, "body": body,
                "claim_ids": sorted({cid for it in items for cid in it["claim_ids"]}),
                "questions": [it["question"] for it in items],
                "guard": {"passed": ok, "problems": problems},
                "at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
         if ok:
-            try:
-                rec["delivery"] = _send(actual_to, subject, body, rec["id"])
-            except Exception as e:  # noqa: BLE001 - delivery failure must not crash the run
-                rec["delivery"] = f"failed: {e}"
-            sent_to.add(actual_to)
+            rec["delivery"] = deliver_once(rec["id"], actual_to, subject, body)
+            sent_to.add(intended)
             for v in report.verdicts:
                 if v.claim_id in rec["claim_ids"] and v.status in (S.UNVERIFIED, S.REVIEW):
                     v.status, v.next_action = S.PENDING, f"awaiting reply ({rec['id']})"
@@ -177,16 +226,14 @@ def plan_and_send(report: Report, log, emit=lambda *a, **k: None) -> list[dict]:
         items = [{"claim": v.claim_text, "reason": v.reason, "claim_id": v.claim_id} for v in to_candidate]
         subject, body = candidate_email(report, items)
         ok, problems, actual_to = guard(report, claims.email or "candidate@unknown", body, None, sent_to)
-        rec = {"id": uuid.uuid4().hex[:10], "kind": "candidate", "company": None, "contact": {"name": report.candidate},
+        rec = {"id": idem_key(report.run_id, "candidate", None, [i["claim_id"] for i in items]), "kind": "candidate",
+               "company": None, "contact": {"name": report.candidate},
                "intended_to": claims.email, "to": actual_to, "subject": subject, "body": body,
                "claim_ids": [i["claim_id"] for i in items], "questions": [i["claim"] for i in items],
                "guard": {"passed": ok, "problems": problems},
                "at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
         if ok:
-            try:
-                rec["delivery"] = _send(actual_to, subject, body, rec["id"])
-            except Exception as e:  # noqa: BLE001
-                rec["delivery"] = f"failed: {e}"
+            rec["delivery"] = deliver_once(rec["id"], actual_to, subject, body)
             emit("outreach", f"✉ Asked the candidate to explain {len(items)} item(s) before anything reaches HR ({rec['delivery']}).")
         else:
             rec["delivery"] = "blocked by guard"

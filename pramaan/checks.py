@@ -59,6 +59,21 @@ class CompanyCache:
         key = company_id or domain or name.lower()
         if key in self.by_key:
             return self.by_key[key]
+        if not company_id:
+            # Free identify first, so the paid enrich runs at most once per real company
+            idata, _ = cd.identify_company(name=name, domain=domain, log=self.log)
+            for entry in idata or []:
+                for m in entry.get("matches") or []:
+                    cd_ = m.get("company_data") or {}
+                    nm = (cd_.get("basic_info") or {}).get("name") or ""
+                    if cd_.get("crustdata_company_id") and (same_company(nm, name) or domain):
+                        company_id = cd_["crustdata_company_id"]
+                        break
+                if company_id:
+                    break
+            if company_id and company_id in self.by_key:
+                self.by_key[key] = self.by_key[company_id]
+                return self.by_key[key]
         data, meta = cd.enrich_company(name=name, domain=domain, company_id=company_id, log=self.log)
         result: tuple[Optional[Company], Optional[str]] = (None, meta.get("error"))
         if data:
@@ -69,6 +84,8 @@ class CompanyCache:
                 good.sort(key=lambda c: -(c.match_confidence or 0))
                 result = (good[0], None)
         self.by_key[key] = result
+        if company_id:
+            self.by_key[company_id] = result
         return result
 
 

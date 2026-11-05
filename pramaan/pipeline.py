@@ -49,6 +49,12 @@ def verify(data: bytes, filename: str, *, consent: bool, emit: Emit = lambda *a,
     run_id = run_id or uuid.uuid4().hex[:12]
     report = Report(run_id=run_id, candidate="(reading resume)", consent_recorded=consent)
 
+    # Resume after a crash: reuse what a previous attempt of this run already extracted.
+    prev = load(run_id)
+    if claims is None and prev and prev.claims:
+        claims = prev.claims
+        emit("resume", f"Resuming run {run_id}: reusing the resume already read; cached lookups cost nothing.")
+
     # 1. Read the resume
     if claims is None:
         emit("extract", f"Reading {filename} with Claude…")
@@ -60,6 +66,7 @@ def verify(data: bytes, filename: str, *, consent: bool, emit: Emit = lambda *a,
             save(report)
             return report
     report.claims, report.candidate = claims, claims.name
+    save(report)  # checkpoint: the expensive read is never repeated
     emit("extract", f"Found {len(claims.jobs)} roles, {len(claims.education)} degrees, {len(claims.references)} references "
                     f"for {claims.name}.", data={"jobs": [j.model_dump() for j in claims.jobs]})
     for n in claims.extraction_notes:
@@ -106,6 +113,7 @@ def verify(data: bytes, filename: str, *, consent: bool, emit: Emit = lambda *a,
             emit("verdict", f"{v.status.value.upper()}: {v.claim_text} — {v.reason}", data=v.model_dump(mode="json"),
                  level={"discrepancy": "bad", "review": "warn", "verified": "good"}.get(v.status.value, "info"))
         report.verdicts += vs
+        save(report)  # checkpoint after every role
 
     for fn in (lambda: checks.check_overlaps(claims), lambda: checks.check_education(claims, person),
                lambda: checks.check_references(claims, log)):
@@ -136,6 +144,8 @@ def verify(data: bytes, filename: str, *, consent: bool, emit: Emit = lambda *a,
 def apply_reply(run_id: str, outreach_id: str, reply_text: str) -> Report:
     r = load(run_id)
     rec = next(o for o in r.outreach if o["id"] == outreach_id)
+    if rec.get("reply", {}).get("text") == reply_text:
+        return r  # same reply delivered twice: apply once
     reading = llm.read_reply(rec["subject"], "\n".join(rec["questions"]), reply_text)
     ev = Evidence(source=f"email reply ({rec['kind']}: {rec.get('company') or r.candidate})", record=f"outreach:{outreach_id}",
                   value=reading.quote, controlled_by=C.THIRD_PARTY if rec["kind"] == "employer" else C.CANDIDATE,

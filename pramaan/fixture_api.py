@@ -75,6 +75,16 @@ def handle(path: str, body: dict):
     if path == "/person/search":
         hits = [p for p in ds["people"] if _match(p, body["filters"])][: body.get("limit", 25)]
         return {"profiles": [_person_data(p) for p in hits], "total_count": len(hits), "next_cursor": None}
+    if path == "/company/identify":
+        out = []
+        for key, kind in (("names", "name"), ("domains", "domain")):
+            for val in body.get(key, []):
+                m = [c for c in ds["companies"] if (same_company(c["name"], val) if kind == "name" else c["domain"] == val)]
+                out.append({"matched_on": val, "match_type": kind, "matches": [
+                    {"confidence_score": 0.95, "company_data": {"crustdata_company_id": c["id"],
+                                                                "basic_info": {"name": c["name"], "primary_domain": c["domain"]}}}
+                    for c in m]})
+        return out
     if path == "/company/enrich":
         out = []
         for key, kind in (("names", "name"), ("domains", "domain"), ("crustdata_company_ids", "crustdata_company_id")):

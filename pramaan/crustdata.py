@@ -79,10 +79,16 @@ def _post(path: str, body: dict, log: Optional[CallLog] = None) -> tuple[Any, di
             r = httpx.post(BASE + path, json=body, headers=headers, timeout=45)
             if r.status_code in (429, 500, 502, 503, 504):
                 last_err = f"HTTP {r.status_code}: {r.text[:200]}"
-                time.sleep(2 * (attempt + 1))
+                try:
+                    wait = float(r.headers.get("x-ratelimit-reset") or 0)
+                except ValueError:
+                    wait = 0
+                time.sleep(min(max(wait, 2 * (attempt + 1)), 20))
                 continue
             if r.status_code >= 400:
-                meta.update(error=f"HTTP {r.status_code}: {r.text[:300]}", status=r.status_code)
+                hint = {401: "API key not accepted", 402: "Crustdata credits exhausted",
+                        403: "this key may not call this endpoint", 404: "not found"}.get(r.status_code, "")
+                meta.update(error=f"HTTP {r.status_code} {hint}: {r.text[:200]}".strip(), status=r.status_code)
                 if log:
                     log.add(meta)
                 return None, meta
@@ -123,6 +129,12 @@ def enrich_company(*, name: str = None, domain: str = None, company_id: int = No
     else:
         body["names"] = [name]
     return _post("/company/enrich", body, log)
+
+
+def identify_company(*, name: str = None, domain: str = None, log=None):
+    """Free: resolve a name or domain to a crustdata_company_id."""
+    body = {"domains": [domain]} if domain else {"names": [name]}
+    return _post("/company/identify", body, log)
 
 
 def web_search(query: str, log=None):
