@@ -80,11 +80,14 @@ def employer_status(r: Report) -> dict[str, dict]:
         v = by_id.get(f"job{i}.employer")
         phantom = bool(v and v.check == "employer_exists" and v.status in (S.REVIEW, S.DISCREPANCY, S.UNVERIFIED)
                        and "not in crustdata" in v.reason.lower() or (v and "no company record" in v.reason.lower()))
-        size = None
+        size, cid = None, None
         for ev in (v.evidence if v else []):
             if ev.field == "headcount.total" and ev.value and ev.value.isdigit():
                 size = int(ev.value)
-        out[j.company] = {"phantom": phantom, "size": size, "job": i, "start": to_index(j.start),
+            m = re.match(r"crustdata_company_id=(\d+)", ev.record or "")
+            if m:
+                cid = int(m.group(1))
+        out[j.company] = {"phantom": phantom, "size": size, "company_id": cid, "job": i, "start": to_index(j.start),
                           "end": to_index(j.end, is_end=True), "verdict": v}
     return out
 
@@ -112,7 +115,8 @@ def build_links(apps: list[Applicant]) -> list[Link]:
             A, B = apps[x], apps[y]
             for ca, sa in emp[A.run_id].items():
                 for cb, sb in emp[B.run_id].items():
-                    if not same_company(ca, cb):
+                    same_id = sa["company_id"] and sa["company_id"] == sb["company_id"]
+                    if not (same_id or same_company(ca, cb)):  # one company under two spellings = one record
                         continue
                     if sa["phantom"] or sb["phantom"]:
                         links.append(Link(A.run_id, B.run_id, "phantom_employer", f"both cite '{ca}', which has no company record"))
@@ -184,8 +188,8 @@ def cohort_explanation(company, members: list[Applicant], emp: dict) -> Optional
     """Did the real company shrink when these people say they left? Uses the headcount timeseries."""
     if company is None or not company.timeseries:
         return None
-    ends = [emp[m.run_id][k]["end"] for m in members for k in emp[m.run_id] if same_company(k, company.name)
-            and emp[m.run_id][k]["end"] is not None]
+    ends = [st["end"] for m in members for k, st in emp[m.run_id].items()
+            if (same_company(k, company.name) or st["company_id"] == company.company_id) and st["end"] is not None]
     if not ends:
         return None
     ends.sort()
@@ -235,7 +239,7 @@ def ring_summary(glinks: list) -> str:
 
 
 def analyse(batch_id: str, apps: list[Applicant], company_lookup) -> dict:
-    """company_lookup(name) -> normalize.Company | None (cached)."""
+    """company_lookup(name, company_id) -> normalize.Company | None (cached)."""
     links = build_links(apps)
     by_id = {a.run_id: a for a in apps}
     emp = {a.run_id: employer_status(a.report) for a in apps}
@@ -266,12 +270,13 @@ def analyse(batch_id: str, apps: list[Applicant], company_lookup) -> dict:
         if g <= in_ring:
             continue
         members = [by_id[m] for m in g]
-        common = None
-        for comp in emp[members[0].run_id]:
-            if all(any(same_company(comp, k) for k in emp[m.run_id]) for m in members):
-                common = comp
+        common, common_id = None, None
+        for comp, st in emp[members[0].run_id].items():
+            if all(any(same_company(comp, k) or (st["company_id"] and st["company_id"] == s2["company_id"])
+                       for k, s2 in emp[m.run_id].items()) for m in members):
+                common, common_id = comp, st["company_id"]
                 break
-        company = company_lookup(common) if common else None
+        company = company_lookup(common, common_id) if common else None
         exp = cohort_explanation(company, members, emp)
         clusters.append({
             "id": f"C{len(clusters) + 1}", "type": "explained_cohort" if exp and exp["explained"] else "cohort",

@@ -70,7 +70,7 @@ def verify_batch(files: list[tuple[bytes, str]], *, consent: bool, emit: Callabl
 
     emit("graph", "Linking applicants: shared employers, references, contact details, text, PDF metadata…")
     cache = checks.CompanyCache(CallLog())
-    result = rings.analyse(batch_id, apps, lambda name: cache.get(name)[0] if name else None)
+    result = rings.analyse(batch_id, apps, lambda name, cid=None: cache.get(name, cid)[0] if name else None)
     for c in result["clusters"]:
         lvl = {"ring": "bad", "explained_cohort": "good", "watch": "warn"}.get(c["type"], "info")
         emit("cluster", f"{c['type'].replace('_', ' ').upper()} {c['id']} ({len(c['members'])} applicants): {c['reason']}", level=lvl,

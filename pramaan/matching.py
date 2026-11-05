@@ -43,6 +43,11 @@ GENERIC = {"internet", "digital", "ventures", "enterprises", "industries", "inte
 def same_company(a: str, b: str) -> bool:
     """Strict on purpose: a wrong match produces a wrong 'Verified', which is worse than 'Unverified'.
     'Chill Hai' != 'CHILL', 'NoBroker HR' != 'NoBroker', 'SPO IIT Kanpur' != 'IIT'."""
+    # "BYJU'S (Think & Learn Pvt Ltd)": the bracketed legal name is an alias of the brand
+    for x, y in ((a, b), (b, a)):
+        m = re.match(r"^(.*?)\s*\((.+)\)\s*$", x or "")
+        if m and (same_company(m.group(1), y) or same_company(m.group(2), y)):
+            return True
     ca, cb = clean(a), clean(b)
     if not ca or not cb:
         return False
