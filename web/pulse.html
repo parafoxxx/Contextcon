@@ -72,6 +72,13 @@ pre{white-space:pre-wrap;font:12px/1.5 ui-monospace,Consolas,monospace;backgroun
       <span class="muted" style="margin-left:auto">or open a saved run</span>
       <select id="saved"><option value="">…</option></select>
     </div>
+    <div class="row" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
+      <b>Or check any company:</b>
+      <input id="one_name" placeholder="Company name" style="font:inherit;padding:7px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)">
+      <input id="one_dom" placeholder="website (optional)" style="font:inherit;padding:7px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)">
+      <button class="btn ghost" id="one_go">Check</button>
+    </div>
+    <div id="one_out"></div>
     <div class="muted" style="font-size:12px;margin-top:6px">CSV with an <b>account</b> (or company) column and ideally <b>website</b>. Optional: <b>active_sequence_contacts</b> (outreach in progress).</div>
   </div>
 
@@ -98,6 +105,22 @@ $("#saved").onchange = e => e.target.value && show(e.target.value);
 const qp = new URLSearchParams(location.search).get("job"); if (qp) show(qp);
 $("#go").onclick = () => { const f = $("#file").files[0]; if (!f) { alert("Choose a CSV first, or use the sample."); return; } start(f, false); };
 $("#sample").onclick = () => start(null, true);
+
+$("#one_go").onclick = async () => {
+  const n = $("#one_name").value.trim(); if (!n) return;
+  $("#one_go").disabled = true; $("#one_out").innerHTML = `<p class="muted">Checking ${esc(n)}: company records, people, news, court records, website…</p>`;
+  const fd = new FormData(); fd.append("name", n); fd.append("domain", $("#one_dom").value);
+  try {
+    const r = await (await fetch("/api/pulse_one", {method: "POST", body: fd})).json();
+    const cn = r.canonical || {};
+    $("#one_out").innerHTML = `<div class="card" style="margin:12px 0 0">
+      <div class="row"><b style="font-size:16px">${esc(cn.name || r.input.name)}</b><span class="pill s-${r.status}">${LBL[r.status] || r.status}</span>${r.zombie ? '<span class="z">ZOMBIE</span>' : ""}
+      ${r.since ? `<span class="muted">since ${esc(r.since)}</span>` : ""}<span class="muted" style="margin-left:auto">${cn.crustdata_company_id ? `Crustdata: status <b>${esc(cn.crustdata_status)}</b>, ${(cn.headcount_now || 0).toLocaleString()} employees, ${((r.people || {}).still_current || 0).toLocaleString()} list it as current` : "no Crustdata record"}</span></div>
+      <p style="margin:8px 0">${esc(r.why)}</p>
+      ${(r.signals || []).map(s => `<div class="sig"><span class="k">${esc(KIND[s.kind] || s.kind)}</span>${esc(s.says)}${s.url ? ` · <a href="${esc(s.url)}" target="_blank" rel="noopener">source</a>` : ""}<span class="muted"> · ${esc(s.source)} · ${esc(s.retrieved_at)}</span></div>`).join("")}</div>`;
+  } catch (e) { $("#one_out").innerHTML = `<p style="color:var(--bad)">Check failed: ${esc(e)}</p>`; }
+  $("#one_go").disabled = false;
+};
 
 async function start(file, sample){
   const fd = new FormData(); if (file) fd.append("file", file); fd.append("sample", sample ? "true" : "false");

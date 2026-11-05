@@ -296,3 +296,15 @@ def pulse_list():
         r = pulse_batch.load(d.name)
         out.append({"job_id": d.name, "done": bool(r), "summary": (r or {}).get("summary")})
     return out
+
+
+@app.post("/api/pulse_one")
+def pulse_one(name: str = Form(...), domain: str = Form("")):
+    """Check a single company someone names on the spot."""
+    from pramaan import checks, pulse
+    from pramaan.crustdata import CallLog
+    log = CallLog()
+    dom = domain.strip().lower().removeprefix("https://").removeprefix("http://").removeprefix("www.").split("/")[0] or None
+    r = pulse.check_company(name.strip(), dom, checks.CompanyCache(log), log)
+    r["credits"] = log.credits
+    return JSONResponse(r)

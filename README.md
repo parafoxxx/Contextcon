@@ -95,4 +95,4 @@ cp .env.example .env     # GEMINI_API_KEY (or ANTHROPIC_API_KEY), CRUSTDATA_API_
 .venv/Scripts/python -m uvicorn app:app --port 8000 --reload      # http://localhost:8000 → "Use sample CRM"
 ```
 
-The sample CRM is `redteam/crm_sample.csv`, and the hand labels are `redteam/crm_truth.json` (only labels we are confident of; Unacademy was scored only after we read its two sources).
+The sample CRM is `redteam/crm_sample.csv`, and the hand labels are `redteam/crm_truth.json` (only labels we are confident of; Unacademy is left unscored because its acquisition happened after what we could verify ourselves, though we read both sources the agent cited).
