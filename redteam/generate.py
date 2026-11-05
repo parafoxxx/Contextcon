@@ -134,7 +134,8 @@ def render(c: ResumeClaims, path: Path, layout: str = "single"):
     pdf.set_font("Helvetica", "B", 18)
     pdf.cell(0, 10, _t(c.name), new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", "", 10)
-    pdf.cell(0, 6, _t(f"{c.email}  |  Bengaluru, India"), new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 6, _t("  |  ".join(x for x in (c.email, c.phone, c.location or "Bengaluru, India", c.linkedin_url) if x)),
+             new_x="LMARGIN", new_y="NEXT")
     pdf.ln(3)
     if layout == "two_column":
         left_x, right_x, top = 10, 75, pdf.get_y()
@@ -184,6 +185,14 @@ def render(c: ResumeClaims, path: Path, layout: str = "single"):
         for e in c.education:
             pdf.cell(0, 5, _t(f"{e.degree or ''} {e.field or ''}, {e.school} ({e.start_year or ''} - {e.end_year or ''})"),
                      new_x="LMARGIN", new_y="NEXT")
+    if c.references:
+        pdf.ln(3)
+        pdf.set_x(10)
+        pdf.set_font("Helvetica", "B", 12)
+        pdf.cell(0, 8, "References", new_x="LMARGIN", new_y="NEXT")
+        pdf.set_font("Helvetica", "", 10)
+        for r in c.references:
+            pdf.cell(0, 5, _t(f"{r.name}, {r.relationship or ''}, {r.company or ''}  {r.email or ''}"), new_x="LMARGIN", new_y="NEXT")
     pdf.output(str(path))
 
 

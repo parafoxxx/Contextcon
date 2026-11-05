@@ -1,0 +1,209 @@
+{
+ "generated_at": "2026-11-05T19:19:04+00:00",
+ "batch_id": "Bscore_nollm",
+ "mode": "live (claims given)",
+ "duration_s": 1.5,
+ "totals": {
+  "ring_members": 8,
+  "ring_held": 8,
+  "honest": 10,
+  "honest_held": 0,
+  "cohorts": 4,
+  "cohorts_explained": 4,
+  "liars": 3,
+  "liars_flagged": 3,
+  "dupes": 1,
+  "dupes_consistent": 1
+ },
+ "rows": [
+  {
+   "name": "Rohit Sinha",
+   "file": "01_rohit_sinha.pdf",
+   "truth": "ring A",
+   "decision": "HOLD",
+   "why": "member of C1: 5 applicants linked by 3 independent signals: all cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record; the same reference (Deepak Malhotra); near-identical achievement text",
+   "ok": true,
+   "run_id": "Bscore_nollm_102b8dd8"
+  },
+  {
+   "name": "Ananya Ghosh",
+   "file": "02_ananya_ghosh.pdf",
+   "truth": "ring A",
+   "decision": "HOLD",
+   "why": "member of C1: 5 applicants linked by 3 independent signals: all cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record; the same reference (Deepak Malhotra); near-identical achievement text",
+   "ok": true,
+   "run_id": "Bscore_nollm_ae0ca857"
+  },
+  {
+   "name": "Farhan Ali",
+   "file": "03_farhan_ali.pdf",
+   "truth": "ring A",
+   "decision": "HOLD",
+   "why": "member of C1: 5 applicants linked by 3 independent signals: all cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record; the same reference (Deepak Malhotra); near-identical achievement text",
+   "ok": true,
+   "run_id": "Bscore_nollm_5455beb9"
+  },
+  {
+   "name": "Sneha Kulkarni",
+   "file": "04_sneha_kulkarni.pdf",
+   "truth": "ring A",
+   "decision": "HOLD",
+   "why": "member of C1: 5 applicants linked by 3 independent signals: all cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record; the same reference (Deepak Malhotra); near-identical achievement text",
+   "ok": true,
+   "run_id": "Bscore_nollm_9355fb06"
+  },
+  {
+   "name": "Manish Yadav",
+   "file": "05_manish_yadav.pdf",
+   "truth": "ring A",
+   "decision": "HOLD",
+   "why": "member of C1: 5 applicants linked by 3 independent signals: all cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record; the same reference (Deepak Malhotra); near-identical achievement text",
+   "ok": true,
+   "run_id": "Bscore_nollm_ae5e31ed"
+  },
+  {
+   "name": "Tarun Gill",
+   "file": "06_tarun_gill.pdf",
+   "truth": "ring B",
+   "decision": "HOLD",
+   "why": "member of C2: 3 applicants linked by 3 independent signals: all cite 'Brightloop Analytics', which has no company record; the same contact details under different names; near-identical achievement text",
+   "ok": true,
+   "run_id": "Bscore_nollm_2a924ecf"
+  },
+  {
+   "name": "Pallavi Joshi",
+   "file": "07_pallavi_joshi.pdf",
+   "truth": "ring B",
+   "decision": "HOLD",
+   "why": "member of C2: 3 applicants linked by 3 independent signals: all cite 'Brightloop Analytics', which has no company record; the same contact details under different names; near-identical achievement text",
+   "ok": true,
+   "run_id": "Bscore_nollm_3bb89a5c"
+  },
+  {
+   "name": "Varun Bhatt",
+   "file": "08_varun_bhatt.pdf",
+   "truth": "ring B",
+   "decision": "HOLD",
+   "why": "member of C2: 3 applicants linked by 3 independent signals: all cite 'Brightloop Analytics', which has no company record; the same contact details under different names; near-identical achievement text",
+   "ok": true,
+   "run_id": "Bscore_nollm_77ff49ba"
+  },
+  {
+   "name": "Kavya Raman",
+   "file": "09_kavya_raman.pdf",
+   "truth": "byjus_2023",
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation (BYJU'S headcount fell 19% (34,613 \u2192 27,969) around Aug 2023, when these applicants left)",
+   "ok": true,
+   "run_id": "Bscore_nollm_7478dfba"
+  },
+  {
+   "name": "Harsh Vardhan",
+   "file": "10_harsh_vardhan.pdf",
+   "truth": "byjus_2023",
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation (BYJU'S headcount fell 19% (34,613 \u2192 27,969) around Aug 2023, when these applicants left)",
+   "ok": true,
+   "run_id": "Bscore_nollm_dda0adbb"
+  },
+  {
+   "name": "Meghna Pillai",
+   "file": "11_meghna_pillai.pdf",
+   "truth": "byjus_2023",
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation (BYJU'S headcount fell 19% (34,613 \u2192 27,969) around Aug 2023, when these applicants left)",
+   "ok": true,
+   "run_id": "Bscore_nollm_8fbf9dce"
+  },
+  {
+   "name": "Aditya Rao",
+   "file": "12_aditya_rao.pdf",
+   "truth": "byjus_2023",
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation (BYJU'S headcount fell 19% (34,613 \u2192 27,969) around Aug 2023, when these applicants left)",
+   "ok": true,
+   "run_id": "Bscore_nollm_af280529"
+  },
+  {
+   "name": "Ishaan Mehta",
+   "file": "13_ishaan_mehta.pdf",
+   "truth": "funding_stage",
+   "decision": "VERIFY",
+   "why": "1 contradicted claim(s): Unacademy had already raised Series D (2019-06-26) before the candidate joined in Jan 2022, so it was at Series D+ stage, not seed.",
+   "ok": true,
+   "run_id": "Bscore_nollm_8d32ca0f"
+  },
+  {
+   "name": "Neha Arora",
+   "file": "14_neha_arora.pdf",
+   "truth": "founded_after_join",
+   "decision": "VERIFY",
+   "why": "1 contradicted claim(s): Claimed start Jan 2021, but Crustdata (YC F24) was founded in 2024 \u2014 3 years later.",
+   "ok": true,
+   "run_id": "Bscore_nollm_01479e8f"
+  },
+  {
+   "name": "Sameer Khan",
+   "file": "15_sameer_khan.pdf",
+   "truth": "team_size",
+   "decision": "VERIFY",
+   "why": "1 contradicted claim(s): Claimed 80 reports, but Crustdata (YC F24) had about 47 employees in total around Nov 2026.",
+   "ok": true,
+   "run_id": "Bscore_nollm_c6f3777d"
+  },
+  {
+   "name": "Rahul Verma",
+   "file": "16_rahul_verma.pdf",
+   "truth": "not_hold",
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation",
+   "ok": true,
+   "run_id": "Bscore_nollm_b5078ef5"
+  },
+  {
+   "name": "Priya Menon",
+   "file": "17_priya_menon.pdf",
+   "truth": "not_hold",
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation",
+   "ok": true,
+   "run_id": "Bscore_nollm_4007dcd8"
+  },
+  {
+   "name": "Arjun Reddy",
+   "file": "18_arjun_reddy.pdf",
+   "truth": "not_hold",
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation",
+   "ok": true,
+   "run_id": "Bscore_nollm_27f1dadf"
+  },
+  {
+   "name": "Leela Thomas",
+   "file": "19_leela_thomas.pdf",
+   "truth": "not_hold",
+   "decision": "VERIFY",
+   "why": "2 claim(s) need employer confirmation",
+   "ok": true,
+   "run_id": "Bscore_nollm_41789cc3"
+  },
+  {
+   "name": "Joseph Mathew",
+   "file": "20_joseph_mathew.pdf",
+   "truth": "not_hold",
+   "decision": "VERIFY",
+   "why": "2 claim(s) need employer confirmation",
+   "ok": true,
+   "run_id": "Bscore_nollm_7db1f37f"
+  },
+  {
+   "name": "Rahul Verma (resubmitted)",
+   "file": "21_rahul_verma_v2.pdf",
+   "truth": "same_as:rahul verma",
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation",
+   "ok": true,
+   "run_id": "Bscore_nollm_61d7679b"
+  }
+ ]
+}

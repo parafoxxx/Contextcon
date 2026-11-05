@@ -1,42 +1,38 @@
 {
- "quantix dynamics": {
-  "name": "Quantix Dynamics",
-  "seen_in": [
-   {
-    "batch": "Btest",
-    "applicants": [
-     "Sonal Mehra",
-     "Vivek Rana",
-     "Imran Qureshi"
-    ]
-   },
-   {
-    "batch": "Btest",
-    "applicants": [
-     "Sonal Mehra",
-     "Vivek Rana",
-     "Imran Qureshi"
-    ]
-   }
-  ]
- },
  "zentrix ops": {
   "name": "Zentrix Ops Solutions",
   "seen_in": [
    {
-    "batch": "Blive1",
+    "batch": "Bscore_nollm",
     "applicants": [
-     "Farhan Ali",
      "Rohit Sinha",
-     "Ananya Ghosh"
+     "Farhan Ali",
+     "Sneha Kulkarni",
+     "Ananya Ghosh",
+     "Manish Yadav"
     ]
    },
    {
-    "batch": "Blive1",
+    "batch": "Bscore_nollm",
     "applicants": [
-     "Farhan Ali",
      "Rohit Sinha",
-     "Ananya Ghosh"
+     "Farhan Ali",
+     "Sneha Kulkarni",
+     "Ananya Ghosh",
+     "Manish Yadav"
+    ]
+   }
+  ]
+ },
+ "brightloop analytics": {
+  "name": "Brightloop Analytics",
+  "seen_in": [
+   {
+    "batch": "Bscore_nollm",
+    "applicants": [
+     "Tarun Gill",
+     "Pallavi Joshi",
+     "Varun Bhatt"
     ]
    }
   ]

@@ -92,9 +92,11 @@ def resolve(claims: ResumeClaims, log=None, emit=lambda *a, **k: None) -> tuple[
                      f"(score {best_score} vs next {max(runner, 0)}).")
     info.update(method="name_search", best_score=best_score, runner_up_score=runner, employer_hits=best_hits)
 
-    if best_score < 2:
+    if best_score < 3:
+        # A shared employer alone is not identity: Infosys has ~300,000 people, many named Rahul Verma.
         info.update(status="not_found")
-        info["notes"].append("People with this name exist, but none share an employer with the resume.")
+        info["notes"].append("People with this name exist, but none match the resume's employers AND dates. "
+                             "No profile attached, rather than risk judging this candidate by a stranger's record.")
         return None, info
     if best_score - runner < 2 and runner >= 2:
         info.update(status="ambiguous")

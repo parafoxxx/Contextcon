@@ -113,6 +113,8 @@ def build_links(apps: list[Applicant]) -> list[Link]:
     for x in range(len(apps)):
         for y in range(x + 1, len(apps)):
             A, B = apps[x], apps[y]
+            if A.report.claims and B.report.claims and                     fuzz.token_sort_ratio(A.report.claims.name.lower(), B.report.claims.name.lower()) >= 90:
+                continue  # the same person applying twice is a duplicate, not a cohort or a ring
             for ca, sa in emp[A.run_id].items():
                 for cb, sb in emp[B.run_id].items():
                     same_id = sa["company_id"] and sa["company_id"] == sb["company_id"]
@@ -272,9 +274,13 @@ def analyse(batch_id: str, apps: list[Applicant], company_lookup) -> dict:
         members = [by_id[m] for m in g]
         common, common_id = None, None
         for comp, st in emp[members[0].run_id].items():
-            if all(any(same_company(comp, k) or (st["company_id"] and st["company_id"] == s2["company_id"])
-                       for k, s2 in emp[m.run_id].items()) for m in members):
-                common, common_id = comp, st["company_id"]
+            matches = [(k, s2) for m in members for k, s2 in emp[m.run_id].items()
+                       if same_company(comp, k) or (st["company_id"] and st["company_id"] == s2["company_id"])]
+            if len({id(x) for x in matches}) and all(any(same_company(comp, k) or (st["company_id"] and st["company_id"] == s2["company_id"])
+                                                          for k, s2 in emp[m.run_id].items()) for m in members):
+                common = comp
+                ids = [s2["company_id"] for _, s2 in matches if s2["company_id"]]
+                common_id = max(set(ids), key=ids.count) if ids else None  # any member's resolved record
                 break
         company = company_lookup(common, common_id) if common else None
         exp = cohort_explanation(company, members, emp)
