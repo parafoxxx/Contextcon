@@ -1,0 +1,57 @@
+{
+ "_note": "Hand labels from public reporting, kept only where we are confident. Unacademy is unscored: in one run the agent cited a 2026 upGrad acquisition we could not confirm ourselves.",
+ "Builder.ai": [
+  "DEAD",
+  "INSOLVENT"
+ ],
+ "BluSmart": [
+  "DEAD",
+  "INSOLVENT"
+ ],
+ "Koo": [
+  "DEAD"
+ ],
+ "Zilingo": [
+  "DEAD",
+  "INSOLVENT"
+ ],
+ "BYJU'S": [
+  "INSOLVENT",
+  "DISTRESSED"
+ ],
+ "Zomato": [
+  "RENAMED",
+  "ALIVE"
+ ],
+ "Ezetap": [
+  "ACQUIRED",
+  "RENAMED"
+ ],
+ "Razorpay": [
+  "ALIVE"
+ ],
+ "Zepto": [
+  "ALIVE"
+ ],
+ "CRED": [
+  "ALIVE"
+ ],
+ "Meesho": [
+  "ALIVE"
+ ],
+ "Swiggy": [
+  "ALIVE"
+ ],
+ "Freshworks": [
+  "ALIVE"
+ ],
+ "Zerodha": [
+  "ALIVE"
+ ],
+ "Groww": [
+  "ALIVE"
+ ],
+ "Infosys": [
+  "ALIVE"
+ ]
+}

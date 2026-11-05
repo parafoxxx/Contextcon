@@ -60,7 +60,8 @@ class NewsReading(BaseModel):
 NEWS_SYSTEM = """You read web search results about one company. Report only what the results state, and quote them.
 Be careful: a company that FILES an insolvency case against someone, or is OWED money, is a creditor, not insolvent.
 A company that ACQUIRES others was not acquired. A subsidiary's liquidation, or a SOLVENT voluntary liquidation, is a
-restructuring, not the main company failing.
+restructuring, not the main company failing. Shutting down one product, app feature, office or business line is NOT
+the company shutting down: only set ceased_operations if the whole company stopped operating.
 Layoffs alone are not a shutdown. If the results are about a different company with a similar name, say so."""
 
 
@@ -268,7 +269,7 @@ def check_company(name: str, domain: Optional[str], cache: checks.CompanyCache, 
     signals += news
     status, why = decide(signals, reading, bool(c))
     crust_status = (raw or {}).get("basic_info", {}).get("status") if raw else None
-    zombie = status in ("DEAD", "INSOLVENT", "ACQUIRED", "RENAMED") and (crust_status in (None, "active", "operating")) and bool(c)
+    zombie = status in ("DEAD", "ACQUIRED") and (crust_status in (None, "active", "operating")) and bool(c)
     since = next((s.date for s in signals if s.kind in ("legal", "insolvency", "shutdown", "acquired", "renamed") and s.date), None) or \
         next((s.date for s in signals if s.kind in ("exodus", "headcount_drop") and s.date), None)
     return {

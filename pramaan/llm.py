@@ -46,7 +46,26 @@ def _mime(filename: str) -> str:
 
 
 def _parse(schema: type[BaseModel], system: str, text: str, doc: tuple[bytes, str] | None = None, effort: str = "low"):
-    """One structured-output call. Provider is chosen by LLM_PROVIDER (anthropic | gemini)."""
+    """One structured-output call, cached on its exact input so the same case always gets the same reading."""
+    import hashlib
+    import json as _json
+    h = hashlib.sha256()
+    for part in (config.LLM_PROVIDER, schema.__name__, _json.dumps(schema.model_json_schema(), sort_keys=True), system, text):
+        h.update(part.encode("utf-8", "replace"))
+    if doc:
+        h.update(doc[0])
+    cf = config.CACHE_DIR / f"llm_{h.hexdigest()[:24]}.json"
+    if cf.exists():
+        try:
+            return schema.model_validate_json(cf.read_text(encoding="utf-8"))
+        except ValueError:
+            pass
+    out = _parse_uncached(schema, system, text, doc, effort)
+    cf.write_text(out.model_dump_json(), encoding="utf-8")
+    return out
+
+
+def _parse_uncached(schema, system, text, doc=None, effort="low"):
     if config.LLM_PROVIDER == "gemini":
         return _parse_gemini(schema, system, text, doc)
     content = ([_doc_block(*doc)] if doc else []) + [{"type": "text", "text": text}]
