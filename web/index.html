@@ -80,7 +80,8 @@ th{color:var(--muted);font-weight:600}
 <header>
   <h1>Pramaan</h1>
   <span class="tag">Background checks against evidence the candidate can't edit</span>
-  <span class="mode" id="mode">…</span>
+  <a href="/batch" style="margin-left:auto;color:var(--accent);text-decoration:none">Batch: a pile of applications →</a>
+  <span class="mode" id="mode" style="margin-left:0">…</span>
 </header>
 <nav>
   <button class="on" data-tab="verify">Verify</button>
@@ -225,6 +226,7 @@ async function loadHistory(){
   $("#history").innerHTML = `<table><tr><th>Candidate</th><th>Result</th><th>When</th></tr>` +
     rs.map(r => `<tr><td><a href="#" onclick="openRun('${r.run_id}');return false">${esc(r.candidate)}</a></td><td><span class="pill b-${r.overall}">${esc(OVERALL[r.overall]||r.overall)}</span></td><td class="muted">${esc(r.created_at)}</td></tr>`).join("") + `</table>`;
 }
+const qRun = new URLSearchParams(location.search).get("run"); if (qRun) setTimeout(() => openRun(qRun), 0);
 function openRun(id){ runId = id; document.querySelector('nav button[data-tab="verify"]').click(); $("#work").classList.remove("hidden"); $("#timeline").innerHTML = "<div class='muted'>Saved run</div>"; showReport(id); }
 
 async function loadScore(){
