@@ -70,6 +70,28 @@ def _parse(schema: type[BaseModel], system: str, text: str, doc: tuple[bytes, st
     return resp.parsed_output
 
 
+_gclient = None
+_glock = __import__("threading").Lock()
+
+
+def gemini_client():
+    """Keep one client alive: a client that goes out of scope closes its connection mid-request."""
+    global _gclient
+    with _glock:
+        return _gclient or _make_gclient()
+
+
+def _make_gclient():
+    global _gclient
+    if _gclient is None:
+        from google import genai
+        from google.genai import types
+        # Our own loop handles retries and model fallback, so: one attempt per call, 60 s cap.
+        _gclient = genai.Client(api_key=config.GEMINI_API_KEY, http_options=types.HttpOptions(
+            timeout=45_000, retry_options=types.HttpRetryOptions(attempts=1)))
+    return _gclient
+
+
 def _parse_gemini(schema: type[BaseModel], system: str, text: str, doc):
     from google import genai
     from google.genai import errors, types
@@ -82,29 +104,35 @@ def _parse_gemini(schema: type[BaseModel], system: str, text: str, doc):
         parts.append(types.Part.from_text(text=data.decode("utf-8", errors="replace")) if mt == "text/plain"
                      else types.Part.from_bytes(data=data, mime_type=mt))
     parts.append(types.Part.from_text(text=text))
+    import time
     last = None
-    for attempt in range(3):
-        try:
-            resp = genai.Client(api_key=config.GEMINI_API_KEY).models.generate_content(
-                model=config.GEMINI_MODEL,
-                contents=[types.Content(role="user", parts=parts)],
-                config=types.GenerateContentConfig(
-                    system_instruction=system,
-                    response_mime_type="application/json",
-                    response_json_schema=schema.model_json_schema(),
-                    temperature=0,
-                ),
-            )
-            return schema.model_validate_json(resp.text or "")
-        except errors.APIError as e:
-            last = f"Gemini API error {getattr(e, 'code', '')}: {e}"
-            if getattr(e, "code", None) in (429, 500, 503):
-                import time
-                time.sleep(5 * (attempt + 1))
-                continue
-            break
-        except ValueError as e:  # bad JSON / schema mismatch
-            last = f"Gemini returned output that did not match the schema: {e}"
+    # Busy or retired model -> move on to the next one; bad output -> retry once on the same model.
+    chain = [config.GEMINI_MODEL] + [m for m in config.GEMINI_FALLBACKS if m != config.GEMINI_MODEL]
+    for model in chain:
+        for attempt in range(2):
+            try:
+                resp = gemini_client().models.generate_content(
+                    model=model,
+                    contents=[types.Content(role="user", parts=parts)],
+                    config=types.GenerateContentConfig(
+                        system_instruction=system,
+                        response_mime_type="application/json",
+                        response_json_schema=schema.model_json_schema(),
+                        temperature=0,
+                    ),
+                )
+                return schema.model_validate_json(resp.text or "")
+            except errors.APIError as e:
+                code = getattr(e, "code", None)
+                last = f"Gemini API error {code} on {model}: {str(e)[:200]}"
+                if code in (429, 500, 503, 504) and attempt == 0:
+                    time.sleep(3)
+                    continue
+                if code in (404, 429, 500, 503, 504):
+                    break  # try the next model
+                raise LLMError(last) from e  # 400/401/403: our request or key is wrong; no point switching
+            except ValueError as e:  # bad JSON / schema mismatch
+                last = f"Gemini output on {model} did not match the schema: {e}"
     raise LLMError(last or "Gemini call failed")
 
 

@@ -47,6 +47,7 @@ def on_target(report, v, entry) -> bool:
 def score_one(entry, use_llm: bool):
     pdf = OUT / entry["file"]
     claims = None if use_llm else ResumeClaims.model_validate(entry["claims"])
+    (config.RUNS_DIR / f"rt_{entry['name']}.json").unlink(missing_ok=True)  # fresh run: never resume a scoring run
     r = pipeline.verify(pdf.read_bytes(), pdf.name, consent=True, claims=claims, run_id=f"rt_{entry['name']}",
                         do_outreach=False)
     caught_by = None
