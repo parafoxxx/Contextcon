@@ -95,6 +95,9 @@ svg text{font:11px system-ui,sans-serif;fill:var(--ink)}
     </div>
     <div class="card"><h3 style="margin-top:0">Decision for every applicant</h3><div id="table"></div></div>
   </div>
+  <div class="card" id="scorecard"></div>
+  <div>
+  </div>
 </main>
 <script>
 const $ = s => document.querySelector(s);
@@ -118,10 +121,31 @@ function setFiles(f){ files = f; $("#fcount").textContent = f.length ? `${f.leng
 function upd(){ $("#go").disabled = !(files.length && $("#consent").checked); }
 
 fetch("/api/batches").then(r => r.json()).then(bs => {
+  for (const b of bs) if (b.status !== "done") $("#saved").insertAdjacentHTML("beforeend",
+    `<option value="resume:${esc(b.batch_id)}">⟳ resume ${esc(b.batch_id)} (stopped mid-run, ${b.count} applicants)</option>`);
   for (const b of bs) if (b.status === "done") $("#saved").insertAdjacentHTML("beforeend",
     `<option value="${esc(b.batch_id)}">${esc(b.batch_id)} · ${b.count} applicants · ${esc(Object.entries(b.counts||{}).map(([k,v])=>v+" "+k).join(", "))}</option>`);
 });
-$("#saved").onchange = e => { if (e.target.value) showSaved(e.target.value); };
+fetch("/api/batch_scoreboard").then(r => r.json()).then(sb => {
+  if (!sb.totals) { $("#scorecard").style.display = "none"; return; }
+  const t = sb.totals;
+  $("#scorecard").innerHTML = `<h3 style="margin-top:0">Tested against a pile with known answers</h3>
+   <div class="stats" style="margin:0">
+    <div class="stat"><b style="color:var(--good)">${t.ring_held}/${t.ring_members}</b><span>ring members held</span></div>
+    <div class="stat"><b style="color:${t.honest_held ? "var(--bad)" : "var(--good)"}">${t.honest_held}/${t.honest}</b><span>honest applicants held</span></div>
+    <div class="stat"><b style="color:var(--good)">${t.cohorts_explained}/${t.cohorts}</b><span>layoff cohort explained</span></div>
+    <div class="stat"><b style="color:var(--good)">${t.liars_flagged}/${t.liars}</b><span>individual liars flagged</span></div>
+    <div class="stat"><b>${t.dupes_consistent}/${t.dupes}</b><span>reworded duplicate, same answer</span></div>
+    <div class="stat"><b>${sb.duration_s}s</b><span>${esc(sb.mode)}</span></div></div>
+   <p style="color:var(--muted);font-size:12px;margin:8px 0 0">Applicants are invented; company facts are live from Crustdata. We built the pile and the rules, so this measures consistency, not field accuracy.</p>`;
+});
+$("#saved").onchange = async e => {
+  const v = e.target.value; if (!v) return;
+  if (v.startsWith("resume:")) { const id = v.slice(7);
+    const r = await fetch(`/api/batch/${id}/resume`, {method: "POST"}); if (!r.ok) { alert("Can't resume"); return; }
+    const {count} = await r.json(); watch(id, count); return; }
+  showSaved(v);
+};
 const qp = new URLSearchParams(location.search).get("batch"); if (qp) showSaved(qp);
 
 $("#go").onclick = async () => {
@@ -130,6 +154,9 @@ $("#go").onclick = async () => {
   const r = await fetch("/api/batch", {method:"POST", body:fd});
   if (!r.ok) { alert((await r.json()).detail); upd(); return; }
   const {batch_id, count} = await r.json();
+  watch(batch_id, count);
+};
+function watch(batch_id, count){
   reset(); $("#work").classList.remove("hidden");
   let done = 0; $("#progress").textContent = `0 / ${count} checked`;
   const es = new EventSource("/api/stream/" + batch_id);
@@ -140,7 +167,7 @@ $("#go").onclick = async () => {
     log(e.msg, e.level);
     if (e.kind === "done") { es.close(); showSaved(batch_id); upd(); }
   };
-};
+}
 
 function log(msg, level){ const d = document.createElement("div"); d.className = level || ""; d.textContent = msg; $("#log").prepend(d); }
 function reset(){ nodes = new Map(); edges = []; $("#graph").innerHTML = ""; $("#log").innerHTML = ""; $("#clusters").innerHTML = ""; $("#table").innerHTML = ""; $("#stats").innerHTML = ""; }

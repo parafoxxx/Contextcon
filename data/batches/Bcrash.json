@@ -1,0 +1,362 @@
+{
+ "batch_id": "Bcrash",
+ "created_at": "2026-11-06T01:04:40",
+ "files": [
+  "ring1.pdf",
+  "ring2.pdf",
+  "ring3.pdf",
+  "watch1.pdf",
+  "watch2.pdf",
+  "cohort1.pdf",
+  "cohort2.pdf",
+  "cohort3.pdf",
+  "honest_aarav.pdf"
+ ],
+ "runs": {
+  "ring1.pdf": "Bcrash_9a971597",
+  "ring2.pdf": "Bcrash_8732ab58",
+  "ring3.pdf": "Bcrash_a958ada2",
+  "watch2.pdf": "Bcrash_dc671006",
+  "watch1.pdf": "Bcrash_c4100e95",
+  "cohort1.pdf": "Bcrash_287b956a",
+  "cohort2.pdf": "Bcrash_60b0ae9f",
+  "cohort3.pdf": "Bcrash_46083b24",
+  "honest_aarav.pdf": "Bcrash_b08169c6"
+ },
+ "status": "done",
+ "links": [
+  {
+   "a": "Bcrash_9a971597",
+   "b": "Bcrash_8732ab58",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Quantix Dynamics', which has no company record"
+  },
+  {
+   "a": "Bcrash_9a971597",
+   "b": "Bcrash_a958ada2",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Quantix Dynamics', which has no company record"
+  },
+  {
+   "a": "Bcrash_8732ab58",
+   "b": "Bcrash_a958ada2",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Quantix Dynamics Pvt Ltd', which has no company record"
+  },
+  {
+   "a": "Bcrash_c4100e95",
+   "b": "Bcrash_dc671006",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Corvane Systems', which has no company record"
+  },
+  {
+   "a": "Bcrash_287b956a",
+   "b": "Bcrash_60b0ae9f",
+   "kind": "shared_employer",
+   "detail": "both left Orbit Retail around Mar 2024"
+  },
+  {
+   "a": "Bcrash_287b956a",
+   "b": "Bcrash_46083b24",
+   "kind": "shared_employer",
+   "detail": "both left Orbit Retail around Apr 2024"
+  },
+  {
+   "a": "Bcrash_60b0ae9f",
+   "b": "Bcrash_46083b24",
+   "kind": "shared_employer",
+   "detail": "both left Orbit Retail around Mar 2024"
+  },
+  {
+   "a": "Bcrash_9a971597",
+   "b": "Bcrash_8732ab58",
+   "kind": "shared_reference",
+   "detail": "same reference: rakesh iyer"
+  },
+  {
+   "a": "Bcrash_9a971597",
+   "b": "Bcrash_8732ab58",
+   "kind": "near_duplicate_text",
+   "detail": "100% of achievement text identical"
+  },
+  {
+   "a": "Bcrash_9a971597",
+   "b": "Bcrash_a958ada2",
+   "kind": "shared_reference",
+   "detail": "same reference: rakesh iyer"
+  },
+  {
+   "a": "Bcrash_9a971597",
+   "b": "Bcrash_a958ada2",
+   "kind": "near_duplicate_text",
+   "detail": "95% of achievement text identical"
+  },
+  {
+   "a": "Bcrash_8732ab58",
+   "b": "Bcrash_a958ada2",
+   "kind": "shared_reference",
+   "detail": "same reference: rakesh iyer"
+  },
+  {
+   "a": "Bcrash_8732ab58",
+   "b": "Bcrash_a958ada2",
+   "kind": "near_duplicate_text",
+   "detail": "95% of achievement text identical"
+  }
+ ],
+ "clusters": [
+  {
+   "id": "C1",
+   "type": "ring",
+   "members": [
+    "Bcrash_8732ab58",
+    "Bcrash_9a971597",
+    "Bcrash_a958ada2"
+   ],
+   "signals": [
+    "near_duplicate_text",
+    "phantom_employer",
+    "shared_reference"
+   ],
+   "phantom_employers": [
+    "Quantix Dynamics",
+    "Quantix Dynamics Pvt Ltd"
+   ],
+   "reason": "3 applicants linked by 3 independent signals: all cite 'Quantix Dynamics', which has no company record; the same reference (Rakesh Iyer); near-identical achievement text",
+   "links": [
+    {
+     "a": "Bcrash_9a971597",
+     "b": "Bcrash_8732ab58",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Quantix Dynamics', which has no company record"
+    },
+    {
+     "a": "Bcrash_9a971597",
+     "b": "Bcrash_a958ada2",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Quantix Dynamics', which has no company record"
+    },
+    {
+     "a": "Bcrash_8732ab58",
+     "b": "Bcrash_a958ada2",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Quantix Dynamics Pvt Ltd', which has no company record"
+    },
+    {
+     "a": "Bcrash_9a971597",
+     "b": "Bcrash_8732ab58",
+     "kind": "shared_reference",
+     "detail": "same reference: rakesh iyer"
+    },
+    {
+     "a": "Bcrash_9a971597",
+     "b": "Bcrash_8732ab58",
+     "kind": "near_duplicate_text",
+     "detail": "100% of achievement text identical"
+    },
+    {
+     "a": "Bcrash_9a971597",
+     "b": "Bcrash_a958ada2",
+     "kind": "shared_reference",
+     "detail": "same reference: rakesh iyer"
+    },
+    {
+     "a": "Bcrash_9a971597",
+     "b": "Bcrash_a958ada2",
+     "kind": "near_duplicate_text",
+     "detail": "95% of achievement text identical"
+    },
+    {
+     "a": "Bcrash_8732ab58",
+     "b": "Bcrash_a958ada2",
+     "kind": "shared_reference",
+     "detail": "same reference: rakesh iyer"
+    },
+    {
+     "a": "Bcrash_8732ab58",
+     "b": "Bcrash_a958ada2",
+     "kind": "near_duplicate_text",
+     "detail": "95% of achievement text identical"
+    }
+   ]
+  },
+  {
+   "id": "C2",
+   "type": "watch",
+   "members": [
+    "Bcrash_c4100e95",
+    "Bcrash_dc671006"
+   ],
+   "signals": [
+    "phantom_employer"
+   ],
+   "phantom_employers": [
+    "Corvane Systems"
+   ],
+   "reason": "2 applicants share one signal (phantom_employer); not enough to call a ring",
+   "links": [
+    {
+     "a": "Bcrash_c4100e95",
+     "b": "Bcrash_dc671006",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Corvane Systems', which has no company record"
+    }
+   ]
+  },
+  {
+   "id": "C3",
+   "type": "explained_cohort",
+   "members": [
+    "Bcrash_287b956a",
+    "Bcrash_46083b24",
+    "Bcrash_60b0ae9f"
+   ],
+   "signals": [
+    "shared_employer"
+   ],
+   "employer": "Orbit Retail",
+   "reason": "Orbit Retail headcount fell 10% (2,600 \u2192 2,350) around Apr 2024, when these applicants left",
+   "evidence": {
+    "source": "crustdata:/company/enrich",
+    "field": "headcount.timeseries",
+    "record": "crustdata_company_id=1003",
+    "explained": true,
+    "drop_pct": 9.6,
+    "from": 2600,
+    "to": 2350,
+    "month": "Apr 2024",
+    "spread_months": 2,
+    "why": "Orbit Retail headcount fell 10% (2,600 \u2192 2,350) around Apr 2024, when these applicants left"
+   },
+   "links": [
+    {
+     "a": "Bcrash_287b956a",
+     "b": "Bcrash_60b0ae9f",
+     "kind": "shared_employer",
+     "detail": "both left Orbit Retail around Mar 2024"
+    },
+    {
+     "a": "Bcrash_287b956a",
+     "b": "Bcrash_46083b24",
+     "kind": "shared_employer",
+     "detail": "both left Orbit Retail around Apr 2024"
+    },
+    {
+     "a": "Bcrash_60b0ae9f",
+     "b": "Bcrash_46083b24",
+     "kind": "shared_employer",
+     "detail": "both left Orbit Retail around Mar 2024"
+    }
+   ]
+  }
+ ],
+ "decisions": {
+  "Bcrash_9a971597": {
+   "decision": "HOLD",
+   "why": "member of C1: 3 applicants linked by 3 independent signals: all cite 'Quantix Dynamics', which has no company record; the same reference (Rakesh Iyer); near-identical achievement text",
+   "cluster": "C1"
+  },
+  "Bcrash_8732ab58": {
+   "decision": "HOLD",
+   "why": "member of C1: 3 applicants linked by 3 independent signals: all cite 'Quantix Dynamics', which has no company record; the same reference (Rakesh Iyer); near-identical achievement text",
+   "cluster": "C1"
+  },
+  "Bcrash_a958ada2": {
+   "decision": "HOLD",
+   "why": "member of C1: 3 applicants linked by 3 independent signals: all cite 'Quantix Dynamics', which has no company record; the same reference (Rakesh Iyer); near-identical achievement text",
+   "cluster": "C1"
+  },
+  "Bcrash_c4100e95": {
+   "decision": "VERIFY",
+   "why": "2 claim(s) need employer confirmation",
+   "cluster": "C2"
+  },
+  "Bcrash_dc671006": {
+   "decision": "VERIFY",
+   "why": "2 claim(s) need employer confirmation",
+   "cluster": "C2"
+  },
+  "Bcrash_287b956a": {
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation (Orbit Retail headcount fell 10% (2,600 \u2192 2,350) around Apr 2024, when these applicants left)",
+   "cluster": "C3"
+  },
+  "Bcrash_60b0ae9f": {
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation (Orbit Retail headcount fell 10% (2,600 \u2192 2,350) around Apr 2024, when these applicants left)",
+   "cluster": "C3"
+  },
+  "Bcrash_46083b24": {
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation (Orbit Retail headcount fell 10% (2,600 \u2192 2,350) around Apr 2024, when these applicants left)",
+   "cluster": "C3"
+  },
+  "Bcrash_b08169c6": {
+   "decision": "CLEAR",
+   "why": "every checked claim holds up",
+   "cluster": null
+  }
+ },
+ "applicants": {
+  "Bcrash_9a971597": {
+   "name": "Vivek Rana",
+   "overall": "needs_review",
+   "summary": "1 for human review, 2 unverified",
+   "file": "ring1.pdf"
+  },
+  "Bcrash_8732ab58": {
+   "name": "Sonal Mehra",
+   "overall": "needs_review",
+   "summary": "1 for human review, 2 unverified",
+   "file": "ring2.pdf"
+  },
+  "Bcrash_a958ada2": {
+   "name": "Imran Qureshi",
+   "overall": "needs_review",
+   "summary": "1 for human review, 2 unverified",
+   "file": "ring3.pdf"
+  },
+  "Bcrash_c4100e95": {
+   "name": "Leela Thomas",
+   "overall": "needs_review",
+   "summary": "1 for human review, 1 unverified",
+   "file": "watch1.pdf"
+  },
+  "Bcrash_dc671006": {
+   "name": "Arvind Nair",
+   "overall": "needs_review",
+   "summary": "1 for human review, 1 unverified",
+   "file": "watch2.pdf"
+  },
+  "Bcrash_287b956a": {
+   "name": "Pooja Shah",
+   "overall": "needs_review",
+   "summary": "1 verified independently, 1 for human review, 1 unverified",
+   "file": "cohort1.pdf"
+  },
+  "Bcrash_60b0ae9f": {
+   "name": "Nikhil Bansal",
+   "overall": "awaiting_responses",
+   "summary": "2 verified independently, 1 unverified",
+   "file": "cohort2.pdf"
+  },
+  "Bcrash_46083b24": {
+   "name": "Ritika Sen",
+   "overall": "awaiting_responses",
+   "summary": "2 verified independently, 1 unverified",
+   "file": "cohort3.pdf"
+  },
+  "Bcrash_b08169c6": {
+   "name": "Aarav Mehta",
+   "overall": "awaiting_responses",
+   "summary": "8 verified independently, 10 consistent with profile, 1 unverified",
+   "file": "honest_aarav.pdf"
+  }
+ },
+ "counts": {
+  "HOLD": 3,
+  "VERIFY": 5,
+  "CLEAR": 1
+ },
+ "duration_s": 0.1
+}

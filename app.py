@@ -155,16 +155,42 @@ async def batch_start(files: list[UploadFile] = File(...), consent: bool = Form(
     if not items:
         raise HTTPException(400, "No files")
     batch_id = "B" + uuid.uuid4().hex[:8]
+    updir = config.UPLOADS_DIR / batch_id
+    updir.mkdir(parents=True, exist_ok=True)
+    for data, fn in items:  # kept on disk so a crashed batch can resume from where it stopped
+        (updir / fn).write_bytes(data)
+    _start_batch(batch_id, items)
+    return {"batch_id": batch_id, "count": len(items)}
+
+
+def _start_batch(batch_id, items):
     emit = _emitter(batch_id)
 
     def work():
         try:
-            batchmod.verify_batch(items, consent=True, emit=emit, batch_id=batch_id)
+            # VERIFY applicants are queued for employer confirmation; emails are sent from the single-applicant view
+            batchmod.verify_batch(items, consent=True, emit=emit, batch_id=batch_id, do_outreach=False)
         except Exception as e:  # noqa: BLE001
             emit("error", f"Batch crashed: {type(e).__name__}: {e}", level="error")
             emit("done", "Stopped", data={"batch_id": batch_id})
     threading.Thread(target=work, daemon=True).start()
-    return {"batch_id": batch_id, "count": len(items)}
+
+
+@app.post("/api/batch/{batch_id}/resume")
+def batch_resume(batch_id: str):
+    """After a crash or restart: re-run the batch; applicants already checked are reused, nothing is repeated."""
+    updir = config.UPLOADS_DIR / batch_id
+    if not updir.exists():
+        raise HTTPException(404, "No saved uploads for this batch")
+    items = [(f.read_bytes(), f.name) for f in sorted(updir.iterdir()) if f.is_file()]
+    _start_batch(batch_id, items)
+    return {"batch_id": batch_id, "count": len(items), "resumed": True}
+
+
+@app.get("/api/batch_scoreboard")
+def batch_scoreboard():
+    f = config.DATA / "batch_scoreboard.json"
+    return JSONResponse(json.loads(f.read_text(encoding="utf-8")) if f.exists() else {})
 
 
 @app.get("/api/batch/{batch_id}")

@@ -108,6 +108,14 @@ def pile() -> list[dict]:
     return out
 
 
+def next_morning() -> list[dict]:
+    """One new applicant the next day, citing the employer a ring used yesterday."""
+    return [{"name": "Kunal Desai", "claims": RC(name="Kunal Desai", email="kunal.desai@example.com",
+             jobs=[J(company="Zentrix Ops Solutions", title="Operations Lead", start="Mar 2021", end="Aug 2025",
+                     bullets=["Led a 6-person dispatch desk handling 2,000 orders a day"])], education=edu()),
+             "expect": "HOLD", "lie": "known_fake"}]
+
+
 def main():
     OUT.mkdir(exist_ok=True)
     for f in OUT.glob("*"):
@@ -120,6 +128,11 @@ def main():
                          "claims": json.loads(e["claims"].model_dump_json())})
     (OUT / "manifest.json").write_text(json.dumps(manifest, indent=1), encoding="utf-8")
     print(f"{len(manifest)} applications -> {OUT}")
+    nxt = OUT.parent / "batch_next_morning"
+    nxt.mkdir(exist_ok=True)
+    for e in next_morning():
+        render(e["claims"], nxt / f"{e['name'].replace(' ', '_').lower()}.pdf")
+    print(f"next-morning applicant -> {nxt}")
 
 
 if __name__ == "__main__":
