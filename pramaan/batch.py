@@ -59,7 +59,7 @@ def verify_batch(files: list[tuple[bytes, str]], *, consent: bool, emit: Callabl
         else:
             r = pipeline.verify(data, fn, consent=consent, run_id=run_id, do_outreach=False,
                                 claims=(claims_override or {}).get(fn),
-                                emit=lambda k, m, level="info", data=None: emit(k, f"[{fn}] {m}", level=level) if k in ("error", "done") else None)
+                                emit=lambda k, m, level="info", data=None: emit("applicant_error", f"[{fn}] {m}", level="warn") if k == "error" else None)
             emit("applicant", f"{r.candidate}: {r.summary or r.overall}", data={"run_id": r.run_id, "overall": r.overall})
         b["runs"][fn] = r.run_id
         save(b)

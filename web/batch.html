@@ -165,7 +165,7 @@ function watch(batch_id, count){
     if (e.kind === "applicant") { done++; $("#progress").textContent = `${done} / ${count} checked`;
       addNode(e.data.run_id, e.msg.split(":")[0], null); }
     log(e.msg, e.level);
-    if (e.kind === "done") { es.close(); showSaved(batch_id); upd(); }
+    if (e.kind === "done" && e.data && e.data.batch_id === batch_id) { es.close(); showSaved(batch_id); upd(); }
   };
 }
 

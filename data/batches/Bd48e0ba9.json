@@ -1,0 +1,42 @@
+{
+ "batch_id": "Bd48e0ba9",
+ "created_at": "2026-11-06T01:09:02",
+ "files": [
+  "01_rohit_sinha.pdf",
+  "02_ananya_ghosh.pdf",
+  "03_farhan_ali.pdf",
+  "04_sneha_kulkarni.pdf",
+  "05_manish_yadav.pdf",
+  "06_tarun_gill.pdf",
+  "07_pallavi_joshi.pdf",
+  "08_varun_bhatt.pdf",
+  "09_kavya_raman.pdf",
+  "10_harsh_vardhan.pdf",
+  "11_meghna_pillai.pdf",
+  "12_aditya_rao.pdf",
+  "13_ishaan_mehta.pdf",
+  "14_neha_arora.pdf",
+  "15_sameer_khan.pdf",
+  "16_rahul_verma.pdf",
+  "17_priya_menon.pdf",
+  "18_arjun_reddy.pdf",
+  "19_leela_thomas.pdf",
+  "20_joseph_mathew.pdf",
+  "21_rahul_verma_v2.pdf"
+ ],
+ "runs": {
+  "02_ananya_ghosh.pdf": "Bd48e0ba9_ae0ca857",
+  "01_rohit_sinha.pdf": "Bd48e0ba9_102b8dd8",
+  "03_farhan_ali.pdf": "Bd48e0ba9_5455beb9",
+  "04_sneha_kulkarni.pdf": "Bd48e0ba9_9355fb06",
+  "05_manish_yadav.pdf": "Bd48e0ba9_ae5e31ed",
+  "06_tarun_gill.pdf": "Bd48e0ba9_2a924ecf",
+  "07_pallavi_joshi.pdf": "Bd48e0ba9_3bb89a5c",
+  "08_varun_bhatt.pdf": "Bd48e0ba9_77ff49ba",
+  "09_kavya_raman.pdf": "Bd48e0ba9_7478dfba",
+  "10_harsh_vardhan.pdf": "Bd48e0ba9_dda0adbb",
+  "11_meghna_pillai.pdf": "Bd48e0ba9_8fbf9dce",
+  "12_aditya_rao.pdf": "Bd48e0ba9_af280529"
+ },
+ "status": "running"
+}
