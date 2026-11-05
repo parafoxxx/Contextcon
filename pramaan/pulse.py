@@ -323,6 +323,71 @@ def decide(signals: list[Signal], reading: Optional[NewsReading], found: bool) -
     return "ALIVE", "No sign of failure.", "medium", {"alive"}
 
 
+def _monthly(ts) -> list[list]:
+    """Crustdata's weekly headcount as one point per month: [["2025-05", 1304], ...]"""
+    by = {}
+    for m, n in ts or []:
+        by[m] = n
+    return [[f"{m // 12}-{m % 12 + 1:02d}", by[m]] for m in sorted(by)]
+
+
+# ---------------- confidence score ----------------
+
+TIER_POINTS = {"official": 35, "news": 25, "trade": 12, "weak": 0}
+CORROBORATION_POINTS = {"website": ("website down", 10), "hiring_freeze": ("hiring stopped", 10),
+                        "headcount_drop": ("headcount collapse", 10), "exodus": ("employee exodus", 10)}
+FAILURE = ("DEAD", "INSOLVENT", "ACQUIRED", "RENAMED")
+
+
+def score(status: str, signals: list[Signal]) -> tuple[int, list[dict]]:
+    """How sure Pulse is of the status it gave, 0-100, with every point accounted for (shown to the user)."""
+    parts: list[dict] = []
+    life = [x for x in signals if x.kind == "alive"]
+    open_jobs = any("open job postings" in x.says for x in life)
+    site_up = any(x.source == "http" for x in life)
+    if status in FAILURE:
+        rule = {"DEAD": "passed the Dead rule (2+ publishers and a data check)", "INSOLVENT": "passed the Insolvent rule",
+                "ACQUIRED": "passed the Acquired rule", "RENAMED": "passed the Renamed rule"}[status]
+        parts.append({"what": rule, "points": 20})
+        seen = set()
+        for x in signals:  # each distinct publisher that decided it, by trust tier
+            if x.used and x.tier in TIER_POINTS and x.publisher and x.publisher not in seen:
+                seen.add(x.publisher)
+                parts.append({"what": f"{x.publisher} ({x.tier})", "points": TIER_POINTS[x.tier]})
+        raw = sum(p["points"] for p in parts[1:])
+        if raw > 70:
+            parts.append({"what": "sources capped at 70", "points": 70 - raw})
+        for kind, (label, pts) in CORROBORATION_POINTS.items():
+            if any(x.kind == kind for x in signals):
+                parts.append({"what": label, "points": pts})
+        if status == "DEAD" and open_jobs:  # an operating insolvent / acquired / renamed company is expected to hire
+            parts.append({"what": "still has open jobs", "points": -15})
+        if status == "DEAD" and site_up:
+            parts.append({"what": "website still up", "points": -10})
+    elif status == "ALIVE":
+        parts.append({"what": "no credible failure report", "points": 50})
+        if open_jobs:
+            parts.append({"what": "open job postings", "points": 20})
+        if site_up:
+            parts.append({"what": "website up", "points": 15})
+        if any(x.kind == "alive" and "Headcount steady" in x.says for x in signals):
+            parts.append({"what": "headcount steady", "points": 10})
+        noted = {x.publisher for x in signals if x.kind in ("shutdown", "insolvency") and x.tier in CREDIBLE}
+        if noted:
+            parts.append({"what": f"{len(noted)} unconfirmed failure mention(s)", "points": -8 * len(noted)})
+    else:  # REVIEW / DISTRESSED / CANT_TELL: low by design; a person decides
+        parts.append({"what": "evidence conflicts or is thin; a person decides", "points": 30})
+        pubs = {x.publisher for x in signals if x.kind in ("shutdown", "insolvency", "acquired", "legal") and x.tier in CREDIBLE}
+        if pubs:
+            parts.append({"what": f"{len(pubs)} credible report(s) to read", "points": min(5 * len(pubs), 15)})
+    total = max(5, min(99, sum(p["points"] for p in parts)))
+    return total, parts
+
+
+def label(n: int) -> str:
+    return "high" if n >= 80 else "medium" if n >= 55 else "low"
+
+
 def check_company(name: str, domain: Optional[str], cache: companies.CompanyCache, log) -> dict:
     c, raw = _crustdata(name, domain, cache, log)
     signals: list[Signal] = []
@@ -348,6 +413,8 @@ def check_company(name: str, domain: Optional[str], cache: companies.CompanyCach
     status, why, confidence, used_kinds = decide(signals, reading, bool(c))
     for x in signals:
         x.used = x.kind in used_kinds and x.tier != "weak"
+    conf_score, conf_parts = score(status, signals)
+    confidence = label(conf_score)
     crust_status = (raw or {}).get("basic_info", {}).get("status") if raw else None
     zombie = status == "DEAD" and (crust_status in (None, "active", "operating")) and bool(c)
     since = next((s.date for s in signals if s.kind in ("legal", "insolvency", "shutdown", "acquired", "renamed") and s.date), None) or \
@@ -356,8 +423,10 @@ def check_company(name: str, domain: Optional[str], cache: companies.CompanyCach
         "input": {"name": name, "domain": domain},
         "canonical": {"crustdata_company_id": c.company_id if c else None, "name": c.name if c else None,
                       "domain": c.domain if c else None, "crustdata_status": crust_status,
-                      "headcount_now": c.headcount_total if c else None},
-        "status": status, "why": why, "confidence": confidence, "since": since, "zombie": zombie,
+                      "headcount_now": c.headcount_total if c else None,
+                      "headcount_series": _monthly(c.timeseries) if c else []},
+        "status": status, "why": why, "confidence": confidence, "confidence_score": conf_score,
+        "confidence_breakdown": conf_parts, "since": since, "zombie": zombie,
         "people": people,
         "signals": [s.model_dump() for s in signals],
         "news_reading": reading.model_dump() if reading else None,

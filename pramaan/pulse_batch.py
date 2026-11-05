@@ -154,7 +154,7 @@ def run(csv_text: str, *, emit: Callable = lambda *a, **k: None, job_id: Optiona
                                    "RENAMED": "renamed"}[a["status"]],
                 "effective_since": a.get("since"),
                 "people_still_listing_as_current": (a.get("people") or {}).get("still_current"),
-                "confidence": a.get("confidence"),
+                "confidence": a.get("confidence"), "confidence_score": a.get("confidence_score"),
                 # only the evidence that decided the verdict, each with who said it and when
                 "evidence": [{"says": s["says"], "publisher": s.get("publisher"), "tier": s.get("tier"),
                               "published": s.get("published"), "url": s.get("url"), "quote": s.get("quote"),
@@ -173,7 +173,7 @@ def run(csv_text: str, *, emit: Callable = lambda *a, **k: None, job_id: Optiona
         w.writeheader()
         for a in accounts:
             used = [s for s in a["signals"] if s.get("used") and s.get("url") and s["kind"] != "alive"]
-            w.writerow({**(a.get("crm") or {}), "pulse_status": a["status"], "pulse_confidence": a.get("confidence") or "",
+            w.writerow({**(a.get("crm") or {}), "pulse_status": a["status"], "pulse_confidence": a.get("confidence_score") or "",
                         "pulse_since": a.get("since") or "", "pulse_reason": a["why"],
                         "pulse_sources": " ; ".join(f"{s.get('publisher')}"
                                                     f"{' (' + s['published'] + ')' if s.get('published') else ''}: {s['url']}"

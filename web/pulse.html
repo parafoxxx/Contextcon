@@ -49,6 +49,8 @@ th{color:var(--muted);font-weight:600}
 tr.merged td{opacity:.55}
 details summary{cursor:pointer;color:var(--accent);font-size:12px}
 .sig{font-size:12px;margin:3px 0;padding:4px 6px;border-radius:6px;background:var(--bg)}
+.bd{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;margin:2px 0 6px}.bd .pos{color:var(--good)}.bd .neg{color:var(--bad)}
+.dc{margin:6px 0 2px}.dct{font-size:12px;color:var(--muted)}.dct b{color:var(--ink)}
 .sig.used{border-left:3px solid var(--accent)}
 .eh{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin:8px 0 2px}
 .q{font-size:12px;color:var(--muted);margin:2px 0;font-style:italic}
@@ -117,7 +119,32 @@ function evidence(sigs){
   return (used.length ? `<div class="eh">Decided by</div>${used.map(srcLine).join("")}` : "") +
          (other.length ? `<div class="eh">Also considered</div>${other.map(srcLine).join("")}` : "");
 }
-const CONF = c => c ? `<span class="conf c-${esc(c)}">${esc(c)} confidence</span>` : "";
+const CONF = (c, n) => c ? `<span class="conf c-${esc(c)}" title="confidence score out of 100">${n ?? ""}${n != null ? "/100 · " : ""}${esc(c)}</span>` : "";
+function breakdown(parts, n){
+  if (!parts || !parts.length) return "";
+  return `<div class="eh">How the score adds up</div><div class="bd">${parts.map(p => `<span>${esc(p.what)} <b class="${p.points < 0 ? "neg" : "pos"}">${p.points > 0 ? "+" : ""}${p.points}</b></span>`).join("")}<span>= <b>${n}</b></span></div>`;
+}
+const MON = {January:1, February:2, March:3, April:4, May:5, June:6, July:7, August:8, September:9, October:10, November:11, December:12,
+  Jan:1, Feb:2, Mar:3, Apr:4, Jun:6, Jul:7, Aug:8, Sep:9, Sept:9, Oct:10, Nov:11, Dec:12};
+function sinceKey(since){ const m = String(since || "").match(/([A-Za-z]+)\.?\s+(\d{4})/); return m && MON[m[1]] ? `${m[2]}-${String(MON[m[1]]).padStart(2, "0")}` : null; }
+// Death vs data: Crustdata's headcount line, with the date the company died marked in red
+function deathChart(series, since){
+  const k = sinceKey(since); if (!series || series.length < 4 || !k) return "";
+  const W = 300, H = 74, pad = 6, n = series.length, vals = series.map(p => p[1]);
+  const lo = Math.min(...vals), hi = Math.max(...vals), span = (hi - lo) || 1;
+  const X = i => pad + i * (W - 2 * pad) / (n - 1), Y = v => H - 18 - (v - lo) / span * (H - 30);
+  let di = series.findIndex(p => p[0] >= k); if (di < 0) return "";
+  const path = series.map((p, i) => `${i ? "L" : "M"}${X(i).toFixed(1)} ${Y(p[1]).toFixed(1)}`).join("");
+  const atDeath = series[di][1], now = series[n - 1][1], ch = Math.round((now - atDeath) / atDeath * 100);
+  return `<div class="dc"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Headcount on record versus the date the company died">
+    <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="1.6"/>
+    <line x1="${X(di)}" x2="${X(di)}" y1="4" y2="${H - 16}" stroke="var(--bad)" stroke-width="1.4" stroke-dasharray="3 3"/>
+    <text x="${Math.min(X(di) + 4, W - 70)}" y="12" font-size="10" fill="var(--bad)">died ${esc(since)}</text>
+    <text x="${pad}" y="${H - 3}" font-size="10" fill="var(--muted)">${esc(series[0][0])}</text>
+    <text x="${W - pad}" y="${H - 3}" font-size="10" fill="var(--muted)" text-anchor="end">${esc(series[n - 1][0])}</text></svg>
+    <div class="dct">Crustdata headcount <b>${atDeath.toLocaleString()} → ${now.toLocaleString()}</b> (${ch >= 0 ? "+" : ""}${ch}%) <b>after</b> it died.</div></div>`;
+}
+
 const LBL = {DEAD:"Dead", INSOLVENT:"Insolvent", ACQUIRED:"Acquired", RENAMED:"Renamed", DISTRESSED:"Distressed", REVIEW:"Needs a person", ALIVE:"Alive", CANT_TELL:"Can't tell"};
 const KIND = {legal:"court record", insolvency:"insolvency", shutdown:"shutdown", acquired:"acquired", renamed:"renamed", website:"website",
   hiring_freeze:"hiring", headcount_drop:"headcount", exodus:"exodus", stale_funding:"funding", alive:"sign of life", layoffs:"layoffs",
@@ -140,7 +167,9 @@ $("#one_go").onclick = async () => {
     $("#one_out").innerHTML = `<div class="card" style="margin:12px 0 0">
       <div class="row"><b style="font-size:16px">${esc(cn.name || r.input.name)}</b><span class="pill s-${r.status}">${LBL[r.status] || r.status}</span>${r.zombie ? '<span class="z">ZOMBIE</span>' : ""}
       ${r.since ? `<span class="muted">since ${esc(r.since)}</span>` : ""}<span class="muted" style="margin-left:auto">${cn.crustdata_company_id ? `Crustdata: status <b>${esc(cn.crustdata_status)}</b>, ${(cn.headcount_now || 0).toLocaleString()} employees, ${((r.people || {}).still_current || 0).toLocaleString()} list it as current` : "no Crustdata record"}</span></div>
-      <p style="margin:8px 0">${esc(r.why)} ${CONF(r.confidence)}</p>
+      <p style="margin:8px 0">${esc(r.why)} ${CONF(r.confidence, r.confidence_score)}</p>
+      ${r.status === "DEAD" ? deathChart((r.canonical || {}).headcount_series, r.since) : ""}
+      ${breakdown(r.confidence_breakdown, r.confidence_score)}
       ${evidence(r.signals || [])}</div>`;
   } catch (e) { $("#one_out").innerHTML = `<p style="color:var(--bad)">Check failed: ${esc(e)}</p>`; }
   $("#one_go").disabled = false;
@@ -190,7 +219,7 @@ async function show(id){
       <td><span class="pill s-${a.status}">${LBL[a.status] || a.status}</span>${a.zombie ? '<span class="z">ZOMBIE</span>' : ""}</td>
       <td class="muted" style="font-size:12px">${cn.crustdata_company_id ? `status <b>${esc(cn.crustdata_status || "?")}</b><br>${(cn.headcount_now || 0).toLocaleString()} employees<br>${((a.people || {}).still_current || 0).toLocaleString()} list it as current` : "no record"}</td>
       <td>${esc(a.since || "")}</td>
-      <td>${esc(a.why)} ${CONF(a.confidence)}<details><summary>${uniq(sigs.filter(s => s.used)).length} source(s) decided it · ${uniq(sigs).length} considered</summary>${evidence(sigs)}</details></td>
+      <td>${esc(a.why)} ${CONF(a.confidence, a.confidence_score)}${a.status === "DEAD" && !a.merged_into_row ? deathChart(cn.headcount_series, a.since) : ""}<details><summary>${uniq(sigs.filter(s => s.used)).length} source(s) decided it · ${uniq(sigs).length} considered · how the score adds up</summary>${breakdown(a.confidence_breakdown, a.confidence_score)}${evidence(sigs)}</details></td>
       <td style="font-size:12px">${(acts[a.row] || []).map(x => `<div>✔ ${esc(x.text)}${x.result !== "done" ? ` <span class="muted">(${esc(x.result)})</span>` : ""}</div>`).join("")}</td></tr>`;
   }).join("") + `</table>`;
   $("#outputs").innerHTML = `<h3 style="margin-top:0">Outputs</h3>

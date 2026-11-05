@@ -64,6 +64,26 @@ resolved) and the source's own words, plus a confidence level (high, medium, low
 - **Insolvency court search:** whenever results hint at failure, Pulse also searches nclt.gov.in so an official record can be cited.
 - **Namesakes rejected:** the reader is told the company's website, main country and description. Results about another company with the same name are ignored.
 
+## Confidence score (0–100) and the death-vs-data chart
+
+Every verdict carries a number, and the page shows how it adds up:
+
+| Points | For |
+|---|---|
+| +20 | the verdict passed its rule (e.g. Dead: 2+ distinct publishers and a data check) |
+| +35 / +25 / +12 / 0 | each distinct publisher that decided it: official court or registry / major news / other publication / weak |
+| +10 each | data confirmation: website down, hiring stopped, headcount collapse, employee exodus |
+| −15, −10 | for Dead only: the company still has open jobs, or its website is still up |
+
+Sources are capped at 70; the total is kept between 5 and 99. 80+ = high, 55–79 = medium, below 55 = low. Alive scores
+start at 50 (no credible failure report) plus open jobs (+20), website up (+15) and steady headcount (+10), minus 8 for each
+unconfirmed credible failure mention. Sample results: Builder.ai Dead 99, BluSmart and Koo Dead 90, Zilingo Dead 57,
+BYJU'S Insolvent 80, Unacademy Acquired 67, Zepto 35 (a person decides).
+
+For every dead company, a small chart shows Crustdata's monthly headcount with the date it died marked in red. It shows
+the lag: Koo's recorded headcount went 297 → 386 (+30%) *after* it shut down in July 2024; Builder.ai's rose 9% after its
+bankruptcy.
+
 ## The hardest cases
 
 1. **Razorpay looked dead.** A court record named it, and a liquidation result appeared. In fact, payment companies *file* insolvency cases against merchants (creditor, not debtor), and the liquidation concerned a *subsidiary* in a *solvent* voluntary liquidation. Fixes: debtor-vs-creditor and subsidiary questions in the reading, official court sites only for "legal record", and the signs-of-life veto.

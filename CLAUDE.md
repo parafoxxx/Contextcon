@@ -42,6 +42,8 @@ Score against hand labels in `sample/crm_truth.json` (current: 15/16; Zepto goes
 - **Weak sources never count** (LinkedIn, Reddit, wikis, directories). DEAD / INSOLVENT / ACQUIRED need `enough()`: 2+ distinct publishers incl. an official or major outlet, or 3+ other publications. The same outlet repeated counts once.
 - **DEAD also needs data corroboration** (website down, hiring stopped, headcount collapse). **Signs of life veto DEAD**: open jobs + working website → REVIEW.
 - **A court filing alone at an operating company → REVIEW**, not INSOLVENT (NCLT also hears mergers / name changes).
+- **Confidence score** = `score()` in `pulse.py`: +20 for passing the rule, +35/25/12/0 per distinct deciding publisher by tier (capped at 70), +10 per data confirmation, −15/−10 for open jobs / website up (Dead only); 80+ high, 55+ medium. The breakdown is stored in `confidence_breakdown` and shown in the UI.
+- **Death-vs-data chart:** `canonical.headcount_series` (monthly) + `since`, drawn by `deathChart()` in `web/pulse.html`.
 - **Zombie = DEAD while Crustdata says active.** Insolvent / acquired companies still operate; their staff are not zombies.
 - **Strict company matching, no fuzzy matching.** Fuzzy matched NoBroker→NEOBROKER and Chill Hai→CHILL; a wrong match gives a confident wrong verdict.
 - **Exactly once.** CRM actions are written to the ledger before they happen; re-runs must repeat nothing.
