@@ -8,3 +8,4 @@ python-dotenv
 fpdf2
 rapidfuzz
 google-genai
+pypdf

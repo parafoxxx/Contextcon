@@ -11,7 +11,7 @@ from pathlib import Path
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse
 
-from pramaan import config, pipeline
+from pramaan import batch as batchmod, config, pipeline
 
 app = FastAPI(title="Pramaan")
 WEB = Path(__file__).parent / "web"
@@ -139,3 +139,56 @@ def static(name: str):
     if not p.exists() or p.parent != WEB:
         raise HTTPException(404)
     return FileResponse(p)
+
+
+# ---------------- batch: a pile of applications -> rings, cohorts, decisions ----------------
+
+@app.post("/api/batch")
+async def batch_start(files: list[UploadFile] = File(...), consent: bool = Form(False)):
+    if not consent:
+        raise HTTPException(400, "Candidate consent is required before a background check can start.")
+    items = []
+    for f in files:
+        data = await f.read()
+        if data:
+            items.append((data, Path(f.filename).name))
+    if not items:
+        raise HTTPException(400, "No files")
+    batch_id = "B" + uuid.uuid4().hex[:8]
+    emit = _emitter(batch_id)
+
+    def work():
+        try:
+            batchmod.verify_batch(items, consent=True, emit=emit, batch_id=batch_id)
+        except Exception as e:  # noqa: BLE001
+            emit("error", f"Batch crashed: {type(e).__name__}: {e}", level="error")
+            emit("done", "Stopped", data={"batch_id": batch_id})
+    threading.Thread(target=work, daemon=True).start()
+    return {"batch_id": batch_id, "count": len(items)}
+
+
+@app.get("/api/batch/{batch_id}")
+def batch_get(batch_id: str):
+    b = batchmod.load(batch_id)
+    if not b:
+        raise HTTPException(404, "No such batch")
+    return JSONResponse(b)
+
+
+@app.get("/api/batches")
+def batch_list():
+    out = []
+    for f in sorted(batchmod.BATCH_DIR.glob("*.json"), key=lambda p: -p.stat().st_mtime)[:30]:
+        try:
+            d = json.loads(f.read_text(encoding="utf-8"))
+            out.append({"batch_id": d["batch_id"], "count": len(d.get("files", [])), "status": d.get("status"),
+                        "counts": d.get("counts"), "created_at": d.get("created_at")})
+        except Exception:  # noqa: BLE001
+            continue
+    return out
+
+
+@app.get("/batch", response_class=HTMLResponse)
+def batch_page():
+    p = WEB / "batch.html"
+    return p.read_text(encoding="utf-8") if p.exists() else "<p>web/batch.html not built yet</p>"

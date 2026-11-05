@@ -34,7 +34,8 @@ def _company_data(c: dict) -> dict:
     return {
         "crustdata_company_id": c["id"],
         "basic_info": {"name": c["name"], "primary_domain": c["domain"], "year_founded": c["founded"]},
-        "headcount": {"total": c["total"], "growth_percent": c["growth"], "by_role_absolute": c["by_role"]},
+        "headcount": {"total": c["total"], "growth_percent": c["growth"], "by_role_absolute": c["by_role"],
+                      **({"timeseries": [{"date": d, "employee_count": n} for d, n in c["timeseries"]]} if c.get("timeseries") else {})},
         "funding": {"funding_rounds": [{"round_type": t, "date": d} for t, d in c["rounds"]],
                     "last_round_type": c["rounds"][-1][0] if c["rounds"] else None,
                     "last_fundraise_date": c["rounds"][-1][1] if c["rounds"] else None},
