@@ -19,7 +19,7 @@ from .dates import fmt, to_index
 from .matching import clean, same_company
 from .models import ControlledBy as C, Evidence, Report, Status as S
 
-KNOWN_FAKES = config.DATA / "known_fake_employers.json"
+KNOWN_FAKES = config.DATA / ("known_fake_employers.json" if config.MODE != "fixture" else "known_fake_employers_fixture.json")
 
 # Signal types. "Strong" ones can form a cluster on their own; "support" only adds weight.
 STRONG = {"phantom_employer", "shared_reference", "shared_contact", "shared_profile_url", "near_duplicate_text"}
