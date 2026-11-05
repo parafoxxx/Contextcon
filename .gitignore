@@ -12,3 +12,6 @@ data/batches/
 data/known_fake_employers.json
 data/batch_scoreboard.json
 data/known_fake_employers_fixture.json
+data/pulse/
+data/shot_*.png
+data/one_*.json
