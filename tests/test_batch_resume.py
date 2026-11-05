@@ -15,17 +15,17 @@ def crashing(*a, **k):
     return real_verify(*a, **k)
 
 
-batch.BATCH_DIR.joinpath("Bcrash.json").unlink(missing_ok=True)
+batch.BATCH_DIR.joinpath("T_crash.json").unlink(missing_ok=True)
 pipeline.verify = crashing
 try:
-    batch.verify_batch([(b"", f) for f in P], consent=True, claims_override=P, batch_id="Bcrash", do_outreach=False, workers=1)
+    batch.verify_batch([(b"", f) for f in P], consent=True, claims_override=P, batch_id="T_crash", do_outreach=False, workers=1)
 except RuntimeError as e:
     print("crashed:", e)
-done_before = len(batch.load("Bcrash")["runs"])
+done_before = len(batch.load("T_crash")["runs"])
 calls.clear()
 pipeline.verify = real_verify
 pipeline.verify = lambda *a, **k: (calls.append(a[1]), real_verify(*a, **k))[1]
-b = batch.verify_batch([(b"", f) for f in P], consent=True, claims_override=P, batch_id="Bcrash", do_outreach=False, workers=1)
+b = batch.verify_batch([(b"", f) for f in P], consent=True, claims_override=P, batch_id="T_crash", do_outreach=False, workers=1)
 print(f"checked before crash: {done_before} · re-checked after resume: {len(calls)} of {len(P)} · final status: {b['status']} {b['counts']}")
 assert len(calls) == len(P) - done_before and b["status"] == "done"
 print("OK: resume continues where it stopped")

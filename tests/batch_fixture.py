@@ -22,7 +22,7 @@ P = {
   "cohort3.pdf": RC(name="Ritika Sen", jobs=[J(company="Orbit Retail", title="Supply Planner", start="Feb 2022", end="May 2024")]),
   "honest_aarav.pdf": honest,
 }
-b = batch.verify_batch([(b"", f) for f in P], consent=True, claims_override=P, batch_id="Btest", do_outreach=False,
+b = batch.verify_batch([(b"", f) for f in P], consent=True, claims_override=P, batch_id="T_test", do_outreach=False,
                        emit=lambda k, m, level="info", data=None: print(f"[{k}] {m}") if k in ("cluster", "done") else None)
 names = {rid: a["name"] for rid, a in b["applicants"].items()}
 print()
@@ -32,5 +32,5 @@ for rid, d in b["decisions"].items():
     print(f"  {d['decision']:6} {names[rid]:14} {d['why'][:110]}")
 # Known-fake memory: a new applicant in a later batch
 new = {"late.pdf": RC(name="Tarun Gill", jobs=[J(company="Quantix Dynamics", title="Ops Executive", start="2023", end="2024")])}
-b2 = batch.verify_batch([(b"", "late.pdf")], consent=True, claims_override=new, batch_id="Btest2", do_outreach=False)
+b2 = batch.verify_batch([(b"", "late.pdf")], consent=True, claims_override=new, batch_id="T_test2", do_outreach=False)
 print("\nnext batch:", [(b2["applicants"][r]["name"], d["decision"], d["why"][:100]) for r, d in b2["decisions"].items()])

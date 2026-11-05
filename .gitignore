@@ -8,3 +8,6 @@ data/uploads/
 redteam/out/
 data/cache/
 data/scoreboard.json
+data/batches/
+data/known_fake_employers.json
+data/batch_scoreboard.json

@@ -11,4 +11,4 @@
     near_duplicate_text, pdf_metadata, shared_small_employer, shared_employer
   - `counts`, `duration_s`, `status`
 - Per-applicant drill-down: `GET /api/report/{run_id}` (existing single-resume report)
-- Offline test data: `python -m tests.batch_fixture` writes batch `Btest` (open `/api/batch/Btest`)
+- Offline test data: `python -m tests.batch_fixture` writes batch `T_test` (open `/api/batch/T_test`)

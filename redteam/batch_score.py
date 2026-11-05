@@ -30,7 +30,7 @@ def main():
         rings.KNOWN_FAKES.unlink(missing_ok=True)
     files = [((OUT / e["file"]).read_bytes(), e["file"]) for e in manifest]
     override = None if not args.no_llm else {e["file"]: ResumeClaims.model_validate(e["claims"]) for e in manifest}
-    bid = "Bscore" + ("_nollm" if args.no_llm else "")
+    bid = "Bscore" if not args.no_llm else "T_score_nollm"
     for f in config.RUNS_DIR.glob(f"{bid}_*.json"):
         f.unlink()
     (batch.BATCH_DIR / f"{bid}.json").unlink(missing_ok=True)

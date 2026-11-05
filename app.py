@@ -202,9 +202,11 @@ def batch_get(batch_id: str):
 
 
 @app.get("/api/batches")
-def batch_list():
+def batch_list(all: bool = False):
     out = []
     for f in sorted(batchmod.BATCH_DIR.glob("*.json"), key=lambda p: -p.stat().st_mtime)[:30]:
+        if not all and (f.stem.startswith("T_") or f.stem in ("Btest", "Btest2", "Bcrash", "Blive1", "Bscore_nollm")):
+            continue  # test batches stay out of the demo list (?all=1 shows them)
         try:
             d = json.loads(f.read_text(encoding="utf-8"))
             out.append({"batch_id": d["batch_id"], "count": len(d.get("files", [])), "status": d.get("status"),

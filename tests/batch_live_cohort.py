@@ -16,7 +16,7 @@ P = {
   "zen2.pdf": RC(name="Ananya Ghosh", jobs=[J(company="Zentrix Ops Solutions", title="Sales Executive", start="Apr 2022", end="Dec 2024", bullets=b1)], references=[ref]),
   "zen3.pdf": RC(name="Farhan Ali", jobs=[J(company="Zentrix Ops Solutions Pvt. Ltd.", title="Senior Sales Associate", start="Jul 2021", end="Feb 2025", bullets=b1)], references=[ref]),
 }
-b = batch.verify_batch([(b"", f) for f in P], consent=True, claims_override=P, batch_id="Blive1", do_outreach=False, workers=3,
+b = batch.verify_batch([(b"", f) for f in P], consent=True, claims_override=P, batch_id="T_live1", do_outreach=False, workers=3,
                        emit=lambda k, m, level="info", data=None: print(f"[{k}] {m}") if k in ("cluster", "done", "error") else None)
 names = {rid: a["name"] for rid, a in b["applicants"].items()}
 for c in b["clusters"]:
