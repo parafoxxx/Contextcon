@@ -11,6 +11,9 @@ CRUSTDATA_API_KEY = os.getenv("CRUSTDATA_API_KEY", "")
 MODE = os.getenv("PRAMAAN_MODE", "fixture").strip().lower()  # live | fixture | replay
 
 MODEL = "claude-opus-5-5"
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "anthropic").strip().lower()   # anthropic | gemini
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
 DATA = ROOT / "data"
 CACHE_DIR = DATA / "cache"

@@ -7,3 +7,4 @@ pydantic>=2
 python-dotenv
 fpdf2
 rapidfuzz
+google-genai

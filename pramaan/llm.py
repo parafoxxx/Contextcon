@@ -1,4 +1,4 @@
-"""Claude calls. Claude only reads and interprets documents; it never decides a verdict
+"""Model calls (Claude by default, Gemini optional). The model only reads and interprets documents; it never decides a verdict
 on its own. Verdicts come from the deterministic checks in checks.py."""
 from __future__ import annotations
 
@@ -36,13 +36,26 @@ def _doc_block(data: bytes, filename: str) -> dict:
     return {"type": "text", "text": data.decode("utf-8", errors="replace")}
 
 
-def _parse(messages: list, schema: type[BaseModel], system: str, effort: str = "low"):
+def _mime(filename: str) -> str:
+    n = filename.lower()
+    for ext, mt in ((".pdf", "application/pdf"), (".png", "image/png"), (".jpg", "image/jpeg"),
+                    (".jpeg", "image/jpeg"), (".webp", "image/webp")):
+        if n.endswith(ext):
+            return mt
+    return "text/plain"
+
+
+def _parse(schema: type[BaseModel], system: str, text: str, doc: tuple[bytes, str] | None = None, effort: str = "low"):
+    """One structured-output call. Provider is chosen by LLM_PROVIDER (anthropic | gemini)."""
+    if config.LLM_PROVIDER == "gemini":
+        return _parse_gemini(schema, system, text, doc)
+    content = ([_doc_block(*doc)] if doc else []) + [{"type": "text", "text": text}]
     try:
         resp = client().messages.parse(
             model=config.MODEL,
             max_tokens=16000,
             system=system,
-            messages=messages,
+            messages=[{"role": "user", "content": content}],
             output_format=schema,
             output_config={"effort": effort},
         )
@@ -55,6 +68,44 @@ def _parse(messages: list, schema: type[BaseModel], system: str, effort: str = "
     if resp.stop_reason == "max_tokens" or resp.parsed_output is None:
         raise LLMError(f"Could not parse structured output (stop_reason={resp.stop_reason})")
     return resp.parsed_output
+
+
+def _parse_gemini(schema: type[BaseModel], system: str, text: str, doc):
+    from google import genai
+    from google.genai import errors, types
+    if not config.GEMINI_API_KEY:
+        raise LLMError("GEMINI_API_KEY not set")
+    parts = []
+    if doc:
+        data, filename = doc
+        mt = _mime(filename)
+        parts.append(types.Part.from_text(text=data.decode("utf-8", errors="replace")) if mt == "text/plain"
+                     else types.Part.from_bytes(data=data, mime_type=mt))
+    parts.append(types.Part.from_text(text=text))
+    last = None
+    for attempt in range(3):
+        try:
+            resp = genai.Client(api_key=config.GEMINI_API_KEY).models.generate_content(
+                model=config.GEMINI_MODEL,
+                contents=[types.Content(role="user", parts=parts)],
+                config=types.GenerateContentConfig(
+                    system_instruction=system,
+                    response_mime_type="application/json",
+                    response_json_schema=schema.model_json_schema(),
+                    temperature=0,
+                ),
+            )
+            return schema.model_validate_json(resp.text or "")
+        except errors.APIError as e:
+            last = f"Gemini API error {getattr(e, 'code', '')}: {e}"
+            if getattr(e, "code", None) in (429, 500, 503):
+                import time
+                time.sleep(5 * (attempt + 1))
+                continue
+            break
+        except ValueError as e:  # bad JSON / schema mismatch
+            last = f"Gemini returned output that did not match the schema: {e}"
+    raise LLMError(last or "Gemini call failed")
 
 
 EXTRACT_SYSTEM = """You extract verifiable claims from a candidate's resume for a background check.
@@ -71,11 +122,7 @@ Rules:
 
 
 def extract_claims(data: bytes, filename: str) -> ResumeClaims:
-    msgs = [{"role": "user", "content": [
-        _doc_block(data, filename),
-        {"type": "text", "text": "Extract every verifiable claim from this resume."},
-    ]}]
-    return _parse(msgs, ResumeClaims, EXTRACT_SYSTEM, effort="low")
+    return _parse(ResumeClaims, EXTRACT_SYSTEM, "Extract every verifiable claim from this resume.", (data, filename))
 
 
 # ---------- Reading an email reply from HR / a reference ----------
@@ -98,9 +145,8 @@ a consent form or more information before answering, set is_clear=false."""
 
 
 def read_reply(claim_text: str, question: str, reply: str) -> ReplyReading:
-    msgs = [{"role": "user", "content":
-             f"Claim being verified: {claim_text}\nQuestion we asked: {question}\n\nReply received:\n<reply>\n{reply}\n</reply>"}]
-    return _parse(msgs, ReplyReading, REPLY_SYSTEM, effort="low")
+    return _parse(ReplyReading, REPLY_SYSTEM,
+                  f"Claim being verified: {claim_text}\nQuestion we asked: {question}\n\nReply received:\n<reply>\n{reply}\n</reply>")
 
 
 # ---------- Reading a document the candidate uploads to explain a discrepancy ----------
@@ -124,8 +170,4 @@ You do not make the final decision; a human reviews flagged documents."""
 
 
 def read_document(claim_text: str, data: bytes, filename: str) -> DocReading:
-    msgs = [{"role": "user", "content": [
-        _doc_block(data, filename),
-        {"type": "text", "text": f"Claim this document is meant to support: {claim_text}"},
-    ]}]
-    return _parse(msgs, DocReading, DOC_SYSTEM, effort="medium")
+    return _parse(DocReading, DOC_SYSTEM, f"Claim this document is meant to support: {claim_text}", (data, filename), effort="medium")
