@@ -97,7 +97,7 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;
 const LBL = {DEAD:"Dead", INSOLVENT:"Insolvent", ACQUIRED:"Acquired", RENAMED:"Renamed", DISTRESSED:"Distressed", REVIEW:"Needs a person", ALIVE:"Alive", CANT_TELL:"Can't tell"};
 const KIND = {legal:"court record", insolvency:"insolvency", shutdown:"shutdown", acquired:"acquired", renamed:"renamed", website:"website",
   hiring_freeze:"hiring", headcount_drop:"headcount", exodus:"exodus", stale_funding:"funding", alive:"sign of life", layoffs:"layoffs",
-  restructuring:"restructuring", court_mention:"court mention"};
+  restructuring:"restructuring", court_mention:"court mention", separated:"ownership history"};
 
 fetch("/api/pulses").then(r => r.json()).then(js => js.filter(j => j.done).forEach(j =>
   $("#saved").insertAdjacentHTML("beforeend", `<option value="${esc(j.job_id)}">${esc(j.job_id)} · ${j.summary.accounts} accounts · ${j.summary.zombies} zombies</option>`)));

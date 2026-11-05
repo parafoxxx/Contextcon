@@ -47,6 +47,8 @@ class NewsReading(BaseModel):
     ceased_operations: bool = Field(description="Results state THIS company shut down, halted operations, or ceased trading")
     insolvency_or_bankruptcy: bool = Field(description="Results state THIS company entered insolvency, bankruptcy, administration or liquidation")
     acquired_by: Optional[str] = Field(None, description="Acquirer, if results state the company was acquired")
+    acquisition_still_current: bool = Field(False, description="True only if the company is STILL owned by that acquirer today: "
+                                            "False if results report a later separation, spin-off, demerger or buy-back")
     renamed_to: Optional[str] = Field(None, description="New name, if results state the company was renamed")
     layoffs_only: bool = Field(description="Results mention layoffs but no shutdown or insolvency")
     subsidiary_or_solvent_only: bool = Field(
@@ -59,7 +61,8 @@ class NewsReading(BaseModel):
 
 NEWS_SYSTEM = """You read web search results about one company. Report only what the results state, and quote them.
 Be careful: a company that FILES an insolvency case against someone, or is OWED money, is a creditor, not insolvent.
-A company that ACQUIRES others was not acquired. A subsidiary's liquidation, or a SOLVENT voluntary liquidation, is a
+A company that ACQUIRES others was not acquired. Report the CURRENT state: if a company was acquired and later separated,
+spun off or demerged, it is independent today. A subsidiary's liquidation, or a SOLVENT voluntary liquidation, is a
 restructuring, not the main company failing. Shutting down one product, app feature, office or business line is NOT
 the company shutting down: only set ceased_operations if the whole company stopped operating.
 Layoffs alone are not a shutdown. If the results are about a different company with a similar name, say so."""
@@ -208,7 +211,10 @@ def news_signals(name: str, log) -> tuple[list[Signal], Optional[NewsReading], l
     if reading.ceased_operations:
         for i in idx[:3]:
             out.append(sig("shutdown", i, f"Shutdown reported: “{title(i)}”"))
-    if reading.acquired_by:
+    if reading.acquired_by and not reading.acquisition_still_current:
+        out.append(sig("separated", idx[0], f"Was owned by {reading.acquired_by} but has since separated: “{title(idx[0])}”",
+                       "support"))
+    if reading.acquired_by and reading.acquisition_still_current:
         for i in idx[:3]:  # one signal per supporting source, so a single article can't make it 'acquired'
             out.append(sig("acquired", i, f"Acquired by {reading.acquired_by}: “{title(i)}”",
                            "strong" if len(idx) >= 2 else "support"))

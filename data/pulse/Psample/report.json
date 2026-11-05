@@ -1,6 +1,6 @@
 {
  "job_id": "Psample",
- "created_at": "2026-11-05T21:36:53+00:00",
+ "created_at": "2026-11-05T21:42:11+00:00",
  "summary": {
   "accounts": 18,
   "unique_companies": 17,
@@ -14,12 +14,12 @@
   },
   "zombies": 4,
   "zombie_people_still_current": 1835,
-  "actions_done": 0,
+  "actions_done": 12,
   "duplicates_merged": 1,
   "contacts_paused": 20,
-  "credits": 0,
-  "api_calls": 0,
-  "duration_s": 0.0
+  "credits": 0.0,
+  "api_calls": 89,
+  "duration_s": 67.0
  },
  "accounts": [
   {
@@ -55,7 +55,7 @@
      "record": "crustdata_company_id=632808",
      "value": "1,225 → 1,419",
      "date": "Nov 2026",
-     "retrieved_at": "2026-11-05T21:36:13+00:00"
+     "retrieved_at": "2026-11-05T21:41:04+00:00"
     },
     {
      "kind": "hiring_freeze",
@@ -66,7 +66,7 @@
      "record": "crustdata_company_id=632808",
      "value": "None",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:13+00:00"
+     "retrieved_at": "2026-11-05T21:41:04+00:00"
     },
     {
      "kind": "stale_funding",
@@ -77,7 +77,7 @@
      "record": "crustdata_company_id=632808",
      "value": "series_d 2023-05-23",
      "date": "2023-05-23",
-     "retrieved_at": "2026-11-05T21:36:13+00:00"
+     "retrieved_at": "2026-11-05T21:41:04+00:00"
     },
     {
      "kind": "website",
@@ -88,7 +88,7 @@
      "record": null,
      "value": "ConnectError",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:41:14+00:00"
     },
     {
      "kind": "insolvency",
@@ -99,7 +99,7 @@
      "record": null,
      "value": "AI unicorn Builder.ai confirms insolvency proceedings",
      "date": "May 2025",
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:41:23+00:00"
     },
     {
      "kind": "insolvency",
@@ -110,7 +110,7 @@
      "record": null,
      "value": "Builder.ai, Once Valued At Over $1 Billion, Has Collapsed",
      "date": "May 2025",
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:41:23+00:00"
     },
     {
      "kind": "insolvency",
@@ -121,7 +121,7 @@
      "record": null,
      "value": "ETtech Explainer: Why AI startup Builder. ai is filing for ...",
      "date": "May 2025",
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:41:23+00:00"
     },
     {
      "kind": "shutdown",
@@ -132,7 +132,7 @@
      "record": null,
      "value": "AI unicorn Builder.ai confirms insolvency proceedings",
      "date": "May 2025",
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:41:23+00:00"
     },
     {
      "kind": "shutdown",
@@ -143,7 +143,7 @@
      "record": null,
      "value": "Builder.ai, Once Valued At Over $1 Billion, Has Collapsed",
      "date": "May 2025",
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:41:23+00:00"
     },
     {
      "kind": "shutdown",
@@ -154,7 +154,7 @@
      "record": null,
      "value": "ETtech Explainer: Why AI startup Builder. ai is filing for ...",
      "date": "May 2025",
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:41:23+00:00"
     }
    ],
    "news_reading": {
@@ -163,6 +163,7 @@
     "ceased_operations": true,
     "insolvency_or_bankruptcy": true,
     "acquired_by": null,
+    "acquisition_still_current": false,
     "renamed_to": null,
     "layoffs_only": false,
     "subsidiary_or_solvent_only": false,
@@ -171,13 +172,12 @@
      1,
      2,
      3,
-     5,
-     6,
-     7
+     4,
+     5
     ],
     "quote": "AI unicorn Builder.ai confirms insolvency proceedings"
    },
-   "checked_at": "2026-11-05T21:36:23+00:00",
+   "checked_at": "2026-11-05T21:41:23+00:00",
    "row": 1,
    "crm": {
     "account": "Builder.ai",
@@ -220,7 +220,7 @@
      "record": "crustdata_company_id=6214",
      "value": "1,083 → 1,093",
      "date": "Nov 2026",
-     "retrieved_at": "2026-11-05T21:36:13+00:00"
+     "retrieved_at": "2026-11-05T21:41:04+00:00"
     },
     {
      "kind": "hiring_freeze",
@@ -231,7 +231,7 @@
      "record": "crustdata_company_id=6214",
      "value": "None",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:13+00:00"
+     "retrieved_at": "2026-11-05T21:41:04+00:00"
     },
     {
      "kind": "stale_funding",
@@ -242,7 +242,7 @@
      "record": "crustdata_company_id=6214",
      "value": "series_b 2024-05-23",
      "date": "2024-05-23",
-     "retrieved_at": "2026-11-05T21:36:13+00:00"
+     "retrieved_at": "2026-11-05T21:41:04+00:00"
     },
     {
      "kind": "website",
@@ -253,7 +253,7 @@
      "record": null,
      "value": "HTTP 404",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:16+00:00"
+     "retrieved_at": "2026-11-05T21:41:08+00:00"
     },
     {
      "kind": "insolvency",
@@ -264,7 +264,7 @@
      "record": null,
      "value": "BluSmart's Collapse: An Operations Management ...",
      "date": "April 2025",
-     "retrieved_at": "2026-11-05T21:36:16+00:00"
+     "retrieved_at": "2026-11-05T21:41:19+00:00"
     },
     {
      "kind": "insolvency",
@@ -275,7 +275,7 @@
      "record": null,
      "value": "BluSmart cabs hit the brakes amid fund misuse row",
      "date": "April 2025",
-     "retrieved_at": "2026-11-05T21:36:16+00:00"
+     "retrieved_at": "2026-11-05T21:41:19+00:00"
     },
     {
      "kind": "insolvency",
@@ -286,7 +286,7 @@
      "record": null,
      "value": "BluSmart Enters Insolvency Amid Corporate Governance ...",
      "date": "April 2025",
-     "retrieved_at": "2026-11-05T21:36:16+00:00"
+     "retrieved_at": "2026-11-05T21:41:19+00:00"
     },
     {
      "kind": "shutdown",
@@ -297,7 +297,7 @@
      "record": null,
      "value": "BluSmart's Collapse: An Operations Management ...",
      "date": "April 2025",
-     "retrieved_at": "2026-11-05T21:36:16+00:00"
+     "retrieved_at": "2026-11-05T21:41:19+00:00"
     },
     {
      "kind": "shutdown",
@@ -308,7 +308,7 @@
      "record": null,
      "value": "BluSmart cabs hit the brakes amid fund misuse row",
      "date": "April 2025",
-     "retrieved_at": "2026-11-05T21:36:16+00:00"
+     "retrieved_at": "2026-11-05T21:41:19+00:00"
     },
     {
      "kind": "shutdown",
@@ -319,7 +319,7 @@
      "record": null,
      "value": "BluSmart Enters Insolvency Amid Corporate Governance ...",
      "date": "April 2025",
-     "retrieved_at": "2026-11-05T21:36:16+00:00"
+     "retrieved_at": "2026-11-05T21:41:19+00:00"
     }
    ],
    "news_reading": {
@@ -328,6 +328,7 @@
     "ceased_operations": true,
     "insolvency_or_bankruptcy": true,
     "acquired_by": null,
+    "acquisition_still_current": false,
     "renamed_to": null,
     "layoffs_only": false,
     "subsidiary_or_solvent_only": false,
@@ -341,7 +342,7 @@
     ],
     "quote": "The NCLT has admitted Blu-Smart Mobility Tech into bankruptcy proceedings after a Google Maps service provider claimed unpaid dues, deepening"
    },
-   "checked_at": "2026-11-05T21:36:16+00:00",
+   "checked_at": "2026-11-05T21:41:19+00:00",
    "row": 2,
    "crm": {
     "account": "BluSmart",
@@ -384,7 +385,7 @@
      "record": "crustdata_company_id=6232838",
      "value": "376 → 386",
      "date": "Nov 2026",
-     "retrieved_at": "2026-11-05T21:36:13+00:00"
+     "retrieved_at": "2026-11-05T21:41:04+00:00"
     },
     {
      "kind": "hiring_freeze",
@@ -395,7 +396,7 @@
      "record": "crustdata_company_id=6232838",
      "value": "None",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:13+00:00"
+     "retrieved_at": "2026-11-05T21:41:04+00:00"
     },
     {
      "kind": "stale_funding",
@@ -406,7 +407,7 @@
      "record": "crustdata_company_id=6232838",
      "value": "series_unknown 2022-11-23",
      "date": "2022-11-23",
-     "retrieved_at": "2026-11-05T21:36:13+00:00"
+     "retrieved_at": "2026-11-05T21:41:04+00:00"
     },
     {
      "kind": "website",
@@ -417,7 +418,7 @@
      "record": null,
      "value": "HTTP 404",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:08+00:00"
     },
     {
      "kind": "shutdown",
@@ -428,7 +429,7 @@
      "record": null,
      "value": "Indian social network Koo is shutting down as buyout talks ...",
      "date": "July 2024",
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:18+00:00"
     },
     {
      "kind": "shutdown",
@@ -439,7 +440,7 @@
      "record": null,
      "value": "What made Koo collapse after its initial spike, and what ...",
      "date": "July 2024",
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:18+00:00"
     },
     {
      "kind": "shutdown",
@@ -450,7 +451,7 @@
      "record": null,
      "value": "Indian social media app Koo shuts down: Read CEO's ' ...",
      "date": "July 2024",
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:18+00:00"
     }
    ],
    "news_reading": {
@@ -459,6 +460,7 @@
     "ceased_operations": true,
     "insolvency_or_bankruptcy": false,
     "acquired_by": null,
+    "acquisition_still_current": false,
     "renamed_to": null,
     "layoffs_only": false,
     "subsidiary_or_solvent_only": false,
@@ -475,7 +477,7 @@
     ],
     "quote": "The Indian social media platform Koo, which positioned itself as a competitor to Elon Musk's X, is ceasing operations after its last-resort"
    },
-   "checked_at": "2026-11-05T21:36:18+00:00",
+   "checked_at": "2026-11-05T21:41:18+00:00",
    "row": 3,
    "crm": {
     "account": "Koo",
@@ -518,7 +520,7 @@
      "record": "crustdata_company_id=623053",
      "value": "132 → 133",
      "date": "Nov 2026",
-     "retrieved_at": "2026-11-05T21:36:16+00:00"
+     "retrieved_at": "2026-11-05T21:41:18+00:00"
     },
     {
      "kind": "hiring_freeze",
@@ -529,7 +531,7 @@
      "record": "crustdata_company_id=623053",
      "value": "None",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:16+00:00"
+     "retrieved_at": "2026-11-05T21:41:18+00:00"
     },
     {
      "kind": "stale_funding",
@@ -540,7 +542,7 @@
      "record": "crustdata_company_id=623053",
      "value": "debt_financing 2021-07-01",
      "date": "2021-07-01",
-     "retrieved_at": "2026-11-05T21:36:16+00:00"
+     "retrieved_at": "2026-11-05T21:41:18+00:00"
     },
     {
      "kind": "alive",
@@ -551,7 +553,7 @@
      "record": null,
      "value": "HTTP 200",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:17+00:00"
+     "retrieved_at": "2026-11-05T21:41:19+00:00"
     },
     {
      "kind": "insolvency",
@@ -562,7 +564,7 @@
      "record": null,
      "value": "Months of crisis leads Zilingo to begin liquidation process!",
      "date": "January 2023",
-     "retrieved_at": "2026-11-05T21:36:17+00:00"
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     },
     {
      "kind": "insolvency",
@@ -573,7 +575,7 @@
      "record": null,
      "value": "Zilingo",
      "date": "January 2023",
-     "retrieved_at": "2026-11-05T21:36:17+00:00"
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     },
     {
      "kind": "insolvency",
@@ -584,7 +586,7 @@
      "record": null,
      "value": "S'pore-based, Temasek-backed Zilingo set to enter ...",
      "date": "January 2023",
-     "retrieved_at": "2026-11-05T21:36:17+00:00"
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     },
     {
      "kind": "shutdown",
@@ -595,7 +597,7 @@
      "record": null,
      "value": "Months of crisis leads Zilingo to begin liquidation process!",
      "date": "January 2023",
-     "retrieved_at": "2026-11-05T21:36:17+00:00"
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     },
     {
      "kind": "shutdown",
@@ -606,7 +608,7 @@
      "record": null,
      "value": "Zilingo",
      "date": "January 2023",
-     "retrieved_at": "2026-11-05T21:36:17+00:00"
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     },
     {
      "kind": "shutdown",
@@ -617,7 +619,7 @@
      "record": null,
      "value": "S'pore-based, Temasek-backed Zilingo set to enter ...",
      "date": "January 2023",
-     "retrieved_at": "2026-11-05T21:36:17+00:00"
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     }
    ],
    "news_reading": {
@@ -626,6 +628,7 @@
     "ceased_operations": true,
     "insolvency_or_bankruptcy": true,
     "acquired_by": null,
+    "acquisition_still_current": false,
     "renamed_to": null,
     "layoffs_only": false,
     "subsidiary_or_solvent_only": false,
@@ -635,9 +638,9 @@
      6,
      7
     ],
-    "quote": "After months of internal crisis, B2B fashion tech company Zilingo is set to wrap operations."
+    "quote": "After months of internal crisis, B2B fashion tech company Zilingo is set to wrap operations. The Singapore-based company's board has"
    },
-   "checked_at": "2026-11-05T21:36:17+00:00",
+   "checked_at": "2026-11-05T21:41:28+00:00",
    "row": 4,
    "crm": {
     "account": "Zilingo",
@@ -661,7 +664,7 @@
    },
    "status": "INSOLVENT",
    "why": "Insolvency proceedings reported, corroborated by hiring stopped.",
-   "since": "July 2024",
+   "since": "February 2024",
    "zombie": false,
    "people": {
     "still_current": 10848,
@@ -680,7 +683,7 @@
      "record": "crustdata_company_id=5705",
      "value": "18,847 → 19,044",
      "date": "Nov 2026",
-     "retrieved_at": "2026-11-05T21:36:17+00:00"
+     "retrieved_at": "2026-11-05T21:41:19+00:00"
     },
     {
      "kind": "hiring_freeze",
@@ -691,7 +694,7 @@
      "record": "crustdata_company_id=5705",
      "value": "None",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:17+00:00"
+     "retrieved_at": "2026-11-05T21:41:19+00:00"
     },
     {
      "kind": "stale_funding",
@@ -702,7 +705,7 @@
      "record": "crustdata_company_id=5705",
      "value": "private_equity 2024-02-19",
      "date": "2024-02-19",
-     "retrieved_at": "2026-11-05T21:36:17+00:00"
+     "retrieved_at": "2026-11-05T21:41:19+00:00"
     },
     {
      "kind": "alive",
@@ -713,7 +716,7 @@
      "record": null,
      "value": "HTTP 200",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:19+00:00"
     },
     {
      "kind": "insolvency",
@@ -723,8 +726,8 @@
      "url": "https://www.google.com/goto?url=CAESqgEBxCJF14-3gAr8wO0RlPPyWNyAueif5foakhnNmXHToqNMj6FI-2lHM_TcpX3WCmv35uaue9rxN1l77Akp9KGSL_n96FEET7u3zVs1IhpEBGhxdCdwILSCvVdn1qgNAbT9H3mANTyr4VqOM41RD87wTr1ip_jdvPhNVOdZuFDuq4TC44RWTPj9rO8HeTZ6A141O8UlHyI_YQt9T-vhb7Vt5cwje5HyU2Cpsw",
      "record": null,
      "value": "How Byju's American Dream Ended in a Bankruptcy Fire Sale",
-     "date": "July 2024",
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "date": "February 2024",
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     },
     {
      "kind": "insolvency",
@@ -734,8 +737,8 @@
      "url": "https://www.google.com/goto?url=CAESuwEBxCJF17Q6r3SZdn55EUIQ0bn_RWidPq2cUrd0VZ5MtvpRbfD0rbCsmFtzao8lAKW4iXcjaoCeAWA-1fbM_4XSPH1KBIlPjoZnh4QOwAjdLXOO25hr_1EU-S7ittBQjXqTZls7i_U8TU-2_23lJsC_S3JnbFJgryF7lEw8PGGUNVYxD7mz213q5LD8Otvd14UvGBfOeHaqT4q_NKH3zhkpX0UOVwWM5CmzZXxK3nWBmChisKz9oE3E5IIs",
      "record": null,
      "value": "Indian ed-tech giant Byju's faces total shutdown if ...",
-     "date": "July 2024",
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "date": "February 2024",
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     }
    ],
    "news_reading": {
@@ -744,17 +747,18 @@
     "ceased_operations": false,
     "insolvency_or_bankruptcy": true,
     "acquired_by": null,
+    "acquisition_still_current": false,
     "renamed_to": null,
     "layoffs_only": false,
     "subsidiary_or_solvent_only": false,
-    "event_date": "July 2024",
+    "event_date": "February 2024",
     "supporting_results": [
      1,
      7
     ],
     "quote": "the parent firm is under insolvency proceedings in India"
    },
-   "checked_at": "2026-11-05T21:36:18+00:00",
+   "checked_at": "2026-11-05T21:41:28+00:00",
    "row": 5,
    "crm": {
     "account": "BYJU'S",
@@ -797,7 +801,7 @@
      "record": "crustdata_company_id=14459706",
      "value": "101 → 100",
      "date": "Aug 2026",
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:23+00:00"
     },
     {
      "kind": "insolvency",
@@ -808,7 +812,7 @@
      "record": null,
      "value": "Indian ed-tech giant Byju's faces total shutdown if ...",
      "date": "July 2024",
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:31+00:00"
     },
     {
      "kind": "insolvency",
@@ -819,7 +823,7 @@
      "record": null,
      "value": "How Byju's American Dream Ended in a Bankruptcy Fire Sale",
      "date": "July 2024",
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:31+00:00"
     },
     {
      "kind": "insolvency",
@@ -830,7 +834,7 @@
      "record": null,
      "value": "Indian ed-tech giant Byju's faces total shutdown if ...",
      "date": "July 2024",
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:31+00:00"
     }
    ],
    "news_reading": {
@@ -839,6 +843,7 @@
     "ceased_operations": false,
     "insolvency_or_bankruptcy": true,
     "acquired_by": null,
+    "acquisition_still_current": false,
     "renamed_to": null,
     "layoffs_only": false,
     "subsidiary_or_solvent_only": false,
@@ -850,7 +855,7 @@
     ],
     "quote": "Now Byju's is facing its biggest crisis after an Indian tribunal this week triggered insolvency proceedings following a complaint by the country's cricket board"
    },
-   "checked_at": "2026-11-05T21:36:18+00:00",
+   "checked_at": "2026-11-05T21:41:31+00:00",
    "row": 6,
    "crm": {
     "account": "Byjus",
@@ -894,7 +899,7 @@
      "record": "crustdata_company_id=6162764",
      "value": "24,405 → 26,474",
      "date": "Nov 2026",
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     },
     {
      "kind": "hiring_freeze",
@@ -905,7 +910,7 @@
      "record": "crustdata_company_id=6162764",
      "value": "None",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     },
     {
      "kind": "alive",
@@ -916,7 +921,7 @@
      "record": null,
      "value": "HTTP 200",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:19+00:00"
+     "retrieved_at": "2026-11-05T21:41:29+00:00"
     }
    ],
    "news_reading": {
@@ -925,6 +930,7 @@
     "ceased_operations": false,
     "insolvency_or_bankruptcy": false,
     "acquired_by": null,
+    "acquisition_still_current": false,
     "renamed_to": null,
     "layoffs_only": false,
     "subsidiary_or_solvent_only": true,
@@ -934,7 +940,7 @@
     ],
     "quote": "Zomato To Dissolve Solvakian Subsidiary, Initiates ... The liquidation process commenced on September 14 and will likely be completed within 9-12 months subject to requisite approvals"
    },
-   "checked_at": "2026-11-05T21:36:19+00:00",
+   "checked_at": "2026-11-05T21:41:40+00:00",
    "row": 7,
    "crm": {
     "account": "Zomato",
@@ -977,7 +983,7 @@
      "record": null,
      "value": "redirects to razorpay.com",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:19+00:00"
+     "retrieved_at": "2026-11-05T21:41:30+00:00"
     },
     {
      "kind": "acquired",
@@ -988,7 +994,7 @@
      "record": null,
      "value": "Razorpay buys Ezetap for $150 million",
      "date": "August 2022",
-     "retrieved_at": "2026-11-05T21:36:19+00:00"
+     "retrieved_at": "2026-11-05T21:41:30+00:00"
     },
     {
      "kind": "acquired",
@@ -999,7 +1005,7 @@
      "record": null,
      "value": "Ezetap Thrives Post-Acquisition by Razorpay, Records 60 ...",
      "date": "August 2022",
-     "retrieved_at": "2026-11-05T21:36:19+00:00"
+     "retrieved_at": "2026-11-05T21:41:30+00:00"
     },
     {
      "kind": "acquired",
@@ -1010,7 +1016,7 @@
      "record": null,
      "value": "Fintech unicorn Razorpay acquires Ezetap in a cash-and- ...",
      "date": "August 2022",
-     "retrieved_at": "2026-11-05T21:36:19+00:00"
+     "retrieved_at": "2026-11-05T21:41:30+00:00"
     },
     {
      "kind": "renamed",
@@ -1021,7 +1027,7 @@
      "record": null,
      "value": "Razorpay buys Ezetap for $150 million",
      "date": "August 2022",
-     "retrieved_at": "2026-11-05T21:36:19+00:00"
+     "retrieved_at": "2026-11-05T21:41:30+00:00"
     }
    ],
    "news_reading": {
@@ -1030,6 +1036,7 @@
     "ceased_operations": false,
     "insolvency_or_bankruptcy": false,
     "acquired_by": "Razorpay",
+    "acquisition_still_current": true,
     "renamed_to": "Razorpay POS",
     "layoffs_only": false,
     "subsidiary_or_solvent_only": false,
@@ -1041,7 +1048,7 @@
     ],
     "quote": "the fintech acquired POS provider Ezetap for US$150 million in 2022"
    },
-   "checked_at": "2026-11-05T21:36:19+00:00",
+   "checked_at": "2026-11-05T21:41:30+00:00",
    "row": 8,
    "crm": {
     "account": "Ezetap",
@@ -1084,7 +1091,7 @@
      "record": "crustdata_company_id=897127",
      "value": "4,130 → 4,038",
      "date": "Nov 2026",
-     "retrieved_at": "2026-11-05T21:36:19+00:00"
+     "retrieved_at": "2026-11-05T21:41:30+00:00"
     },
     {
      "kind": "alive",
@@ -1095,7 +1102,7 @@
      "record": "crustdata_company_id=897127",
      "value": "16",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:19+00:00"
+     "retrieved_at": "2026-11-05T21:41:30+00:00"
     },
     {
      "kind": "stale_funding",
@@ -1106,7 +1113,7 @@
      "record": "crustdata_company_id=897127",
      "value": "secondary_market 2022-05-10",
      "date": "2022-05-10",
-     "retrieved_at": "2026-11-05T21:36:19+00:00"
+     "retrieved_at": "2026-11-05T21:41:30+00:00"
     },
     {
      "kind": "alive",
@@ -1117,7 +1124,7 @@
      "record": null,
      "value": "HTTP 200",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:20+00:00"
+     "retrieved_at": "2026-11-05T21:41:30+00:00"
     },
     {
      "kind": "restructuring",
@@ -1128,7 +1135,7 @@
      "record": null,
      "value": "Razorpay Financial Services Private Limited",
      "date": "August 2026",
-     "retrieved_at": "2026-11-05T21:36:20+00:00"
+     "retrieved_at": "2026-11-05T21:41:39+00:00"
     }
    ],
    "news_reading": {
@@ -1137,6 +1144,7 @@
     "ceased_operations": false,
     "insolvency_or_bankruptcy": true,
     "acquired_by": null,
+    "acquisition_still_current": false,
     "renamed_to": null,
     "layoffs_only": false,
     "subsidiary_or_solvent_only": true,
@@ -1144,9 +1152,9 @@
     "supporting_results": [
      6
     ],
-    "quote": "Razorpay Financial Services Private Limited: solvent voluntary liquidation under IBC s.59."
+    "quote": "Razorpay Financial Services Private Limited: solvent voluntary liquidation under IBC s.59. Liquidation commenced 4 Aug 2026"
    },
-   "checked_at": "2026-11-05T21:36:20+00:00",
+   "checked_at": "2026-11-05T21:41:39+00:00",
    "row": 9,
    "crm": {
     "account": "Razorpay",
@@ -1189,7 +1197,7 @@
      "record": "crustdata_company_id=622940",
      "value": "16,339 → 20,608",
      "date": "Nov 2026",
-     "retrieved_at": "2026-11-05T21:36:19+00:00"
+     "retrieved_at": "2026-11-05T21:41:31+00:00"
     },
     {
      "kind": "alive",
@@ -1200,7 +1208,7 @@
      "record": "crustdata_company_id=622940",
      "value": "8",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:19+00:00"
+     "retrieved_at": "2026-11-05T21:41:31+00:00"
     },
     {
      "kind": "alive",
@@ -1211,7 +1219,7 @@
      "record": null,
      "value": "HTTP 202",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:21+00:00"
+     "retrieved_at": "2026-11-05T21:41:33+00:00"
     }
    ],
    "news_reading": {
@@ -1220,14 +1228,21 @@
     "ceased_operations": false,
     "insolvency_or_bankruptcy": false,
     "acquired_by": null,
+    "acquisition_still_current": false,
     "renamed_to": null,
     "layoffs_only": false,
     "subsidiary_or_solvent_only": false,
     "event_date": null,
-    "supporting_results": [],
-    "quote": ""
+    "supporting_results": [
+     1,
+     3,
+     5,
+     6,
+     7
+    ],
+    "quote": "Zepto is sharply scaling back Zepto Cafe, closing hundreds of outlets and shrinking its menu as it reworks the business."
    },
-   "checked_at": "2026-11-05T21:36:21+00:00",
+   "checked_at": "2026-11-05T21:41:42+00:00",
    "row": 10,
    "crm": {
     "account": "Zepto",
@@ -1270,7 +1285,7 @@
      "record": "crustdata_company_id=5726",
      "value": "2,232 → 2,247",
      "date": "Nov 2026",
-     "retrieved_at": "2026-11-05T21:36:20+00:00"
+     "retrieved_at": "2026-11-05T21:41:39+00:00"
     },
     {
      "kind": "alive",
@@ -1281,7 +1296,7 @@
      "record": "crustdata_company_id=5726",
      "value": "2",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:20+00:00"
+     "retrieved_at": "2026-11-05T21:41:39+00:00"
     },
     {
      "kind": "alive",
@@ -1292,7 +1307,7 @@
      "record": null,
      "value": "HTTP 200",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:21+00:00"
+     "retrieved_at": "2026-11-05T21:41:39+00:00"
     },
     {
      "kind": "insolvency",
@@ -1303,18 +1318,7 @@
      "record": null,
      "value": "Visa-backed crypto-lending platform Cred files for bankruptcy",
      "date": "November 2020",
-     "retrieved_at": "2026-11-05T21:36:21+00:00"
-    },
-    {
-     "kind": "insolvency",
-     "strength": "strong",
-     "says": "Insolvency / bankruptcy reported: “Chapter 11 CRED INC., et al., Debtors.1 Case No. 20-1 - Stretto”",
-     "source": "crustdata:/web/search/live",
-     "url": "https://www.google.com/goto?url=CAESjQEBxCJF19UCr2HJk9VJ-qUFvMZVTFKiMJ8cMirMnliKv3bLbXjuUyCtEv93QqsREuZv7yxkSWS_2_bvxL8vnuEvAmOl4adjKJtaTpEd0errEh3S-DR4xcr7L-TIU_DzXVGcqHMQJqJC75-LkbydDxxyL2uUedMiA-MbJr4UzdqIQxvo7UGveZbfyMu_j_w",
-     "record": null,
-     "value": "Chapter 11 CRED INC., et al., Debtors.1 Case No. 20-1 - Stretto",
-     "date": "November 2020",
-     "retrieved_at": "2026-11-05T21:36:21+00:00"
+     "retrieved_at": "2026-11-05T21:41:48+00:00"
     },
     {
      "kind": "insolvency",
@@ -1325,7 +1329,7 @@
      "record": null,
      "value": "Bad Loans, Bad Bets, Bad Blood: How Crypto Lender Cred ...",
      "date": "November 2020",
-     "retrieved_at": "2026-11-05T21:36:21+00:00"
+     "retrieved_at": "2026-11-05T21:41:48+00:00"
     },
     {
      "kind": "shutdown",
@@ -1336,18 +1340,7 @@
      "record": null,
      "value": "Visa-backed crypto-lending platform Cred files for bankruptcy",
      "date": "November 2020",
-     "retrieved_at": "2026-11-05T21:36:21+00:00"
-    },
-    {
-     "kind": "shutdown",
-     "strength": "strong",
-     "says": "Shutdown reported: “Chapter 11 CRED INC., et al., Debtors.1 Case No. 20-1 - Stretto”",
-     "source": "crustdata:/web/search/live",
-     "url": "https://www.google.com/goto?url=CAESjQEBxCJF19UCr2HJk9VJ-qUFvMZVTFKiMJ8cMirMnliKv3bLbXjuUyCtEv93QqsREuZv7yxkSWS_2_bvxL8vnuEvAmOl4adjKJtaTpEd0errEh3S-DR4xcr7L-TIU_DzXVGcqHMQJqJC75-LkbydDxxyL2uUedMiA-MbJr4UzdqIQxvo7UGveZbfyMu_j_w",
-     "record": null,
-     "value": "Chapter 11 CRED INC., et al., Debtors.1 Case No. 20-1 - Stretto",
-     "date": "November 2020",
-     "retrieved_at": "2026-11-05T21:36:21+00:00"
+     "retrieved_at": "2026-11-05T21:41:48+00:00"
     },
     {
      "kind": "shutdown",
@@ -1358,7 +1351,7 @@
      "record": null,
      "value": "Bad Loans, Bad Bets, Bad Blood: How Crypto Lender Cred ...",
      "date": "November 2020",
-     "retrieved_at": "2026-11-05T21:36:21+00:00"
+     "retrieved_at": "2026-11-05T21:41:48+00:00"
     }
    ],
    "news_reading": {
@@ -1367,18 +1360,18 @@
     "ceased_operations": true,
     "insolvency_or_bankruptcy": true,
     "acquired_by": null,
+    "acquisition_still_current": false,
     "renamed_to": null,
     "layoffs_only": false,
     "subsidiary_or_solvent_only": false,
     "event_date": "November 2020",
     "supporting_results": [
      4,
-     5,
      6
     ],
     "quote": "The company filed for bankruptcy in the state of Delaware on Saturday, 7 November."
    },
-   "checked_at": "2026-11-05T21:36:21+00:00",
+   "checked_at": "2026-11-05T21:41:48+00:00",
    "row": 11,
    "crm": {
     "account": "CRED",
@@ -1421,7 +1414,7 @@
      "record": "crustdata_company_id=14618451",
      "value": "9 → 10",
      "date": "Sep 2026",
-     "retrieved_at": "2026-11-05T21:36:21+00:00"
+     "retrieved_at": "2026-11-05T21:41:40+00:00"
     },
     {
      "kind": "alive",
@@ -1432,7 +1425,7 @@
      "record": null,
      "value": "HTTP 403",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:21+00:00"
+     "retrieved_at": "2026-11-05T21:41:40+00:00"
     }
    ],
    "news_reading": {
@@ -1441,6 +1434,7 @@
     "ceased_operations": false,
     "insolvency_or_bankruptcy": false,
     "acquired_by": null,
+    "acquisition_still_current": false,
     "renamed_to": null,
     "layoffs_only": false,
     "subsidiary_or_solvent_only": false,
@@ -1448,7 +1442,7 @@
     "supporting_results": [],
     "quote": ""
    },
-   "checked_at": "2026-11-05T21:36:21+00:00",
+   "checked_at": "2026-11-05T21:41:49+00:00",
    "row": 12,
    "crm": {
     "account": "Meesho",
@@ -1491,7 +1485,7 @@
      "record": "crustdata_company_id=5702",
      "value": "26,424 → 29,594",
      "date": "Nov 2026",
-     "retrieved_at": "2026-11-05T21:36:21+00:00"
+     "retrieved_at": "2026-11-05T21:41:42+00:00"
     },
     {
      "kind": "alive",
@@ -1502,7 +1496,7 @@
      "record": "crustdata_company_id=5702",
      "value": "35",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:21+00:00"
+     "retrieved_at": "2026-11-05T21:41:42+00:00"
     },
     {
      "kind": "alive",
@@ -1513,7 +1507,7 @@
      "record": null,
      "value": "HTTP 202",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:22+00:00"
+     "retrieved_at": "2026-11-05T21:41:42+00:00"
     }
    ],
    "news_reading": {
@@ -1522,9 +1516,10 @@
     "ceased_operations": false,
     "insolvency_or_bankruptcy": false,
     "acquired_by": null,
+    "acquisition_still_current": false,
     "renamed_to": null,
     "layoffs_only": false,
-    "subsidiary_or_solvent_only": true,
+    "subsidiary_or_solvent_only": false,
     "event_date": "February 2026",
     "supporting_results": [
      0,
@@ -1535,7 +1530,7 @@
     ],
     "quote": "Swiggy has shut its 10-minute food delivery app Snacc after almost a year, citing profit pressures and challenging unit economics."
    },
-   "checked_at": "2026-11-05T21:36:22+00:00",
+   "checked_at": "2026-11-05T21:41:51+00:00",
    "row": 13,
    "crm": {
     "account": "Swiggy",
@@ -1578,7 +1573,7 @@
      "record": "crustdata_company_id=6042422",
      "value": "7,197 → 7,915",
      "date": "Nov 2026",
-     "retrieved_at": "2026-11-05T21:36:21+00:00"
+     "retrieved_at": "2026-11-05T21:41:48+00:00"
     },
     {
      "kind": "alive",
@@ -1589,7 +1584,7 @@
      "record": "crustdata_company_id=6042422",
      "value": "8",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:21+00:00"
+     "retrieved_at": "2026-11-05T21:41:48+00:00"
     },
     {
      "kind": "stale_funding",
@@ -1600,7 +1595,7 @@
      "record": "crustdata_company_id=6042422",
      "value": "secondary_market 2020-01-01",
      "date": "2020-01-01",
-     "retrieved_at": "2026-11-05T21:36:21+00:00"
+     "retrieved_at": "2026-11-05T21:41:48+00:00"
     },
     {
      "kind": "alive",
@@ -1611,7 +1606,7 @@
      "record": null,
      "value": "HTTP 403",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:22+00:00"
+     "retrieved_at": "2026-11-05T21:41:48+00:00"
     },
     {
      "kind": "layoffs",
@@ -1621,8 +1616,8 @@
      "url": "https://www.google.com/goto?url=CAESwgEBxCJF1wUP8FjCmIbXZg9QL_FLpPTHkvWhaT5jBs8yaHQcJiOvOgyUPgQc7wxgBrf9gRNhyU-fu-wKV4GXqBYMVeil6MXmy1zEnozINv1DBmdZwvyy5Z88Ko0BDxyOXu71QZAq8J4h5AwxF20MacjwSx7gzSVdGMkm0MPea4r4r5k1kocycVisVJzHa3-H4fAtIQbBiWC5CSKnUI3ZaUci_I4nMdaaGRD_ty6M7gp4yMsog6WjPzkOlL8L5ONXlFolzA&gsessionid=dZuSeh553LwJKDiTjZyB8m1XE9nmee0hWYHbMMXtH10PoH2FvoELjQ",
      "record": null,
      "value": "Freshworks to lay off 660 employees amid global ...",
-     "date": "Nov 2024",
-     "retrieved_at": "2026-11-05T21:36:22+00:00"
+     "date": "May 2026",
+     "retrieved_at": "2026-11-05T21:42:01+00:00"
     }
    ],
    "news_reading": {
@@ -1631,17 +1626,18 @@
     "ceased_operations": false,
     "insolvency_or_bankruptcy": false,
     "acquired_by": null,
+    "acquisition_still_current": false,
     "renamed_to": null,
     "layoffs_only": true,
     "subsidiary_or_solvent_only": false,
-    "event_date": "Nov 2024",
+    "event_date": "May 2026",
     "supporting_results": [
      2,
      6
     ],
-    "quote": "The California-based company said it will lay off 13% of its workforce, or 660 employees, globally in a bid to streamline operations."
+    "quote": "Software firm Freshworks announces layoffs tied to AI transformation, cuts 500 jobs"
    },
-   "checked_at": "2026-11-05T21:36:22+00:00",
+   "checked_at": "2026-11-05T21:42:01+00:00",
    "row": 14,
    "crm": {
     "account": "Freshworks",
@@ -1684,7 +1680,7 @@
      "record": "crustdata_company_id=7275",
      "value": "2,783 → 2,855",
      "date": "Nov 2026",
-     "retrieved_at": "2026-11-05T21:36:22+00:00"
+     "retrieved_at": "2026-11-05T21:41:49+00:00"
     },
     {
      "kind": "hiring_freeze",
@@ -1695,7 +1691,7 @@
      "record": "crustdata_company_id=7275",
      "value": "None",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:22+00:00"
+     "retrieved_at": "2026-11-05T21:41:49+00:00"
     },
     {
      "kind": "alive",
@@ -1706,7 +1702,7 @@
      "record": null,
      "value": "HTTP 200",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:22+00:00"
+     "retrieved_at": "2026-11-05T21:41:49+00:00"
     }
    ],
    "news_reading": {
@@ -1715,6 +1711,7 @@
     "ceased_operations": false,
     "insolvency_or_bankruptcy": false,
     "acquired_by": null,
+    "acquisition_still_current": false,
     "renamed_to": null,
     "layoffs_only": false,
     "subsidiary_or_solvent_only": false,
@@ -1725,7 +1722,7 @@
     ],
     "quote": "Zerodha has shut down its Zero1 Network, a creator-led content initiative launched around two years ago."
    },
-   "checked_at": "2026-11-05T21:36:22+00:00",
+   "checked_at": "2026-11-05T21:41:58+00:00",
    "row": 15,
    "crm": {
     "account": "Zerodha",
@@ -1768,7 +1765,7 @@
      "record": "crustdata_company_id=5894",
      "value": "2,871 → 3,191",
      "date": "Nov 2026",
-     "retrieved_at": "2026-11-05T21:36:22+00:00"
+     "retrieved_at": "2026-11-05T21:41:51+00:00"
     },
     {
      "kind": "alive",
@@ -1779,7 +1776,7 @@
      "record": "crustdata_company_id=5894",
      "value": "1",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:22+00:00"
+     "retrieved_at": "2026-11-05T21:41:51+00:00"
     },
     {
      "kind": "alive",
@@ -1790,7 +1787,7 @@
      "record": null,
      "value": "HTTP 200",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:22+00:00"
+     "retrieved_at": "2026-11-05T21:41:51+00:00"
     }
    ],
    "news_reading": {
@@ -1799,6 +1796,7 @@
     "ceased_operations": false,
     "insolvency_or_bankruptcy": false,
     "acquired_by": null,
+    "acquisition_still_current": false,
     "renamed_to": null,
     "layoffs_only": false,
     "subsidiary_or_solvent_only": false,
@@ -1806,7 +1804,7 @@
     "supporting_results": [],
     "quote": ""
    },
-   "checked_at": "2026-11-05T21:36:22+00:00",
+   "checked_at": "2026-11-05T21:42:04+00:00",
    "row": 16,
    "crm": {
     "account": "Groww",
@@ -1849,7 +1847,7 @@
      "record": "crustdata_company_id=5712",
      "value": "9,506 → 9,701",
      "date": "Nov 2026",
-     "retrieved_at": "2026-11-05T21:36:22+00:00"
+     "retrieved_at": "2026-11-05T21:41:58+00:00"
     },
     {
      "kind": "hiring_freeze",
@@ -1860,7 +1858,7 @@
      "record": "crustdata_company_id=5712",
      "value": "None",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:22+00:00"
+     "retrieved_at": "2026-11-05T21:41:58+00:00"
     },
     {
      "kind": "stale_funding",
@@ -1871,7 +1869,7 @@
      "record": "crustdata_company_id=5712",
      "value": "series_h 2021-08-01",
      "date": "2021-08-01",
-     "retrieved_at": "2026-11-05T21:36:22+00:00"
+     "retrieved_at": "2026-11-05T21:41:58+00:00"
     },
     {
      "kind": "alive",
@@ -1882,7 +1880,7 @@
      "record": null,
      "value": "HTTP 200",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:41:59+00:00"
     },
     {
      "kind": "acquired",
@@ -1893,7 +1891,7 @@
      "record": null,
      "value": "Unacademy's $3B Crash Ends in upGrad Acquisition",
      "date": "March 2026",
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:42:08+00:00"
     },
     {
      "kind": "acquired",
@@ -1904,15 +1902,16 @@
      "record": null,
      "value": "India’s Unacademy sells to rival upGrad for $206M, about 94% less than its peak valuation",
      "date": "March 2026",
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:42:08+00:00"
     }
    ],
    "news_reading": {
     "about_this_company": true,
-    "company_role": "mentioned",
+    "company_role": "subject",
     "ceased_operations": false,
     "insolvency_or_bankruptcy": false,
     "acquired_by": "upGrad",
+    "acquisition_still_current": true,
     "renamed_to": null,
     "layoffs_only": false,
     "subsidiary_or_solvent_only": false,
@@ -1923,7 +1922,7 @@
     ],
     "quote": "Unacademy, once one of India's most valuable edtech startups, has been acquired by rival upGrad at a valuation of just over $200 million"
    },
-   "checked_at": "2026-11-05T21:36:23+00:00",
+   "checked_at": "2026-11-05T21:42:08+00:00",
    "row": 17,
    "crm": {
     "account": "Unacademy",
@@ -1966,7 +1965,7 @@
      "record": "crustdata_company_id=2199",
      "value": "366,776 → 373,741",
      "date": "Nov 2026",
-     "retrieved_at": "2026-11-05T21:36:22+00:00"
+     "retrieved_at": "2026-11-05T21:42:01+00:00"
     },
     {
      "kind": "alive",
@@ -1977,7 +1976,7 @@
      "record": "crustdata_company_id=2199",
      "value": "256",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:22+00:00"
+     "retrieved_at": "2026-11-05T21:42:01+00:00"
     },
     {
      "kind": "stale_funding",
@@ -1988,7 +1987,7 @@
      "record": "crustdata_company_id=2199",
      "value": "post_ipo_equity 2008-07-10",
      "date": "2008-07-10",
-     "retrieved_at": "2026-11-05T21:36:22+00:00"
+     "retrieved_at": "2026-11-05T21:42:01+00:00"
     },
     {
      "kind": "alive",
@@ -1999,7 +1998,7 @@
      "record": null,
      "value": "HTTP 200",
      "date": null,
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:42:02+00:00"
     }
    ],
    "news_reading": {
@@ -2008,6 +2007,7 @@
     "ceased_operations": false,
     "insolvency_or_bankruptcy": false,
     "acquired_by": null,
+    "acquisition_still_current": false,
     "renamed_to": null,
     "layoffs_only": false,
     "subsidiary_or_solvent_only": false,
@@ -2015,7 +2015,7 @@
     "supporting_results": [],
     "quote": ""
    },
-   "checked_at": "2026-11-05T21:36:23+00:00",
+   "checked_at": "2026-11-05T21:42:11+00:00",
    "row": 18,
    "crm": {
     "account": "Infosys",
@@ -2032,84 +2032,84 @@
    "kind": "pause_sequence",
    "row": 1,
    "text": "Pause outreach to 6 contact(s) at Builder.ai",
-   "result": "already done at 2026-11-05T21:36:23+00:00"
+   "result": "done"
   },
   {
    "key": "d17ae11429629d8b",
    "kind": "mark_closed",
    "row": 1,
    "text": "Mark Builder.ai as closed (since May 2025)",
-   "result": "already done at 2026-11-05T21:36:23+00:00"
+   "result": "done"
   },
   {
    "key": "0fdacb3f3bbeb2de",
    "kind": "pause_sequence",
    "row": 2,
    "text": "Pause outreach to 4 contact(s) at BluSmart",
-   "result": "already done at 2026-11-05T21:36:23+00:00"
+   "result": "done"
   },
   {
    "key": "3b5add97c4661990",
    "kind": "mark_closed",
    "row": 2,
    "text": "Mark BluSmart as closed (since April 2025)",
-   "result": "already done at 2026-11-05T21:36:23+00:00"
+   "result": "done"
   },
   {
    "key": "e24aa2edfc75ebb2",
    "kind": "pause_sequence",
    "row": 3,
    "text": "Pause outreach to 3 contact(s) at Koo",
-   "result": "already done at 2026-11-05T21:36:23+00:00"
+   "result": "done"
   },
   {
    "key": "79ea36f6d98599dd",
    "kind": "mark_closed",
    "row": 3,
    "text": "Mark Koo as closed (since July 2024)",
-   "result": "already done at 2026-11-05T21:36:23+00:00"
+   "result": "done"
   },
   {
    "key": "384208de64c44820",
    "kind": "mark_closed",
    "row": 4,
    "text": "Mark Zilingo as closed (since January 2023)",
-   "result": "already done at 2026-11-05T21:36:23+00:00"
+   "result": "done"
   },
   {
    "key": "7237e93b0c9c9a4b",
    "kind": "pause_sequence",
    "row": 5,
    "text": "Pause outreach to 5 contact(s) at BYJU'S",
-   "result": "already done at 2026-11-05T21:36:23+00:00"
+   "result": "done"
   },
   {
    "key": "40da6d7aaa20360f",
    "kind": "merge_duplicate",
    "row": 6,
    "text": "Merge row 6 into row 5",
-   "result": "already done at 2026-11-05T21:36:23+00:00"
+   "result": "done"
   },
   {
    "key": "0126879065d089a7",
    "kind": "pause_sequence",
    "row": 6,
    "text": "Pause outreach to 2 contact(s) at Byjus",
-   "result": "already done at 2026-11-05T21:36:23+00:00"
+   "result": "done"
   },
   {
    "key": "63576a43830f66df",
    "kind": "update_identity",
    "row": 8,
    "text": "Renamed to Razorpay POS: “Razorpay buys Ezetap for $150 million”",
-   "result": "already done at 2026-11-05T21:36:24+00:00"
+   "result": "done"
   },
   {
    "key": "cdf3a6db0cc84ffd",
    "kind": "update_identity",
    "row": 17,
    "text": "Acquired by upGrad: “Unacademy's $3B Crash Ends in upGrad Acquisition”",
-   "result": "already done at 2026-11-05T21:36:24+00:00"
+   "result": "done"
   }
  ],
  "corrections": [
@@ -2126,37 +2126,37 @@
      "says": "No open job postings on record.",
      "url": null,
      "source": "crustdata:/company/enrich",
-     "retrieved_at": "2026-11-05T21:36:13+00:00"
+     "retrieved_at": "2026-11-05T21:41:04+00:00"
     },
     {
      "says": "Website unreachable (ConnectError).",
      "url": "https://builder.ai",
      "source": "http",
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:41:14+00:00"
     },
     {
      "says": "Insolvency / bankruptcy reported: “AI unicorn Builder.ai confirms insolvency proceedings”",
      "url": "https://tech.eu/2025/05/20/ai-unicorn-builderai-confirms-insolvency-proceedings/",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:41:23+00:00"
     },
     {
      "says": "Insolvency / bankruptcy reported: “Builder.ai, Once Valued At Over $1 Billion, Has Collapsed”",
      "url": "https://www.google.com/goto?url=CAESoQEBxCJF14fCkV1R5EDGBSbplKLYb74UIRhkpxxMmqYVq2gKswS2lp0_8oWgYipEnhpkYfpuSCxcc6AVr8Up0kgRzlraBls0luUgk1pJt4C6F6LmBTVlkYc0z52Tu7OeG5K9-VN9XeTF4i0FTmHcUK0y0IyidybxykhxDHFbPRYNzk94b20_0GeIqVi2vtb-3wWTQZyvZjIBiRttzvHkiLtFnA",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:41:23+00:00"
     },
     {
      "says": "Insolvency / bankruptcy reported: “ETtech Explainer: Why AI startup Builder. ai is filing for ...”",
      "url": "https://m.economictimes.com/tech/startups/ettech-explainer-why-ai-startup-builder-ai-is-filing-for-bankruptcy-despite-backing-from-microsoft-and-qia/articleshow/121337666.cms",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:41:23+00:00"
     },
     {
      "says": "Shutdown reported: “AI unicorn Builder.ai confirms insolvency proceedings”",
      "url": "https://tech.eu/2025/05/20/ai-unicorn-builderai-confirms-insolvency-proceedings/",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:41:23+00:00"
     }
    ],
    "reason": "Shutdown reported by 3 source(s), corroborated by website down, hiring stopped."
@@ -2174,37 +2174,37 @@
      "says": "No open job postings on record.",
      "url": null,
      "source": "crustdata:/company/enrich",
-     "retrieved_at": "2026-11-05T21:36:13+00:00"
+     "retrieved_at": "2026-11-05T21:41:04+00:00"
     },
     {
      "says": "Website returns HTTP 404.",
      "url": "https://blu-smart.com",
      "source": "http",
-     "retrieved_at": "2026-11-05T21:36:16+00:00"
+     "retrieved_at": "2026-11-05T21:41:08+00:00"
     },
     {
      "says": "Insolvency / bankruptcy reported: “BluSmart's Collapse: An Operations Management ...”",
      "url": "https://www.linkedin.com/pulse/blusmarts-collapse-operations-management-perspective-roychowdhury-jphfe",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:16+00:00"
+     "retrieved_at": "2026-11-05T21:41:19+00:00"
     },
     {
      "says": "Insolvency / bankruptcy reported: “BluSmart cabs hit the brakes amid fund misuse row”",
      "url": "https://www.google.com/goto?url=CAES2gEBxCJF14BlXkSeY8d3-9SnEw_YdPsXmDn8xZH1ss3zsPOJw-w34OyJ5C-J80-12J2JN8vVG7ODC_lTK2CmIU3yZ8S1woWM97bihrCPBlR15Ose-ojT2dOoroj3ir9XvxNTt095D0XD5jkf4E-W2JlXAc5ADy50nlmEerWPvfabnjjC80lLszeCd2v3KZcGOPQNW8EjgM9r4zCpRZg7JNkbT4jro7RwUUtnRqg29mgHqBWGknaALx0yfvhrcKnkmhUiijLObdDYXdhpF_HOs_X21jktBwL-ACURKw",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:16+00:00"
+     "retrieved_at": "2026-11-05T21:41:19+00:00"
     },
     {
      "says": "Insolvency / bankruptcy reported: “BluSmart Enters Insolvency Amid Corporate Governance ...”",
      "url": "https://www.google.com/goto?url=CAESyAEBxCJF10kdjTs0C7xaDzi3GopqTH763KQiszyRN-GO1gbHrhbRH1qHjc8vFBZ_RLx10K4tXEdUD3-81wRRza56pLVC1scW31P74VzFcFqzL3HPEfV8T67GWpYArce_9YH8OCzDCe5JVeYGcvFURnaEMcvYtxXQlDDB_fYfFJHNwUiv3LUUyw8TPT-uSKnrgSylYKpUwCl1wutzCRnMVctfRk-cWG0pQOyiDffxbS-AJGY10y3ERJz8iEiw5sVxcCpSrxRxgUo63A",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:16+00:00"
+     "retrieved_at": "2026-11-05T21:41:19+00:00"
     },
     {
      "says": "Shutdown reported: “BluSmart's Collapse: An Operations Management ...”",
      "url": "https://www.linkedin.com/pulse/blusmarts-collapse-operations-management-perspective-roychowdhury-jphfe",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:16+00:00"
+     "retrieved_at": "2026-11-05T21:41:19+00:00"
     }
    ],
    "reason": "Shutdown reported by 3 source(s), corroborated by website down, hiring stopped."
@@ -2222,31 +2222,31 @@
      "says": "No open job postings on record.",
      "url": null,
      "source": "crustdata:/company/enrich",
-     "retrieved_at": "2026-11-05T21:36:13+00:00"
+     "retrieved_at": "2026-11-05T21:41:04+00:00"
     },
     {
      "says": "Website returns HTTP 404.",
      "url": "https://kooapp.com",
      "source": "http",
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:08+00:00"
     },
     {
      "says": "Shutdown reported: “Indian social network Koo is shutting down as buyout talks ...”",
      "url": "https://www.google.com/goto?url=CAEShgEBxCJF14CWQEhn397Q-8KfPn-NpdKaR1Q6xOX3W3V2UvSTzCcLT_oAUv5Cc6gw6brHeZQVP0MtjypnDGCqFSuUUwfTLwIWlkRH8psW5hUMdkPFzBDuBc9A8b-ytqBINxe6s1pGQk2KUrJWqBEm06XbJHqarIK_HI9DndKfocbVZiLXGZr-vw",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:18+00:00"
     },
     {
      "says": "Shutdown reported: “What made Koo collapse after its initial spike, and what ...”",
      "url": "https://www.google.com/goto?url=CAESowEBxCJF1yKtD5JMl90Lwtp3Wh5yFE2i0X4rM4gmQwSv4RLpUDtr9AkvHxWtCE7LlCgcaXODzPSklBO0vEWKDWVVOyVw0lW8sfNEe-4jGqFzWQfqwRBEXL4-kD5K7XGUWcZq5F3F5Gqs29SfPPGLwXekkXlPzKc02FiLjZvZ8U5XfFO4a1TTWlihhngtaXbzZzCJ1PFM8FZS9k0l69zte-7v4Lve",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:18+00:00"
     },
     {
      "says": "Shutdown reported: “Indian social media app Koo shuts down: Read CEO's ' ...”",
      "url": "https://www.google.com/goto?url=CAESzQEBxCJF18pAouD9Va89p4aQIxh5DR_Ckx5LR_hShvETZBF2ZA2oaZ9cmtwz3Ddogp3g8j0y_YWYvFr7vxHuKYy5OX_XemokmwceSx9sq5MuzGk1B1SRZaS62yS2kAL8RFL7J3qakq8DMMS_Cp_0RzyMGJJg5A0DVFkAFSp32XZ9lXg5l9w5OUsNemCJgD9eWZHJw_LkJiN3Gkn5qfcKEiEvfda-U9mVftWDanXYws1YwwrGvkicb_mMeYYiN6G3Ud3rmkO--BCXH3xORjIG",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:18+00:00"
     }
    ],
    "reason": "Shutdown reported by 3 source(s), corroborated by website down, hiring stopped."
@@ -2264,37 +2264,37 @@
      "says": "No open job postings on record.",
      "url": null,
      "source": "crustdata:/company/enrich",
-     "retrieved_at": "2026-11-05T21:36:16+00:00"
+     "retrieved_at": "2026-11-05T21:41:18+00:00"
     },
     {
      "says": "Insolvency / bankruptcy reported: “Months of crisis leads Zilingo to begin liquidation process!”",
      "url": "https://www.google.com/goto?url=CAESswEBxCJF18zYhIFRYWYlepGvTZQtrBtq6PTfaOxuv-BjidzaLXj4R2O3aF9Uw0Dk3LuKpi5OKoKNZLNkkFy15I6_4HjU3TnU_H6HCSRRN9DquECsJ6ynylDLtly_uwcIiM8svzSUuYYO6dAt5dx-5_V3oXoKYL-KRmvZfnUXZVTCGWpv_N3-ccmlBh__Mjggok_Ih9cv3XhvL9kk8lrQ64NlGuNE21A--ZZzscQgVxz7NZHfNg&gsessionid=nbbzfuNRcptWIaVPAUkpoUe8oFnaVuDF7yXWUWsdv7lKnbY-pmYHMA",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:17+00:00"
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     },
     {
      "says": "Insolvency / bankruptcy reported: “Zilingo”",
      "url": "https://www.google.com/goto?url=CAESYAHEIkXXKL1B5n6rXFYvKgsMglgZ27pe-7KofDUqAQWhf_XhwplRKFZQOWFVz9W_-qMtMZMJ6BmL7qeupisbpLUWPv-7qGtDHel6lxNoRhjtE8QV6tytvDrBmVuGDIN2sg&gsessionid=nbbzfuNRcptWIaVPAUkpoUe8oFnaVuDF7yXWUWsdv7lKnbY-pmYHMA",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:17+00:00"
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     },
     {
      "says": "Insolvency / bankruptcy reported: “S'pore-based, Temasek-backed Zilingo set to enter ...”",
      "url": "https://mothership.sg/2023/01/zilingo-liquidation/",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:17+00:00"
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     },
     {
      "says": "Shutdown reported: “Months of crisis leads Zilingo to begin liquidation process!”",
      "url": "https://www.google.com/goto?url=CAESswEBxCJF18zYhIFRYWYlepGvTZQtrBtq6PTfaOxuv-BjidzaLXj4R2O3aF9Uw0Dk3LuKpi5OKoKNZLNkkFy15I6_4HjU3TnU_H6HCSRRN9DquECsJ6ynylDLtly_uwcIiM8svzSUuYYO6dAt5dx-5_V3oXoKYL-KRmvZfnUXZVTCGWpv_N3-ccmlBh__Mjggok_Ih9cv3XhvL9kk8lrQ64NlGuNE21A--ZZzscQgVxz7NZHfNg&gsessionid=nbbzfuNRcptWIaVPAUkpoUe8oFnaVuDF7yXWUWsdv7lKnbY-pmYHMA",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:17+00:00"
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     },
     {
      "says": "Shutdown reported: “Zilingo”",
      "url": "https://www.google.com/goto?url=CAESYAHEIkXXKL1B5n6rXFYvKgsMglgZ27pe-7KofDUqAQWhf_XhwplRKFZQOWFVz9W_-qMtMZMJ6BmL7qeupisbpLUWPv-7qGtDHel6lxNoRhjtE8QV6tytvDrBmVuGDIN2sg&gsessionid=nbbzfuNRcptWIaVPAUkpoUe8oFnaVuDF7yXWUWsdv7lKnbY-pmYHMA",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:17+00:00"
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     }
    ],
    "reason": "Shutdown reported by 3 source(s), corroborated by hiring stopped."
@@ -2305,26 +2305,26 @@
    "field": "basic_info.status",
    "current_value": "active",
    "proposed_value": "insolvency_proceedings",
-   "effective_since": "July 2024",
+   "effective_since": "February 2024",
    "people_still_listing_as_current": 10848,
    "evidence": [
     {
      "says": "No open job postings on record.",
      "url": null,
      "source": "crustdata:/company/enrich",
-     "retrieved_at": "2026-11-05T21:36:17+00:00"
+     "retrieved_at": "2026-11-05T21:41:19+00:00"
     },
     {
      "says": "Insolvency / bankruptcy reported: “How Byju's American Dream Ended in a Bankruptcy Fire Sale”",
      "url": "https://www.google.com/goto?url=CAESqgEBxCJF14-3gAr8wO0RlPPyWNyAueif5foakhnNmXHToqNMj6FI-2lHM_TcpX3WCmv35uaue9rxN1l77Akp9KGSL_n96FEET7u3zVs1IhpEBGhxdCdwILSCvVdn1qgNAbT9H3mANTyr4VqOM41RD87wTr1ip_jdvPhNVOdZuFDuq4TC44RWTPj9rO8HeTZ6A141O8UlHyI_YQt9T-vhb7Vt5cwje5HyU2Cpsw",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     },
     {
      "says": "Insolvency / bankruptcy reported: “Indian ed-tech giant Byju's faces total shutdown if ...”",
      "url": "https://www.google.com/goto?url=CAESuwEBxCJF17Q6r3SZdn55EUIQ0bn_RWidPq2cUrd0VZ5MtvpRbfD0rbCsmFtzao8lAKW4iXcjaoCeAWA-1fbM_4XSPH1KBIlPjoZnh4QOwAjdLXOO25hr_1EU-S7ittBQjXqTZls7i_U8TU-2_23lJsC_S3JnbFJgryF7lEw8PGGUNVYxD7mz213q5LD8Otvd14UvGBfOeHaqT4q_NKH3zhkpX0UOVwWM5CmzZXxK3nWBmChisKz9oE3E5IIs",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:18+00:00"
+     "retrieved_at": "2026-11-05T21:41:28+00:00"
     }
    ],
    "reason": "Insolvency proceedings reported, corroborated by hiring stopped."
@@ -2342,19 +2342,19 @@
      "says": "No open job postings on record.",
      "url": null,
      "source": "crustdata:/company/enrich",
-     "retrieved_at": "2026-11-05T21:36:22+00:00"
+     "retrieved_at": "2026-11-05T21:41:58+00:00"
     },
     {
      "says": "Acquired by upGrad: “Unacademy's $3B Crash Ends in upGrad Acquisition”",
      "url": "https://www.techbuzz.ai/articles/unacademy-s-3b-crash-ends-in-upgrad-acquisition",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:42:08+00:00"
     },
     {
      "says": "Acquired by upGrad: “India’s Unacademy sells to rival upGrad for $206M, about 94% less than its peak valuation”",
      "url": "https://www.google.com/goto?url=CAEStQEBxCJF10lCgEAQWjxhawAtajGnyrT8Oo63UJa1ZokZki_YY6g02XXWWDT0goUdTHjeWJX9vEVugyNAGMh8fYcQBzmIn0GyF_4Xrx11nQR9Mb_Es1RjPUsQX7mYww1hRunoeoEAJVSxjDgLOcRSfv0BLYTpxG1E0pnF9f0-w8W21r5gY-vecNXDV18AMyCCEzwi0mnEI1ChmhTOzSH3sLT5ZWLStGoPq65dl-4M0k_OOjPFFYIa&gsessionid=nyTFvTqLsIIY6YoRQh1MBD4hsUWMYMZLznBpux9AjIej4T6D4jVUHQ",
      "source": "crustdata:/web/search/live",
-     "retrieved_at": "2026-11-05T21:36:23+00:00"
+     "retrieved_at": "2026-11-05T21:42:08+00:00"
     }
    ],
    "reason": "Acquired by upGrad: “Unacademy's $3B Crash Ends in upGrad Acquisition”"
