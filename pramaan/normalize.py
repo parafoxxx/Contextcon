@@ -95,6 +95,8 @@ class Company:
     by_role_absolute: dict
     timeseries: list[tuple[int, int]]   # (month index, headcount) if the API ever returns it
     rounds: list[FundingRound]
+    company_type: Optional[str]
+    industries: list
     last_round_type: Optional[str]
     last_fundraise_date: Optional[str]
     match_confidence: Optional[float] = None
@@ -224,6 +226,9 @@ def companies_from_enrich(data: Any) -> list[Company]:
                 by_role_absolute=hc.get("by_role_absolute") or {},
                 timeseries=_timeseries(hc) if isinstance(hc, dict) else [],
                 rounds=_rounds(fu) if isinstance(fu, dict) else [],
+                company_type=bi.get("company_type"),
+                industries=[str(x) for x in (dig(cd, "taxonomy.professional_network_industries") or
+                                             [dig(cd, "taxonomy.professional_network_industry")]) if x],
                 last_round_type=fu.get("last_round_type"),
                 last_fundraise_date=fu.get("last_fundraise_date"),
                 match_confidence=m.get("confidence_score"),

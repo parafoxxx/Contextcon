@@ -224,7 +224,8 @@ def check_against_profile(i: int, job: JobClaim, person: Optional[Person], compa
         others = [r for r in person.roles if js is not None and r.start is not None and
                   _overlap(js, je, r.start, r.end) >= 6 and (r.employment_type or "").lower() not in ("part-time", "freelance")]
         ev = [_person_ev(person, "experience.employment_details", f"{len(person.roles)} roles; none at {job.company}")]
-        if others:
+        recent = je is not None and je >= today_index() - 12
+        if others and not recent:
             ev += [_person_ev(person, "experience.employment_details", f"{r.title} at {r.company} ({fmt(r.start)} – {fmt(r.end) if r.end else 'present'})")
                    for r in others[:3]]
             return [Verdict(claim_id=f"job{i}.role", claim_text=label, check="profile_match", status=S.REVIEW,
@@ -233,7 +234,9 @@ def check_against_profile(i: int, job: JobClaim, person: Optional[Person], compa
                                    f"{', '.join(sorted({r.company for r in others}))} during that period.",
                             evidence=ev, next_action="email_employer")]
         return [Verdict(claim_id=f"job{i}.role", claim_text=label, check="profile_match", status=S.UNVERIFIED,
-                        confidence="low", reason=f"{job.company} is not on the candidate's profile; nothing contradicts it either.",
+                        confidence="low", reason=(f"{job.company} is not on the candidate's profile yet; the role is recent and "
+                                                  f"profiles often lag, so this goes to the employer." if recent else
+                                                  f"{job.company} is not on the candidate's profile; nothing contradicts it either."),
                         evidence=ev, next_action="email_employer")]
 
     # pick the profile role that best overlaps the claimed period (handles promotions)
@@ -319,6 +322,16 @@ def check_team_size(i: int, job: JobClaim, company: Optional[Company], person: O
     share = function_share(company, fn)
     if share:
         ev.append(_company_ev(company, f"headcount.by_role_absolute.{fn}", f"{share:.0%} of company"))
+    kind = " ".join([company.company_type or ""] + list(company.industries or [])).lower()
+    if re.search(r"educat|universit|college|school|non.?profit|nonprofit|government|ngo|volunteer|student", kind):
+        return [Verdict(claim_id=cid, claim_text=text, check="team_size_feasibility", status=S.REVIEW, confidence="low",
+                        reason=f"{company.name} is a {company.company_type or 'education / non-profit organisation'}: teams there are often "
+                               f"students or volunteers who aren't counted as employees (~{est} on record), so headcount can't settle this.",
+                        evidence=ev, next_action="email_employer")]
+    if n >= est and conf == "low":
+        return [Verdict(claim_id=cid, claim_text=text, check="team_size_feasibility", status=S.REVIEW, confidence="low",
+                        reason=f"Claimed {n} reports; {company.name} shows about {est} employees, but that figure is only an estimate ({how}).",
+                        evidence=ev, next_action="email_employer")]
     if n >= est:
         return [Verdict(claim_id=cid, claim_text=text, check="team_size_feasibility", status=S.DISCREPANCY,
                         confidence="high" if conf != "low" else "medium",
@@ -430,12 +443,12 @@ def check_colleagues(i: int, job: JobClaim, company: Optional[Company], person: 
                     break
         return found
 
-    data, meta = cd.search_people({"op": "and", "conditions": conds} if len(conds) > 1 else conds[0], 25, log)
+    data, meta = cd.search_people({"op": "and", "conditions": conds} if len(conds) > 1 else conds[0], 10, log)
     people = people_from_search(data)
     overlapping = overlapping_in(people)
     if not overlapping and len(conds) > 1:
         # titles vary ('SDE 2', 'MTS'): widen to everyone at the company and classify titles ourselves
-        data2, meta2 = cd.search_people(conds[0], 25, log)
+        data2, meta2 = cd.search_people(conds[0], 15, log)
         more = people_from_search(data2)
         people += more
         overlapping = overlapping_in(more)

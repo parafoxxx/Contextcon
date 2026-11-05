@@ -41,6 +41,10 @@ def resolve(claims: ResumeClaims, log=None, emit=lambda *a, **k: None) -> tuple[
     info: dict = {"method": None, "status": "unresolved", "candidates_considered": 0, "notes": []}
 
     if claims.linkedin_url:
+        u = claims.linkedin_url.strip().rstrip("/")
+        if not u.lower().startswith("http"):
+            u = "https://" + (u if u.lower().startswith("www.") else "www." + u)
+        claims.linkedin_url = u
         emit("identity", f"Profile URL on resume: {claims.linkedin_url}. Enriching.")
         data, meta = cd.enrich_person(claims.linkedin_url, log)
         people = people_from_enrich(data) if data else []

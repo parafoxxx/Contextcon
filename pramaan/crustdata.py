@@ -32,7 +32,14 @@ class CallLog:
 
     def add(self, entry: dict):
         self.calls.append(entry)
-        self.credits += int(entry.get("credits") or 0)
+        self.credits = round(self.credits + _num(entry.get("credits")), 2)
+
+
+def _num(v) -> float:
+    try:
+        return float(v or 0)
+    except (TypeError, ValueError):
+        return 0.0
 
 
 def _key(path: str, body: dict) -> str:
@@ -94,7 +101,7 @@ def _post(path: str, body: dict, log: Optional[CallLog] = None) -> tuple[Any, di
                 return None, meta
             data = r.json()
             cache_file.write_text(json.dumps(data, indent=1), encoding="utf-8")
-            meta.update(source="live", credits=int(r.headers.get("x-credits-used", 0) or 0))
+            meta.update(source="live", credits=_num(r.headers.get("x-credits-used")))
             if log:
                 log.add(meta)
             return data, meta
@@ -121,7 +128,7 @@ def search_people(filters: dict, limit: int = 10, log=None):
 
 
 def enrich_company(*, name: str = None, domain: str = None, company_id: int = None, log=None):
-    body: dict = {"fields": ["basic_info", "headcount", "funding"]}
+    body: dict = {"fields": ["basic_info", "headcount", "funding", "taxonomy"]}
     if company_id:
         body["crustdata_company_ids"] = [int(company_id)]
     elif domain:

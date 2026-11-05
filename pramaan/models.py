@@ -103,4 +103,4 @@ class Report(BaseModel):
     overall: str = "pending"
     summary: str = ""
     duration_s: float = 0.0
-    credits_used: int = 0
+    credits_used: float = 0.0

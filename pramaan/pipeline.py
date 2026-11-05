@@ -57,13 +57,15 @@ def verify(data: bytes, filename: str, *, consent: bool, emit: Emit = lambda *a,
 
     # 1. Read the resume
     if claims is None:
-        emit("extract", f"Reading {filename} with Claude…")
+        emit("extract", f"Reading {filename} with {'Gemini' if config.LLM_PROVIDER == 'gemini' else 'Claude'}…")
         try:
             claims = llm.extract_claims(data, filename)
         except llm.LLMError as e:
             report.overall, report.summary = "failed", f"Could not read the resume: {e}"
             emit("error", report.summary, level="error")
             save(report)
+            emit("done", "Stopped: the resume could not be read. Nothing was sent. Try again in a minute.",
+                 data={"overall": "failed"})
             return report
     report.claims, report.candidate = claims, claims.name
     save(report)  # checkpoint: the expensive read is never repeated
@@ -90,7 +92,8 @@ def verify(data: bytes, filename: str, *, consent: bool, emit: Emit = lambda *a,
 
     # 3. Check every claim
     cache = checks.CompanyCache(log)
-    for i, job in enumerate(claims.jobs, 1):
+
+    def check_job(i, job) -> list[Verdict]:
         emit("check", f"Checking role {i}: {checks.job_label(i, job)}")
         roles = checks.match_role(job, person, None) if person else []
         cid = next((r.company_id for r in roles if r.company_id), None)
@@ -112,8 +115,14 @@ def verify(data: bytes, filename: str, *, consent: bool, emit: Emit = lambda *a,
         for v in vs:
             emit("verdict", f"{v.status.value.upper()}: {v.claim_text} — {v.reason}", data=v.model_dump(mode="json"),
                  level={"discrepancy": "bad", "review": "warn", "verified": "good"}.get(v.status.value, "info"))
-        report.verdicts += vs
-        save(report)  # checkpoint after every role
+        return vs
+
+    # Roles are independent, so check them side by side (person search can take ~10 s a call)
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(max_workers=4) as ex:
+        for vs in ex.map(lambda ij: check_job(*ij), enumerate(claims.jobs, 1)):  # map keeps resume order
+            report.verdicts += vs
+            save(report)  # checkpoint after every role
 
     for fn in (lambda: checks.check_overlaps(claims), lambda: checks.check_education(claims, person),
                lambda: checks.check_references(claims, log)):

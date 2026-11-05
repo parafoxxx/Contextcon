@@ -139,6 +139,8 @@ def _parse_gemini(schema: type[BaseModel], system: str, text: str, doc):
 EXTRACT_SYSTEM = """You extract verifiable claims from a candidate's resume for a background check.
 Rules:
 - Copy company names, titles and dates exactly as written. Do not correct, guess or fill gaps.
+- `company` is the organisation that employed them. Put a department, cell or club in the title instead:
+  "Placement Coordinator, SPO — IIT Kanpur" -> company "IIT Kanpur", title "Placement Coordinator, SPO".
 - One JobClaim per role. If one company has several titles over time, make one JobClaim per title.
 - Only set team_size_claim / early_employee_claim / joined_stage_claim when the resume explicitly says so.
   "Managed a team of 12" -> 12. "Led 3 squads of ~8" -> 24. "Joined pre-Series A" -> seed.
@@ -150,7 +152,10 @@ Rules:
 
 
 def extract_claims(data: bytes, filename: str) -> ResumeClaims:
-    return _parse(ResumeClaims, EXTRACT_SYSTEM, "Extract every verifiable claim from this resume.", (data, filename))
+    from datetime import date
+    today = f"\n- Today's date is {date.today():%d %B %Y}. Dates up to today are past or current, not future."
+    return _parse(ResumeClaims, EXTRACT_SYSTEM + today,
+                  "Extract every verifiable claim from this resume.", (data, filename))
 
 
 # ---------- Reading an email reply from HR / a reference ----------

@@ -35,18 +35,27 @@ def clean(name: str) -> str:
     return re.sub(r"\s+", " ", t).strip()
 
 
+# Extra words that don't change which company is meant ("Flipkart India" == "Flipkart")
+GENERIC = {"internet", "digital", "ventures", "enterprises", "industries", "international", "online",
+           "pvt", "ltd", "hq", "official"}
+
+
 def same_company(a: str, b: str) -> bool:
+    """Strict on purpose: a wrong match produces a wrong 'Verified', which is worse than 'Unverified'.
+    'Chill Hai' != 'CHILL', 'NoBroker HR' != 'NoBroker', 'SPO IIT Kanpur' != 'IIT'."""
     ca, cb = clean(a), clean(b)
     if not ca or not cb:
         return False
-    if ca == cb:
+    if ca == cb or ca.replace(" ", "") == cb.replace(" ", ""):
         return True
     if RENAMES.get(ca) == cb or RENAMES.get(cb) == ca or (RENAMES.get(ca) and RENAMES.get(ca) == RENAMES.get(cb)):
         return True
-    # short names need exact-ish match to avoid 'Ola' == 'Olacabs Holdings' false positives
-    if min(len(ca), len(cb)) <= 4:
-        return ca.split()[0] == cb.split()[0]
-    return fuzz.token_set_ratio(ca, cb) >= 88 or fuzz.ratio(ca, cb) >= 90
+    ta, tb = set(ca.split()), set(cb.split())
+    small, big = (ta, tb) if len(ta) <= len(tb) else (tb, ta)
+    if small < big and (big - small) <= GENERIC:
+        return True
+    # No fuzzy fallback: on real data it matched 'NoBroker' to 'NEOBROKER'. A miss goes to the employer instead.
+    return False
 
 
 def name_similarity(a: str, b: str) -> int:
