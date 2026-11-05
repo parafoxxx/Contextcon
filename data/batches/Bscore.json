@@ -1,0 +1,840 @@
+{
+ "batch_id": "Bscore",
+ "created_at": "2026-11-06T00:49:25",
+ "files": [
+  "01_rohit_sinha.pdf",
+  "02_ananya_ghosh.pdf",
+  "03_farhan_ali.pdf",
+  "04_sneha_kulkarni.pdf",
+  "05_manish_yadav.pdf",
+  "06_tarun_gill.pdf",
+  "07_pallavi_joshi.pdf",
+  "08_varun_bhatt.pdf",
+  "09_kavya_raman.pdf",
+  "10_harsh_vardhan.pdf",
+  "11_meghna_pillai.pdf",
+  "12_aditya_rao.pdf",
+  "13_ishaan_mehta.pdf",
+  "14_neha_arora.pdf",
+  "15_sameer_khan.pdf",
+  "16_rahul_verma.pdf",
+  "17_priya_menon.pdf",
+  "18_arjun_reddy.pdf",
+  "19_leela_thomas.pdf",
+  "20_joseph_mathew.pdf",
+  "21_rahul_verma_v2.pdf"
+ ],
+ "runs": {
+  "02_ananya_ghosh.pdf": "Bscore_ae0ca857",
+  "03_farhan_ali.pdf": "Bscore_5455beb9",
+  "01_rohit_sinha.pdf": "Bscore_102b8dd8",
+  "04_sneha_kulkarni.pdf": "Bscore_9355fb06",
+  "05_manish_yadav.pdf": "Bscore_ae5e31ed",
+  "06_tarun_gill.pdf": "Bscore_2a924ecf",
+  "07_pallavi_joshi.pdf": "Bscore_3bb89a5c",
+  "10_harsh_vardhan.pdf": "Bscore_dda0adbb",
+  "09_kavya_raman.pdf": "Bscore_7478dfba",
+  "11_meghna_pillai.pdf": "Bscore_8fbf9dce",
+  "12_aditya_rao.pdf": "Bscore_af280529",
+  "13_ishaan_mehta.pdf": "Bscore_8d32ca0f",
+  "14_neha_arora.pdf": "Bscore_01479e8f",
+  "08_varun_bhatt.pdf": "Bscore_77ff49ba",
+  "15_sameer_khan.pdf": "Bscore_c6f3777d",
+  "16_rahul_verma.pdf": "Bscore_b5078ef5",
+  "17_priya_menon.pdf": "Bscore_4007dcd8",
+  "18_arjun_reddy.pdf": "Bscore_27f1dadf",
+  "19_leela_thomas.pdf": "Bscore_41789cc3",
+  "20_joseph_mathew.pdf": "Bscore_7db1f37f",
+  "21_rahul_verma_v2.pdf": "Bscore_61d7679b"
+ },
+ "status": "done",
+ "links": [
+  {
+   "a": "Bscore_102b8dd8",
+   "b": "Bscore_ae0ca857",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record"
+  },
+  {
+   "a": "Bscore_102b8dd8",
+   "b": "Bscore_5455beb9",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record"
+  },
+  {
+   "a": "Bscore_102b8dd8",
+   "b": "Bscore_9355fb06",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record"
+  },
+  {
+   "a": "Bscore_102b8dd8",
+   "b": "Bscore_ae5e31ed",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record"
+  },
+  {
+   "a": "Bscore_ae0ca857",
+   "b": "Bscore_5455beb9",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Zentrix Ops Solutions', which has no company record"
+  },
+  {
+   "a": "Bscore_ae0ca857",
+   "b": "Bscore_9355fb06",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Zentrix Ops Solutions', which has no company record"
+  },
+  {
+   "a": "Bscore_ae0ca857",
+   "b": "Bscore_ae5e31ed",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Zentrix Ops Solutions', which has no company record"
+  },
+  {
+   "a": "Bscore_5455beb9",
+   "b": "Bscore_9355fb06",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Zentrix Ops Solutions', which has no company record"
+  },
+  {
+   "a": "Bscore_5455beb9",
+   "b": "Bscore_ae5e31ed",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Zentrix Ops Solutions', which has no company record"
+  },
+  {
+   "a": "Bscore_9355fb06",
+   "b": "Bscore_ae5e31ed",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record"
+  },
+  {
+   "a": "Bscore_2a924ecf",
+   "b": "Bscore_3bb89a5c",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Brightloop Analytics', which has no company record"
+  },
+  {
+   "a": "Bscore_2a924ecf",
+   "b": "Bscore_77ff49ba",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Brightloop Analytics', which has no company record"
+  },
+  {
+   "a": "Bscore_3bb89a5c",
+   "b": "Bscore_77ff49ba",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Brightloop Analytics', which has no company record"
+  },
+  {
+   "a": "Bscore_7478dfba",
+   "b": "Bscore_dda0adbb",
+   "kind": "shared_employer",
+   "detail": "both left BYJU'S (Think & Learn Pvt Ltd) around Jul 2023"
+  },
+  {
+   "a": "Bscore_7478dfba",
+   "b": "Bscore_8fbf9dce",
+   "kind": "shared_employer",
+   "detail": "both left BYJU'S (Think & Learn Pvt Ltd) around Jul 2023"
+  },
+  {
+   "a": "Bscore_7478dfba",
+   "b": "Bscore_af280529",
+   "kind": "shared_employer",
+   "detail": "both left BYJU'S (Think & Learn Pvt Ltd) around Jul 2023"
+  },
+  {
+   "a": "Bscore_dda0adbb",
+   "b": "Bscore_8fbf9dce",
+   "kind": "shared_employer",
+   "detail": "both left Byjus around Aug 2023"
+  },
+  {
+   "a": "Bscore_dda0adbb",
+   "b": "Bscore_af280529",
+   "kind": "shared_employer",
+   "detail": "both left Byjus around Aug 2023"
+  },
+  {
+   "a": "Bscore_8fbf9dce",
+   "b": "Bscore_af280529",
+   "kind": "shared_employer",
+   "detail": "both left Byjus around Aug 2023"
+  },
+  {
+   "a": "Bscore_41789cc3",
+   "b": "Bscore_7db1f37f",
+   "kind": "phantom_employer",
+   "detail": "both cite 'Kochi Spice Traders', which has no company record"
+  },
+  {
+   "a": "Bscore_102b8dd8",
+   "b": "Bscore_ae0ca857",
+   "kind": "shared_reference",
+   "detail": "same reference: deepak malhotra"
+  },
+  {
+   "a": "Bscore_102b8dd8",
+   "b": "Bscore_5455beb9",
+   "kind": "shared_reference",
+   "detail": "same reference: deepak malhotra"
+  },
+  {
+   "a": "Bscore_102b8dd8",
+   "b": "Bscore_5455beb9",
+   "kind": "near_duplicate_text",
+   "detail": "58% of achievement text identical"
+  },
+  {
+   "a": "Bscore_102b8dd8",
+   "b": "Bscore_9355fb06",
+   "kind": "shared_reference",
+   "detail": "same reference: deepak malhotra"
+  },
+  {
+   "a": "Bscore_102b8dd8",
+   "b": "Bscore_ae5e31ed",
+   "kind": "shared_reference",
+   "detail": "same reference: deepak malhotra"
+  },
+  {
+   "a": "Bscore_ae0ca857",
+   "b": "Bscore_5455beb9",
+   "kind": "shared_reference",
+   "detail": "same reference: deepak malhotra"
+  },
+  {
+   "a": "Bscore_ae0ca857",
+   "b": "Bscore_9355fb06",
+   "kind": "shared_reference",
+   "detail": "same reference: deepak malhotra"
+  },
+  {
+   "a": "Bscore_ae0ca857",
+   "b": "Bscore_ae5e31ed",
+   "kind": "shared_reference",
+   "detail": "same reference: deepak malhotra"
+  },
+  {
+   "a": "Bscore_ae0ca857",
+   "b": "Bscore_ae5e31ed",
+   "kind": "near_duplicate_text",
+   "detail": "62% of achievement text identical"
+  },
+  {
+   "a": "Bscore_5455beb9",
+   "b": "Bscore_9355fb06",
+   "kind": "shared_reference",
+   "detail": "same reference: deepak malhotra"
+  },
+  {
+   "a": "Bscore_5455beb9",
+   "b": "Bscore_ae5e31ed",
+   "kind": "shared_reference",
+   "detail": "same reference: deepak malhotra"
+  },
+  {
+   "a": "Bscore_9355fb06",
+   "b": "Bscore_ae5e31ed",
+   "kind": "shared_reference",
+   "detail": "same reference: deepak malhotra"
+  },
+  {
+   "a": "Bscore_2a924ecf",
+   "b": "Bscore_3bb89a5c",
+   "kind": "shared_contact",
+   "detail": "same phone under two names"
+  },
+  {
+   "a": "Bscore_2a924ecf",
+   "b": "Bscore_3bb89a5c",
+   "kind": "near_duplicate_text",
+   "detail": "100% of achievement text identical"
+  },
+  {
+   "a": "Bscore_2a924ecf",
+   "b": "Bscore_77ff49ba",
+   "kind": "shared_contact",
+   "detail": "same phone under two names"
+  },
+  {
+   "a": "Bscore_2a924ecf",
+   "b": "Bscore_77ff49ba",
+   "kind": "near_duplicate_text",
+   "detail": "100% of achievement text identical"
+  },
+  {
+   "a": "Bscore_3bb89a5c",
+   "b": "Bscore_77ff49ba",
+   "kind": "shared_contact",
+   "detail": "same phone under two names"
+  },
+  {
+   "a": "Bscore_3bb89a5c",
+   "b": "Bscore_77ff49ba",
+   "kind": "near_duplicate_text",
+   "detail": "100% of achievement text identical"
+  }
+ ],
+ "clusters": [
+  {
+   "id": "C1",
+   "type": "ring",
+   "members": [
+    "Bscore_102b8dd8",
+    "Bscore_5455beb9",
+    "Bscore_9355fb06",
+    "Bscore_ae0ca857",
+    "Bscore_ae5e31ed"
+   ],
+   "signals": [
+    "near_duplicate_text",
+    "phantom_employer",
+    "shared_reference"
+   ],
+   "phantom_employers": [
+    "Zentrix Ops Solutions",
+    "Zentrix Ops Solutions Pvt. Ltd."
+   ],
+   "reason": "5 applicants linked by 3 independent signals: all cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record; the same reference (Deepak Malhotra); near-identical achievement text",
+   "links": [
+    {
+     "a": "Bscore_102b8dd8",
+     "b": "Bscore_ae0ca857",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record"
+    },
+    {
+     "a": "Bscore_102b8dd8",
+     "b": "Bscore_5455beb9",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record"
+    },
+    {
+     "a": "Bscore_102b8dd8",
+     "b": "Bscore_9355fb06",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record"
+    },
+    {
+     "a": "Bscore_102b8dd8",
+     "b": "Bscore_ae5e31ed",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record"
+    },
+    {
+     "a": "Bscore_ae0ca857",
+     "b": "Bscore_5455beb9",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Zentrix Ops Solutions', which has no company record"
+    },
+    {
+     "a": "Bscore_ae0ca857",
+     "b": "Bscore_9355fb06",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Zentrix Ops Solutions', which has no company record"
+    },
+    {
+     "a": "Bscore_ae0ca857",
+     "b": "Bscore_ae5e31ed",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Zentrix Ops Solutions', which has no company record"
+    },
+    {
+     "a": "Bscore_5455beb9",
+     "b": "Bscore_9355fb06",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Zentrix Ops Solutions', which has no company record"
+    },
+    {
+     "a": "Bscore_5455beb9",
+     "b": "Bscore_ae5e31ed",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Zentrix Ops Solutions', which has no company record"
+    },
+    {
+     "a": "Bscore_9355fb06",
+     "b": "Bscore_ae5e31ed",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record"
+    },
+    {
+     "a": "Bscore_102b8dd8",
+     "b": "Bscore_ae0ca857",
+     "kind": "shared_reference",
+     "detail": "same reference: deepak malhotra"
+    },
+    {
+     "a": "Bscore_102b8dd8",
+     "b": "Bscore_5455beb9",
+     "kind": "shared_reference",
+     "detail": "same reference: deepak malhotra"
+    },
+    {
+     "a": "Bscore_102b8dd8",
+     "b": "Bscore_5455beb9",
+     "kind": "near_duplicate_text",
+     "detail": "58% of achievement text identical"
+    },
+    {
+     "a": "Bscore_102b8dd8",
+     "b": "Bscore_9355fb06",
+     "kind": "shared_reference",
+     "detail": "same reference: deepak malhotra"
+    },
+    {
+     "a": "Bscore_102b8dd8",
+     "b": "Bscore_ae5e31ed",
+     "kind": "shared_reference",
+     "detail": "same reference: deepak malhotra"
+    },
+    {
+     "a": "Bscore_ae0ca857",
+     "b": "Bscore_5455beb9",
+     "kind": "shared_reference",
+     "detail": "same reference: deepak malhotra"
+    },
+    {
+     "a": "Bscore_ae0ca857",
+     "b": "Bscore_9355fb06",
+     "kind": "shared_reference",
+     "detail": "same reference: deepak malhotra"
+    },
+    {
+     "a": "Bscore_ae0ca857",
+     "b": "Bscore_ae5e31ed",
+     "kind": "shared_reference",
+     "detail": "same reference: deepak malhotra"
+    },
+    {
+     "a": "Bscore_ae0ca857",
+     "b": "Bscore_ae5e31ed",
+     "kind": "near_duplicate_text",
+     "detail": "62% of achievement text identical"
+    },
+    {
+     "a": "Bscore_5455beb9",
+     "b": "Bscore_9355fb06",
+     "kind": "shared_reference",
+     "detail": "same reference: deepak malhotra"
+    },
+    {
+     "a": "Bscore_5455beb9",
+     "b": "Bscore_ae5e31ed",
+     "kind": "shared_reference",
+     "detail": "same reference: deepak malhotra"
+    },
+    {
+     "a": "Bscore_9355fb06",
+     "b": "Bscore_ae5e31ed",
+     "kind": "shared_reference",
+     "detail": "same reference: deepak malhotra"
+    }
+   ]
+  },
+  {
+   "id": "C2",
+   "type": "ring",
+   "members": [
+    "Bscore_2a924ecf",
+    "Bscore_3bb89a5c",
+    "Bscore_77ff49ba"
+   ],
+   "signals": [
+    "near_duplicate_text",
+    "phantom_employer",
+    "shared_contact"
+   ],
+   "phantom_employers": [
+    "Brightloop Analytics"
+   ],
+   "reason": "3 applicants linked by 3 independent signals: all cite 'Brightloop Analytics', which has no company record; the same contact details under different names; near-identical achievement text",
+   "links": [
+    {
+     "a": "Bscore_2a924ecf",
+     "b": "Bscore_3bb89a5c",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Brightloop Analytics', which has no company record"
+    },
+    {
+     "a": "Bscore_2a924ecf",
+     "b": "Bscore_77ff49ba",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Brightloop Analytics', which has no company record"
+    },
+    {
+     "a": "Bscore_3bb89a5c",
+     "b": "Bscore_77ff49ba",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Brightloop Analytics', which has no company record"
+    },
+    {
+     "a": "Bscore_2a924ecf",
+     "b": "Bscore_3bb89a5c",
+     "kind": "shared_contact",
+     "detail": "same phone under two names"
+    },
+    {
+     "a": "Bscore_2a924ecf",
+     "b": "Bscore_3bb89a5c",
+     "kind": "near_duplicate_text",
+     "detail": "100% of achievement text identical"
+    },
+    {
+     "a": "Bscore_2a924ecf",
+     "b": "Bscore_77ff49ba",
+     "kind": "shared_contact",
+     "detail": "same phone under two names"
+    },
+    {
+     "a": "Bscore_2a924ecf",
+     "b": "Bscore_77ff49ba",
+     "kind": "near_duplicate_text",
+     "detail": "100% of achievement text identical"
+    },
+    {
+     "a": "Bscore_3bb89a5c",
+     "b": "Bscore_77ff49ba",
+     "kind": "shared_contact",
+     "detail": "same phone under two names"
+    },
+    {
+     "a": "Bscore_3bb89a5c",
+     "b": "Bscore_77ff49ba",
+     "kind": "near_duplicate_text",
+     "detail": "100% of achievement text identical"
+    }
+   ]
+  },
+  {
+   "id": "C3",
+   "type": "watch",
+   "members": [
+    "Bscore_41789cc3",
+    "Bscore_7db1f37f"
+   ],
+   "signals": [
+    "phantom_employer"
+   ],
+   "phantom_employers": [
+    "Kochi Spice Traders"
+   ],
+   "reason": "2 applicants share one signal (phantom_employer); not enough to call a ring",
+   "links": [
+    {
+     "a": "Bscore_41789cc3",
+     "b": "Bscore_7db1f37f",
+     "kind": "phantom_employer",
+     "detail": "both cite 'Kochi Spice Traders', which has no company record"
+    }
+   ]
+  },
+  {
+   "id": "C4",
+   "type": "explained_cohort",
+   "members": [
+    "Bscore_7478dfba",
+    "Bscore_8fbf9dce",
+    "Bscore_af280529",
+    "Bscore_dda0adbb"
+   ],
+   "signals": [
+    "shared_employer"
+   ],
+   "employer": "BYJU'S (Think & Learn Pvt Ltd)",
+   "reason": "BYJU'S headcount fell 19% (34,613 \u2192 27,969) around Aug 2023, when these applicants left",
+   "evidence": {
+    "source": "crustdata:/company/enrich",
+    "field": "headcount.timeseries",
+    "record": "crustdata_company_id=5705",
+    "explained": true,
+    "drop_pct": 19.2,
+    "from": 34613,
+    "to": 27969,
+    "month": "Aug 2023",
+    "spread_months": 2,
+    "why": "BYJU'S headcount fell 19% (34,613 \u2192 27,969) around Aug 2023, when these applicants left"
+   },
+   "links": [
+    {
+     "a": "Bscore_7478dfba",
+     "b": "Bscore_dda0adbb",
+     "kind": "shared_employer",
+     "detail": "both left BYJU'S (Think & Learn Pvt Ltd) around Jul 2023"
+    },
+    {
+     "a": "Bscore_7478dfba",
+     "b": "Bscore_8fbf9dce",
+     "kind": "shared_employer",
+     "detail": "both left BYJU'S (Think & Learn Pvt Ltd) around Jul 2023"
+    },
+    {
+     "a": "Bscore_7478dfba",
+     "b": "Bscore_af280529",
+     "kind": "shared_employer",
+     "detail": "both left BYJU'S (Think & Learn Pvt Ltd) around Jul 2023"
+    },
+    {
+     "a": "Bscore_dda0adbb",
+     "b": "Bscore_8fbf9dce",
+     "kind": "shared_employer",
+     "detail": "both left Byjus around Aug 2023"
+    },
+    {
+     "a": "Bscore_dda0adbb",
+     "b": "Bscore_af280529",
+     "kind": "shared_employer",
+     "detail": "both left Byjus around Aug 2023"
+    },
+    {
+     "a": "Bscore_8fbf9dce",
+     "b": "Bscore_af280529",
+     "kind": "shared_employer",
+     "detail": "both left Byjus around Aug 2023"
+    }
+   ]
+  }
+ ],
+ "decisions": {
+  "Bscore_102b8dd8": {
+   "decision": "HOLD",
+   "why": "member of C1: 5 applicants linked by 3 independent signals: all cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record; the same reference (Deepak Malhotra); near-identical achievement text",
+   "cluster": "C1"
+  },
+  "Bscore_ae0ca857": {
+   "decision": "HOLD",
+   "why": "member of C1: 5 applicants linked by 3 independent signals: all cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record; the same reference (Deepak Malhotra); near-identical achievement text",
+   "cluster": "C1"
+  },
+  "Bscore_5455beb9": {
+   "decision": "HOLD",
+   "why": "member of C1: 5 applicants linked by 3 independent signals: all cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record; the same reference (Deepak Malhotra); near-identical achievement text",
+   "cluster": "C1"
+  },
+  "Bscore_9355fb06": {
+   "decision": "HOLD",
+   "why": "member of C1: 5 applicants linked by 3 independent signals: all cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record; the same reference (Deepak Malhotra); near-identical achievement text",
+   "cluster": "C1"
+  },
+  "Bscore_ae5e31ed": {
+   "decision": "HOLD",
+   "why": "member of C1: 5 applicants linked by 3 independent signals: all cite 'Zentrix Ops Solutions Pvt. Ltd.', which has no company record; the same reference (Deepak Malhotra); near-identical achievement text",
+   "cluster": "C1"
+  },
+  "Bscore_2a924ecf": {
+   "decision": "HOLD",
+   "why": "member of C2: 3 applicants linked by 3 independent signals: all cite 'Brightloop Analytics', which has no company record; the same contact details under different names; near-identical achievement text",
+   "cluster": "C2"
+  },
+  "Bscore_3bb89a5c": {
+   "decision": "HOLD",
+   "why": "member of C2: 3 applicants linked by 3 independent signals: all cite 'Brightloop Analytics', which has no company record; the same contact details under different names; near-identical achievement text",
+   "cluster": "C2"
+  },
+  "Bscore_77ff49ba": {
+   "decision": "HOLD",
+   "why": "member of C2: 3 applicants linked by 3 independent signals: all cite 'Brightloop Analytics', which has no company record; the same contact details under different names; near-identical achievement text",
+   "cluster": "C2"
+  },
+  "Bscore_7478dfba": {
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation (BYJU'S headcount fell 19% (34,613 \u2192 27,969) around Aug 2023, when these applicants left)",
+   "cluster": "C4"
+  },
+  "Bscore_dda0adbb": {
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation (BYJU'S headcount fell 19% (34,613 \u2192 27,969) around Aug 2023, when these applicants left)",
+   "cluster": "C4"
+  },
+  "Bscore_8fbf9dce": {
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation (BYJU'S headcount fell 19% (34,613 \u2192 27,969) around Aug 2023, when these applicants left)",
+   "cluster": "C4"
+  },
+  "Bscore_af280529": {
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation (BYJU'S headcount fell 19% (34,613 \u2192 27,969) around Aug 2023, when these applicants left)",
+   "cluster": "C4"
+  },
+  "Bscore_8d32ca0f": {
+   "decision": "VERIFY",
+   "why": "1 contradicted claim(s): Unacademy had already raised Series D (2019-06-26) before the candidate joined in Jan 2022, so it was at Series D+ stage, not seed.",
+   "cluster": null
+  },
+  "Bscore_01479e8f": {
+   "decision": "VERIFY",
+   "why": "1 contradicted claim(s): Claimed start Jan 2021, but Crustdata (YC F24) was founded in 2024 \u2014 3 years later.",
+   "cluster": null
+  },
+  "Bscore_c6f3777d": {
+   "decision": "VERIFY",
+   "why": "1 contradicted claim(s): Claimed 80 reports, but Crustdata (YC F24) had about 47 employees in total around Nov 2026.",
+   "cluster": null
+  },
+  "Bscore_b5078ef5": {
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation",
+   "cluster": null
+  },
+  "Bscore_4007dcd8": {
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation",
+   "cluster": null
+  },
+  "Bscore_27f1dadf": {
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation",
+   "cluster": null
+  },
+  "Bscore_41789cc3": {
+   "decision": "VERIFY",
+   "why": "2 claim(s) need employer confirmation",
+   "cluster": "C3"
+  },
+  "Bscore_7db1f37f": {
+   "decision": "VERIFY",
+   "why": "2 claim(s) need employer confirmation",
+   "cluster": "C3"
+  },
+  "Bscore_61d7679b": {
+   "decision": "VERIFY",
+   "why": "1 claim(s) need employer confirmation",
+   "cluster": null
+  }
+ },
+ "applicants": {
+  "Bscore_102b8dd8": {
+   "name": "Rohit Sinha",
+   "overall": "needs_review",
+   "summary": "1 for human review, 3 unverified",
+   "file": "01_rohit_sinha.pdf"
+  },
+  "Bscore_ae0ca857": {
+   "name": "Ananya Ghosh",
+   "overall": "awaiting_responses",
+   "summary": "4 unverified",
+   "file": "02_ananya_ghosh.pdf"
+  },
+  "Bscore_5455beb9": {
+   "name": "Farhan Ali",
+   "overall": "awaiting_responses",
+   "summary": "4 unverified",
+   "file": "03_farhan_ali.pdf"
+  },
+  "Bscore_9355fb06": {
+   "name": "Sneha Kulkarni",
+   "overall": "needs_review",
+   "summary": "1 for human review, 3 unverified",
+   "file": "04_sneha_kulkarni.pdf"
+  },
+  "Bscore_ae5e31ed": {
+   "name": "Manish Yadav",
+   "overall": "awaiting_responses",
+   "summary": "4 unverified",
+   "file": "05_manish_yadav.pdf"
+  },
+  "Bscore_2a924ecf": {
+   "name": "Tarun Gill",
+   "overall": "awaiting_responses",
+   "summary": "3 unverified",
+   "file": "06_tarun_gill.pdf"
+  },
+  "Bscore_3bb89a5c": {
+   "name": "Pallavi Joshi",
+   "overall": "awaiting_responses",
+   "summary": "3 unverified",
+   "file": "07_pallavi_joshi.pdf"
+  },
+  "Bscore_77ff49ba": {
+   "name": "Varun Bhatt",
+   "overall": "awaiting_responses",
+   "summary": "3 unverified",
+   "file": "08_varun_bhatt.pdf"
+  },
+  "Bscore_7478dfba": {
+   "name": "Kavya Raman",
+   "overall": "awaiting_responses",
+   "summary": "2 verified independently, 2 unverified",
+   "file": "09_kavya_raman.pdf"
+  },
+  "Bscore_dda0adbb": {
+   "name": "Harsh Vardhan",
+   "overall": "awaiting_responses",
+   "summary": "2 verified independently, 2 unverified",
+   "file": "10_harsh_vardhan.pdf"
+  },
+  "Bscore_8fbf9dce": {
+   "name": "Meghna Pillai",
+   "overall": "awaiting_responses",
+   "summary": "2 verified independently, 2 unverified",
+   "file": "11_meghna_pillai.pdf"
+  },
+  "Bscore_af280529": {
+   "name": "Aditya Rao",
+   "overall": "needs_review",
+   "summary": "2 verified independently, 1 for human review, 2 unverified",
+   "file": "12_aditya_rao.pdf"
+  },
+  "Bscore_8d32ca0f": {
+   "name": "Ishaan Mehta",
+   "overall": "discrepancies_found",
+   "summary": "2 verified independently, 1 discrepancies, 2 unverified",
+   "file": "13_ishaan_mehta.pdf"
+  },
+  "Bscore_01479e8f": {
+   "name": "Neha Arora",
+   "overall": "discrepancies_found",
+   "summary": "1 discrepancies, 3 unverified",
+   "file": "14_neha_arora.pdf"
+  },
+  "Bscore_c6f3777d": {
+   "name": "Sameer Khan",
+   "overall": "discrepancies_found",
+   "summary": "2 verified independently, 1 discrepancies, 2 unverified",
+   "file": "15_sameer_khan.pdf"
+  },
+  "Bscore_b5078ef5": {
+   "name": "Rahul Verma",
+   "overall": "needs_review",
+   "summary": "1 verified independently, 1 for human review, 2 unverified",
+   "file": "16_rahul_verma.pdf"
+  },
+  "Bscore_4007dcd8": {
+   "name": "Priya Menon",
+   "overall": "awaiting_responses",
+   "summary": "1 verified independently, 3 unverified",
+   "file": "17_priya_menon.pdf"
+  },
+  "Bscore_27f1dadf": {
+   "name": "Arjun Reddy",
+   "overall": "awaiting_responses",
+   "summary": "2 verified independently, 2 unverified",
+   "file": "18_arjun_reddy.pdf"
+  },
+  "Bscore_41789cc3": {
+   "name": "Leela Thomas",
+   "overall": "awaiting_responses",
+   "summary": "3 unverified",
+   "file": "19_leela_thomas.pdf"
+  },
+  "Bscore_7db1f37f": {
+   "name": "Joseph Mathew",
+   "overall": "awaiting_responses",
+   "summary": "3 unverified",
+   "file": "20_joseph_mathew.pdf"
+  },
+  "Bscore_61d7679b": {
+   "name": "Rahul Verma",
+   "overall": "awaiting_responses",
+   "summary": "2 verified independently, 2 unverified",
+   "file": "21_rahul_verma_v2.pdf"
+  }
+ },
+ "counts": {
+  "HOLD": 8,
+  "VERIFY": 13
+ },
+ "duration_s": 95.1
+}
