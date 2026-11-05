@@ -49,6 +49,14 @@ th{color:var(--muted);font-weight:600}
 tr.merged td{opacity:.55}
 details summary{cursor:pointer;color:var(--accent);font-size:12px}
 .sig{font-size:12px;margin:3px 0;padding:4px 6px;border-radius:6px;background:var(--bg)}
+.sig.used{border-left:3px solid var(--accent)}
+.eh{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin:8px 0 2px}
+.q{font-size:12px;color:var(--muted);margin:2px 0;font-style:italic}
+.t{font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-right:6px;text-transform:uppercase}
+.t-official{background:var(--purple-bg);color:var(--purple)}.t-news{background:var(--good-bg);color:var(--good)}
+.t-weak{background:var(--warn-bg);color:var(--warn)}.t-data{background:var(--info-bg);color:var(--muted)}
+.conf{font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;text-transform:uppercase;margin-left:4px;background:var(--info-bg);color:var(--muted)}
+.conf.c-high{background:var(--good-bg);color:var(--good)}.conf.c-low{background:var(--warn-bg);color:var(--warn)}
 .sig .k{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-right:6px}
 .sig a{color:var(--accent)}
 .muted{color:var(--muted)}
@@ -94,6 +102,22 @@ pre{white-space:pre-wrap;font:12px/1.5 ui-monospace,Consolas,monospace;backgroun
 <script>
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const TIER = {official: "court / registry", news: "news outlet", weak: "blog / social (not counted)", data: "data"};
+function srcLine(s){
+  return `<div class="sig ${s.used ? "used" : ""}"><span class="t t-${esc(s.tier || "data")}">${esc(TIER[s.tier] || s.tier || "data")}</span>
+    <b>${esc(s.publisher || s.source)}</b>${s.published ? ` · ${esc(s.published)}` : ""} · ${esc(s.says)}
+    ${s.url ? ` · <a href="${esc(s.url)}" target="_blank" rel="noopener">open source</a>` : ""}
+    ${s.quote ? `<div class="q">“${esc(s.quote)}”</div>` : ""}
+    <div class="muted" style="font-size:11px">${esc(s.source)}${s.record ? " · " + esc(s.record) : ""} · retrieved ${esc(s.retrieved_at)}</div></div>`;
+}
+function uniq(sigs){ const seen = new Set(); return sigs.filter(s => { const k = s.url || s.says; if (seen.has(k)) return false; seen.add(k); return true; }); }
+function evidence(sigs){
+  const used = uniq(sigs.filter(s => s.used)), usedKeys = new Set(used.map(s => s.url || s.says));
+  const other = uniq(sigs.filter(s => !s.used && !usedKeys.has(s.url || s.says)));
+  return (used.length ? `<div class="eh">Decided by</div>${used.map(srcLine).join("")}` : "") +
+         (other.length ? `<div class="eh">Also considered</div>${other.map(srcLine).join("")}` : "");
+}
+const CONF = c => c ? `<span class="conf c-${esc(c)}">${esc(c)} confidence</span>` : "";
 const LBL = {DEAD:"Dead", INSOLVENT:"Insolvent", ACQUIRED:"Acquired", RENAMED:"Renamed", DISTRESSED:"Distressed", REVIEW:"Needs a person", ALIVE:"Alive", CANT_TELL:"Can't tell"};
 const KIND = {legal:"court record", insolvency:"insolvency", shutdown:"shutdown", acquired:"acquired", renamed:"renamed", website:"website",
   hiring_freeze:"hiring", headcount_drop:"headcount", exodus:"exodus", stale_funding:"funding", alive:"sign of life", layoffs:"layoffs",
@@ -116,8 +140,8 @@ $("#one_go").onclick = async () => {
     $("#one_out").innerHTML = `<div class="card" style="margin:12px 0 0">
       <div class="row"><b style="font-size:16px">${esc(cn.name || r.input.name)}</b><span class="pill s-${r.status}">${LBL[r.status] || r.status}</span>${r.zombie ? '<span class="z">ZOMBIE</span>' : ""}
       ${r.since ? `<span class="muted">since ${esc(r.since)}</span>` : ""}<span class="muted" style="margin-left:auto">${cn.crustdata_company_id ? `Crustdata: status <b>${esc(cn.crustdata_status)}</b>, ${(cn.headcount_now || 0).toLocaleString()} employees, ${((r.people || {}).still_current || 0).toLocaleString()} list it as current` : "no Crustdata record"}</span></div>
-      <p style="margin:8px 0">${esc(r.why)}</p>
-      ${(r.signals || []).map(s => `<div class="sig"><span class="k">${esc(KIND[s.kind] || s.kind)}</span>${esc(s.says)}${s.url ? ` · <a href="${esc(s.url)}" target="_blank" rel="noopener">source</a>` : ""}<span class="muted"> · ${esc(s.source)} · ${esc(s.retrieved_at)}</span></div>`).join("")}</div>`;
+      <p style="margin:8px 0">${esc(r.why)} ${CONF(r.confidence)}</p>
+      ${evidence(r.signals || [])}</div>`;
   } catch (e) { $("#one_out").innerHTML = `<p style="color:var(--bad)">Check failed: ${esc(e)}</p>`; }
   $("#one_go").disabled = false;
 };
@@ -166,9 +190,7 @@ async function show(id){
       <td><span class="pill s-${a.status}">${LBL[a.status] || a.status}</span>${a.zombie ? '<span class="z">ZOMBIE</span>' : ""}</td>
       <td class="muted" style="font-size:12px">${cn.crustdata_company_id ? `status <b>${esc(cn.crustdata_status || "?")}</b><br>${(cn.headcount_now || 0).toLocaleString()} employees<br>${((a.people || {}).still_current || 0).toLocaleString()} list it as current` : "no record"}</td>
       <td>${esc(a.since || "")}</td>
-      <td>${esc(a.why)}<details><summary>${sigs.length} piece${sigs.length === 1 ? "" : "s"} of evidence</summary>${sigs.map(s =>
-        `<div class="sig"><span class="k">${esc(KIND[s.kind] || s.kind)}</span>${esc(s.says)}${s.url ? ` · <a href="${esc(s.url)}" target="_blank" rel="noopener">source</a>` : ""}
-         <span class="muted"> · ${esc(s.source)}${s.record ? " · " + esc(s.record) : ""} · ${esc(s.retrieved_at)}</span></div>`).join("")}</details></td>
+      <td>${esc(a.why)} ${CONF(a.confidence)}<details><summary>${uniq(sigs.filter(s => s.used)).length} source(s) decided it · ${uniq(sigs).length} considered</summary>${evidence(sigs)}</details></td>
       <td style="font-size:12px">${(acts[a.row] || []).map(x => `<div>✔ ${esc(x.text)}${x.result !== "done" ? ` <span class="muted">(${esc(x.result)})</span>` : ""}</div>`).join("")}</td></tr>`;
   }).join("") + `</table>`;
   $("#outputs").innerHTML = `<h3 style="margin-top:0">Outputs</h3>

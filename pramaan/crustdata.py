@@ -3,10 +3,9 @@
 Modes (PRAMAAN_MODE):
   live    -> real API; every response is cached to data/cache and reused on repeat
   replay  -> cache only (for the stage, if WiFi dies)
-  fixture -> a local fake that serves fixtures/*.json in the same response shapes
 
 Every call returns (data, meta). Failures never raise: data is None and meta["error"]
-explains why, so the checks can degrade to UNVERIFIED instead of crashing.
+explains why, so an account degrades to CANT_TELL instead of crashing the run.
 """
 from __future__ import annotations
 
@@ -51,14 +50,6 @@ def _post(path: str, body: dict, log: Optional[CallLog] = None) -> tuple[Any, di
     key = _key(path, body)
     cache_file = config.CACHE_DIR / f"{key}.json"
     meta = {"endpoint": path, "cache_key": key, "body": body}
-
-    if config.MODE == "fixture":
-        from .fixture_api import handle
-        data = handle(path, body)
-        meta.update(source="fixture", credits=0)
-        if log:
-            log.add(meta)
-        return data, meta
 
     if cache_file.exists():
         data = json.loads(cache_file.read_text(encoding="utf-8"))
@@ -116,13 +107,6 @@ def _post(path: str, body: dict, log: Optional[CallLog] = None) -> tuple[Any, di
 
 # ---------- Endpoints ----------
 
-def enrich_person(profile_url: str, log=None):
-    return _post("/person/enrich", {
-        "professional_network_profile_urls": [profile_url],
-        "fields": ["basic_profile", "experience", "education", "social_handles"],
-    }, log)
-
-
 def search_people(filters: dict, limit: int = 10, log=None):
     return _post("/person/search", {"filters": filters, "limit": limit}, log)
 
@@ -144,5 +128,8 @@ def identify_company(*, name: str = None, domain: str = None, log=None):
     return _post("/company/identify", body, log)
 
 
-def web_search(query: str, log=None):
-    return _post("/web/search/live", {"query": query, "sources": ["web", "news"]}, log)
+def web_search(query: str, log=None, site: str = None):
+    body = {"query": query, "sources": ["web", "news"]}
+    if site:
+        body["site"] = site  # restrict to one domain, e.g. the insolvency court's site
+    return _post("/web/search/live", body, log)

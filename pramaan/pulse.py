@@ -16,15 +16,14 @@ from urllib.parse import urlparse
 import httpx
 from pydantic import BaseModel, Field
 
-from . import checks, config, crustdata as cd, llm
+from . import companies, config, crustdata as cd, llm, sources
 from .dates import fmt, to_index, today_index
 from .matching import same_company
 from .normalize import companies_from_enrich, people_from_search
 
 NOW = lambda: datetime.now(timezone.utc).isoformat(timespec="seconds")  # noqa: E731
-# Only official court / registry sites count as a legal record; everything else is press.
-OFFICIAL = re.compile(r"(nclt\.gov\.in|nclat\.nic\.in|ibbi\.gov\.in|mca\.gov\.in|company-information\.service\.gov\.uk|"
-                      r"thegazette\.co\.uk|courtlistener\.com|sci\.gov\.in|ecourts\.gov\.in)", re.I)
+FAILURE_WORDS = re.compile(r"shut|insolv|bankrupt|liquidat|collapse|wind(s|ing)? down|ceas|halt|NCLT|administration", re.I)
+CREDIBLE = ("official", "news", "trade")
 
 
 class Signal(BaseModel):
@@ -36,6 +35,11 @@ class Signal(BaseModel):
     record: Optional[str] = None
     value: Optional[str] = None
     date: Optional[str] = None
+    publisher: Optional[str] = None   # e.g. economictimes.com, or "Crustdata" for data signals
+    tier: Optional[str] = None        # official | news | weak | data
+    published: Optional[str] = None   # article date when the result states one
+    quote: Optional[str] = None       # the source's own words
+    used: bool = False                # True if the rule that set the status relied on it
     retrieved_at: str = Field(default_factory=NOW)
 
 
@@ -65,12 +69,14 @@ A company that ACQUIRES others was not acquired. Report the CURRENT state: if a 
 spun off or demerged, it is independent today. A subsidiary's liquidation, or a SOLVENT voluntary liquidation, is a
 restructuring, not the main company failing. Shutting down one product, app feature, office or business line is NOT
 the company shutting down: only set ceased_operations if the whole company stopped operating.
-Layoffs alone are not a shutdown. If the results are about a different company with a similar name, say so."""
+Layoffs alone are not a shutdown. Different companies often share a name: a result about a company with a different
+website, country or business from the one described is NOT this company. Use only results about this company, and set
+about_this_company=false if none are."""
 
 
 # ---------------- evidence gathering ----------------
 
-def _crustdata(name: str, domain: Optional[str], cache: checks.CompanyCache, log):
+def _crustdata(name: str, domain: Optional[str], cache: companies.CompanyCache, log):
     cid = cache.canonical_id(name, domain)
     if not cid:
         return None, None
@@ -169,104 +175,155 @@ def website_signal(domain: Optional[str]) -> Optional[Signal]:
                       says=f"Website unreachable ({type(e).__name__}).")
 
 
-def news_signals(name: str, log) -> tuple[list[Signal], Optional[NewsReading], list[dict]]:
-    q = f"{name} shut down OR insolvency OR bankruptcy OR liquidation OR acquired"
-    data, meta = cd.web_search(q, log)
+def news_signals(name: str, log, who: str = "") -> tuple[list[Signal], Optional[NewsReading], list[dict]]:
+    data, _ = cd.web_search(f"{name} shut down OR insolvency OR bankruptcy OR liquidation OR acquired", log)
     results = [r for r in ((data or {}).get("results") or []) if isinstance(r, dict)][:8]
+    # Any hint of failure -> also search the insolvency court's own site, so an official record can be cited
+    if any(FAILURE_WORDS.search(f"{r.get('title', '')} {r.get('snippet', '')}") for r in results):
+        court, _ = cd.web_search(f"{name} insolvency", log, site="nclt.gov.in")
+        key = name.lower().split()[0]
+        results += [r for r in ((court or {}).get("results") or [])[:3]
+                    if isinstance(r, dict) and key in f"{r.get('title', '')} {r.get('snippet', '')}".lower()]
     if not results:
         return [], None, []
-    out: list[Signal] = []
-    listing = "\n".join(f"[{i}] {r.get('title', '')} | {r.get('snippet', '')[:300]} | {r.get('url', '')[:120]}"
-                        for i, r in enumerate(results))
+    cited = [sources.cite(r) for r in results]
+    listing = "\n".join(f"[{i}] ({c['publisher']}, {c['tier']}{', ' + c['published'] if c['published'] else ''}) "
+                        f"{c['title']} | {c['snippet'][:300]}" for i, c in enumerate(cited))
     try:
-        reading = llm._parse(NewsReading, NEWS_SYSTEM, f"Company: {name}\n\nResults:\n{listing}")
+        reading = llm._parse(NewsReading, NEWS_SYSTEM, f"Company: {name}{who}\n\nResults:\n{listing}")
     except llm.LLMError:
-        return [], None, results
+        return [], None, cited
     if not reading.about_this_company:
-        return [], reading, results
-    idx = [i for i in reading.supporting_results if 0 <= i < len(results)] or [0]
-    official = [r for r in results if OFFICIAL.search(r.get("url") or "")]
+        return [], reading, cited
+    idx = [i for i in reading.supporting_results if 0 <= i < len(cited)] or [0]
 
     def sig(kind, i, says, strength="strong"):
-        r = results[i]
-        return Signal(kind=kind, strength=strength, source="crustdata:/web/search/live", url=r.get("url"),
-                      value=(r.get("title") or "")[:140], date=reading.event_date, says=says)
+        c = cited[i]
+        return Signal(kind=kind, strength=strength, source="crustdata:/web/search/live", url=c["url"], value=c["title"][:140],
+                      date=reading.event_date, publisher=c["publisher"], tier=c["tier"], published=c["published"],
+                      quote=c["snippet"][:280], says=says)
 
-    title = lambda i: (results[i].get("title") or "")[:110]  # noqa: E731
+    title = lambda i: cited[i]["title"][:110]  # noqa: E731
+    official = [i for i, c in enumerate(cited) if c["tier"] == "official"]
+    out: list[Signal] = []
     if reading.insolvency_or_bankruptcy and reading.subsidiary_or_solvent_only:
-        i = idx[0]
-        out.append(sig("restructuring", i, f"Subsidiary / solvent liquidation only, not a failure: “{title(i)}”", "support"))
+        out.append(sig("restructuring", idx[0], f"Subsidiary / solvent liquidation only, not a failure: “{title(idx[0])}”", "support"))
     elif reading.insolvency_or_bankruptcy and reading.company_role in ("subject", "unclear"):
-        if official:
-            r = official[0]
-            out.append(Signal(kind="legal", strength="strong", source="crustdata:/web/search/live", url=r.get("url"),
-                              value=(r.get("title") or "")[:140], date=reading.event_date,
-                              says=f"Official court / registry record: {(r.get('title') or '')[:110]}"))
-        for i in idx[:3]:
-            out.append(sig("insolvency", i, f"Insolvency / bankruptcy reported: “{title(i)}”"))
+        for i in official[:1]:
+            out.append(sig("legal", i, f"Official court / registry record: “{title(i)}”"))
+        for i in idx[:4]:
+            if i not in official:
+                out.append(sig("insolvency", i, f"Insolvency / bankruptcy reported: “{title(i)}”"))
     elif official and reading.company_role == "creditor_or_petitioner":
-        out.append(Signal(kind="court_mention", strength="support", source="crustdata:/web/search/live",
-                          url=official[0].get("url"), value=(official[0].get("title") or "")[:140],
-                          says="Named in a court case as creditor / petitioner, not as the company being wound up."))
+        out.append(sig("court_mention", official[0], "Named in a court case as creditor / petitioner, not as the company being wound up.",
+                       "support"))
     if reading.ceased_operations:
-        for i in idx[:3]:
+        for i in idx[:4]:
             out.append(sig("shutdown", i, f"Shutdown reported: “{title(i)}”"))
     if reading.acquired_by and not reading.acquisition_still_current:
-        out.append(sig("separated", idx[0], f"Was owned by {reading.acquired_by} but has since separated: “{title(idx[0])}”",
-                       "support"))
+        out.append(sig("separated", idx[0], f"Was owned by {reading.acquired_by} but has since separated: “{title(idx[0])}”", "support"))
     if reading.acquired_by and reading.acquisition_still_current:
-        for i in idx[:3]:  # one signal per supporting source, so a single article can't make it 'acquired'
-            out.append(sig("acquired", i, f"Acquired by {reading.acquired_by}: “{title(i)}”",
-                           "strong" if len(idx) >= 2 else "support"))
-    if reading.renamed_to:
-        out.append(sig("renamed", idx[0], f"Renamed to {reading.renamed_to}: “{title(idx[0])}”"))
+        for i in idx[:4]:
+            out.append(sig("acquired", i, f"Acquired by {reading.acquired_by}: “{title(i)}”"))
+    if reading.renamed_to and not same_company(reading.renamed_to, name):  # 'Zepto' -> 'Zepto Private Limited' is no rename
+        for i in idx[:2]:
+            out.append(sig("renamed", i, f"Renamed to {reading.renamed_to}: “{title(i)}”"))
     if reading.layoffs_only:
         out.append(sig("layoffs", idx[0], "Layoffs reported (not a shutdown).", "support"))
-    return out, reading, results
+    return out, reading, cited
 
 
 # ---------------- decision ----------------
 
-def decide(signals: list[Signal], reading: Optional[NewsReading], found: bool) -> tuple[str, str]:
+def _pubs(signals, kind) -> list[Signal]:
+    """One signal per distinct credible publisher (official or news) for this kind of event."""
+    seen, out = set(), []
+    for x in signals:
+        if x.kind == kind and x.tier in CREDIBLE and x.publisher and x.publisher not in seen:
+            seen.add(x.publisher)
+            out.append(x)
+    return out
+
+
+def enough(pubs: list[Signal]) -> bool:
+    """Independent confirmation: 2+ distinct publishers incl. an official or major outlet, or 3+ other publications."""
+    return (len(pubs) >= 2 and any(x.tier in ("official", "news") for x in pubs)) or len(pubs) >= 3
+
+
+def _union(*groups: list[Signal]) -> list[Signal]:
+    seen, out = set(), []
+    for g in groups:
+        for x in g:
+            if x.publisher not in seen:
+                seen.add(x.publisher)
+                out.append(x)
+    return out
+
+
+def _named(sigs: list[Signal]) -> str:
+    return " and ".join(f"{x.publisher}{' (' + x.published + ')' if x.published else ''}" for x in sigs[:3])
+
+
+def decide(signals: list[Signal], reading: Optional[NewsReading], found: bool) -> tuple[str, str, str, set]:
+    """-> (status, a reason that names its sources, confidence, the kinds of evidence the rule relied on)"""
     k = Counter(s.kind for s in signals)
     if not found and not signals:
-        return "CANT_TELL", "No company record and no public trace."
-    # Signs of life (real job openings AND a working website) veto DEAD: conflicting evidence goes to a person.
+        return "CANT_TELL", "No company record and no public trace.", "low", set()
     openings = any(s.kind == "alive" and "open job postings" in s.says for s in signals)
     site_up = any(s.kind == "alive" and s.source == "http" for s in signals)
-    alive_veto = openings and site_up
-    site_down = k["website"] > 0
-    corroboration = [n for n, ok in (("website down", site_down), ("hiring stopped", k["hiring_freeze"] > 0),
-                                     ("headcount collapse", k["headcount_drop"] > 0), ("employee exodus", k["exodus"] > 0)) if ok]
-    if k["renamed"]:
-        return "RENAMED", next(s.says for s in signals if s.kind == "renamed")
-    if k["acquired"] and not k["shutdown"]:
+    alive_veto = openings and site_up  # signs of life: open jobs AND a working website
+    corr = [(n, kind) for n, kind, ok in (("website down", "website", k["website"] > 0),
+                                          ("hiring stopped", "hiring_freeze", k["hiring_freeze"] > 0),
+                                          ("headcount collapse", "headcount_drop", k["headcount_drop"] > 0),
+                                          ("employee exodus", "exodus", k["exodus"] > 0)) if ok]
+    corr_txt, corr_kinds = ", ".join(n for n, _ in corr), {kind for _, kind in corr}
+    weak = lambda kind: sum(1 for x in signals if x.kind == kind and x.tier == "weak")  # noqa: E731
+    legal, shut, insol, acq, ren = (_pubs(signals, x) for x in ("legal", "shutdown", "insolvency", "acquired", "renamed"))
+
+    if ren:
+        return "RENAMED", f"{ren[0].says.split(':')[0]}, reported by {_named(ren)}.", "high" if len(ren) >= 2 else "medium", {"renamed"}
+    if acq and not shut:
         redirect = any(s.kind == "website" and "redirects" in (s.value or "") for s in signals)
-        if k["acquired"] >= 2 or redirect:
-            return "ACQUIRED", next(s.says for s in signals if s.kind == "acquired")
-        return "REVIEW", "One source reports an acquisition (" + next(s.says for s in signals if s.kind == "acquired") + \
-            "); not confirmed by a second source or a website redirect. A person decides."
-    if k["shutdown"] >= 2 or (k["shutdown"] and k["insolvency"]):
+        if enough(acq) or redirect:
+            return "ACQUIRED", f"{acq[0].says.split(':')[0]}, reported by {_named(acq)}" + \
+                ("; the website now redirects." if redirect else "."), "high" if len(acq) >= 3 or redirect else "medium", \
+                {"acquired", "website"}
+        return "REVIEW", f"Only one credible source ({_named(acq)}) reports an acquisition. A person decides.", "low", {"acquired"}
+    failure = _union(shut, insol)
+    if shut and (legal or enough(failure)):
+        shut = failure
         if alive_veto:
-            return "REVIEW", "Press reports a shutdown, but the company still has open jobs and a working website. A person decides."
-        if corroboration:
-            return "DEAD", f"Shutdown reported by {k['shutdown']} source(s), corroborated by " + ", ".join(corroboration) + "."
-        return "DISTRESSED", "Shutdown reported, but nothing in the data corroborates it yet."
-    if k["legal"] or k["insolvency"] >= 2:
-        tail = " (official court record)" if k["legal"] else ""
-        if alive_veto:
-            return "INSOLVENT", f"Insolvency proceedings reported{tail}; still operating (open jobs, website up)."
-        return "INSOLVENT", f"Insolvency proceedings reported{tail}" + \
-            (", corroborated by " + ", ".join(corroboration) if corroboration else "") + "."
-    if alive_veto and (k["shutdown"] + k["insolvency"]) <= 1 and not k["legal"]:
-        return "ALIVE", "Open jobs and a working website; one unconfirmed press mention was noted but doesn't change that."
-    if k["shutdown"] or k["insolvency"] or len(corroboration) >= 2:
-        why = corroboration + (["press report"] if k["shutdown"] or k["insolvency"] else [])
-        return "DISTRESSED", "Some evidence of failure (" + ", ".join(why) + "), not enough independent sources to call it."
-    return "ALIVE", "No sign of failure" + (" (open jobs, website up)." if alive_veto else ".")
+            return "REVIEW", f"{_named(shut)} report a shutdown, but the company still has open jobs and a working website. " \
+                             "A person decides.", "low", {"shutdown", "alive"}
+        if corr:
+            conf = "high" if (legal or len(shut) >= 3) else "medium"
+            return "DEAD", f"Shutdown reported by {_named(shut)}" + (", plus an official court record" if legal else "") + \
+                f"; confirmed by {corr_txt}.", conf, {"shutdown", "insolvency", "legal"} | corr_kinds
+        return "DISTRESSED", f"Shutdown reported by {_named(shut)}, but nothing in the data confirms it yet.", "low",             {"shutdown", "insolvency"}
+    if legal and not insol and alive_veto:
+        # NCLT also hears mergers, name changes and petitions that are never admitted: a filing alone isn't insolvency
+        return "REVIEW", f"An official court filing ({legal[0].publisher}) names the company, but no news reports insolvency and it " \
+                         "still has open jobs and a working website. A person reads the filing.", "low", {"legal", "alive"}
+    if legal or enough(insol):
+        src =(f"official record ({legal[0].publisher})" if legal else "") + (" and " if legal and insol else "") + \
+              (_named(insol) if insol else "")
+        tail = "; still operating (open jobs, website up)." if alive_veto else (f"; {corr_txt}." if corr else ".")
+        return "INSOLVENT", f"Insolvency proceedings: {src}{tail}", "high" if legal else "medium", {"legal", "insolvency"} | corr_kinds
+    if alive_veto:
+        noted = len(shut) + len(insol) + weak("shutdown") + weak("insolvency")
+        return "ALIVE", "Open jobs and a working website" + \
+            (f"; {noted} unconfirmed failure mention(s) noted, not enough to change that." if noted else "."), "high", {"alive"}
+    if shut or insol or len(corr) >= 2:
+        parts = ([f"reported by {_named(_union(shut, insol))}"] if shut or insol else []) + ([corr_txt] if corr else [])
+        return "DISTRESSED", "Some evidence of failure (" + "; ".join(parts) + "), not enough independent credible sources.", "low", \
+            {"shutdown", "insolvency"} | corr_kinds
+    if weak("shutdown") or weak("insolvency"):
+        return "REVIEW", "Failure reported only by social media, blogs or directories, which don't count as evidence. A person checks.", \
+            "low", {"shutdown", "insolvency"}
+    return "ALIVE", "No sign of failure.", "medium", {"alive"}
 
 
-def check_company(name: str, domain: Optional[str], cache: checks.CompanyCache, log) -> dict:
+def check_company(name: str, domain: Optional[str], cache: companies.CompanyCache, log) -> dict:
     c, raw = _crustdata(name, domain, cache, log)
     signals: list[Signal] = []
     if c:
@@ -277,9 +334,20 @@ def check_company(name: str, domain: Optional[str], cache: checks.CompanyCache, 
     w = website_signal(domain or (c.domain if c else None))
     if w:
         signals.append(w)
-    news, reading, results = news_signals(c.name if c else name, log)
+    # Tell the reader which company this is, so a namesake elsewhere (Cred Inc., a US crypto lender) is rejected
+    bi, hc = (raw or {}).get("basic_info") or {}, (raw or {}).get("headcount") or {}
+    who = "".join(x for x in (
+        f"\nWebsite: {(c.domain if c else None) or domain}" if (c and c.domain) or domain else "",
+        f"\nMost employees in: {hc.get('largest_headcount_country')}" if hc.get("largest_headcount_country") else "",
+        f"\nWhat it does: {str(bi.get('description'))[:240]}" if bi.get("description") else ""))
+    news, reading, results = news_signals(c.name if c else name, log, who)
     signals += news
-    status, why = decide(signals, reading, bool(c))
+    for x in signals:  # data signals are cited as Crustdata or as the website itself
+        if x.publisher is None:
+            x.publisher, x.tier = ("Crustdata" if x.source.startswith("crustdata") else "website check"), "data"
+    status, why, confidence, used_kinds = decide(signals, reading, bool(c))
+    for x in signals:
+        x.used = x.kind in used_kinds and x.tier != "weak"
     crust_status = (raw or {}).get("basic_info", {}).get("status") if raw else None
     zombie = status == "DEAD" and (crust_status in (None, "active", "operating")) and bool(c)
     since = next((s.date for s in signals if s.kind in ("legal", "insolvency", "shutdown", "acquired", "renamed") and s.date), None) or \
@@ -289,7 +357,7 @@ def check_company(name: str, domain: Optional[str], cache: checks.CompanyCache, 
         "canonical": {"crustdata_company_id": c.company_id if c else None, "name": c.name if c else None,
                       "domain": c.domain if c else None, "crustdata_status": crust_status,
                       "headcount_now": c.headcount_total if c else None},
-        "status": status, "why": why, "since": since, "zombie": zombie,
+        "status": status, "why": why, "confidence": confidence, "since": since, "zombie": zombie,
         "people": people,
         "signals": [s.model_dump() for s in signals],
         "news_reading": reading.model_dump() if reading else None,

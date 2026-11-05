@@ -48,6 +48,22 @@ For each account:
 
 **The same case gets the same answer:** every model reading is cached on its exact input. Before we added that, one company flipped between two runs.
 
+## How sources are cited and weighed
+
+Every verdict names the sources that decided it, with publisher, article date, the real article link (search redirects are
+resolved) and the source's own words, plus a confidence level (high, medium, low).
+
+| Source tier | Examples | Counts toward a verdict? |
+|---|---|---|
+| Official court / registry | nclt.gov.in, ibbi.gov.in, mca.gov.in, Companies House | Yes. But a filing alone at a company that is clearly operating goes to a person (NCLT also hears mergers and name changes) |
+| Major news | Reuters, TechCrunch, Economic Times, Times of India, Mint, Inc42 | Yes |
+| Other publications | trade, regional and niche press | Yes, but needs a major outlet alongside, or 3+ of them |
+| Weak | LinkedIn, Reddit, Medium, wikis, company directories | Never: shown, not counted |
+
+- **Dead:** a shutdown reported by 2+ distinct publishers (including an official or major outlet), plus a confirming sign in the data (website down, hiring stopped, headcount collapse). The same outlet three times counts once.
+- **Insolvency court search:** whenever results hint at failure, Pulse also searches nclt.gov.in so an official record can be cited.
+- **Namesakes rejected:** the reader is told the company's website, main country and description. Results about another company with the same name are ignored.
+
 ## The hardest cases
 
 1. **Razorpay looked dead.** A court record named it, and a liquidation result appeared. In fact, payment companies *file* insolvency cases against merchants (creditor, not debtor), and the liquidation concerned a *subsidiary* in a *solvent* voluntary liquidation. Fixes: debtor-vs-creditor and subsidiary questions in the reading, official court sites only for "legal record", and the signs-of-life veto.
@@ -55,10 +71,14 @@ For each account:
 3. **News conflicts over time.** In January 2026, "failed acquisition talks with upGrad"; in March 2026, "Unacademy sells to upGrad for $206M". Pulse takes the later, two-source fact and cites the date.
 4. **One company, many records.** "Byjus" resolves to a stub record in the graph. We keep the richest record and merge the CRM rows into it.
 
+5. **Same name, different company.** CRED (cred.club, India) was flagged by reports of **Cred Inc.**, a US crypto lender that went bankrupt in 2020. Telling the reader the company's website and country fixed it: CRED is Alive.
+6. **A court filing isn't insolvency.** Zepto appeared in NCLT documents (NCLT also hears mergers and name changes); with no news of insolvency and open jobs, it goes to a person.
+7. **Two of Builder.ai's first "sources" were a LinkedIn post and a Reddit thread.** Source tiers now keep those out of the count.
+
 ## Approaches we tried, and what didn't work
 
-- **Resume background verification (first build, still in the repo at `/resume`):** worked, but it was crowded with other teams' ideas, and student resumes are mostly unverifiable because profiles lag.
-- **Fraud rings across a pile of job applications (`/batch`):** worked on a test pile (rings 8/8 held, 0/10 honest held, a BYJU'S layoff cohort *explained* by a 19% headcount drop). Building it taught us that **company records are stale for dead companies**, and that's how Pulse started.
+- **Resume background verification (first build, removed from the final repo; in git history):** worked, but it was crowded with other teams' ideas, and student resumes are mostly unverifiable because profiles lag.
+- **Fraud rings across a pile of job applications (removed from the final repo; in git history):** worked on a test pile (rings 8/8 held, 0/10 honest held, a BYJU'S layoff cohort *explained* by a 19% headcount drop). Building it taught us that **company records are stale for dead companies**, and that's how Pulse started.
 - **Early warning from headcount alone:** failed. Builder.ai's and BluSmart's headcount was still rising until after they collapsed. Only Dunzo showed an early decline.
 - **Fuzzy company-name matching:** matched "NoBroker" to "NEOBROKER" and "Chill Hai" to "CHILL". We switched to strict matching, because a wrong match is worse than "can't tell".
 
@@ -85,7 +105,7 @@ flowchart LR
 ```
 
 - **State:** `data/pulse/<job>/` (report, cleaned CRM, correction feed), `data/pulse/crm_ledger.json` (actions), `data/cache/` (every Crustdata response and model reading, so a run can be replayed offline).
-- **Runs on:** one FastAPI process (`app.py`). Pages: `/` (Pulse), `/batch` and `/resume` (earlier builds).
+- **Runs on:** one FastAPI process (`app.py`), one page at `/`.
 
 ## Run it
 
@@ -93,6 +113,7 @@ flowchart LR
 python -m venv .venv && .venv/Scripts/pip install -r requirements.txt
 cp .env.example .env     # GEMINI_API_KEY (or ANTHROPIC_API_KEY), CRUSTDATA_API_KEY, PRAMAAN_MODE=live
 .venv/Scripts/python -m uvicorn app:app --port 8000 --reload      # http://localhost:8000 → "Use sample CRM"
+.venv/Scripts/python -m tests.test_pulse                           # offline tests: rules, source tiers, matching, exactly-once
 ```
 
-The sample CRM is `redteam/crm_sample.csv`, and the hand labels are `redteam/crm_truth.json` (only labels we are confident of; Unacademy is left unscored because its acquisition happened after what we could verify ourselves, though we read both sources the agent cited).
+The sample CRM is `sample/crm_sample.csv`, and the hand labels are `sample/crm_truth.json` (only labels we are confident of; Unacademy is left unscored because its acquisition happened after what we could verify ourselves, though we read both sources the agent cited).

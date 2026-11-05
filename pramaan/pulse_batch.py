@@ -9,6 +9,7 @@ Outputs (data/pulse/<job>/):
 from __future__ import annotations
 
 import csv
+import hashlib
 import io
 import json
 import time
@@ -17,15 +18,19 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from typing import Callable, Optional
 
-from . import checks, config, pulse
+from . import companies, config, pulse
 from .crustdata import CallLog
-from .outreach import idem_key
 
 PULSE_DIR = config.DATA / "pulse"
 PULSE_DIR.mkdir(parents=True, exist_ok=True)
 LEDGER = PULSE_DIR / "crm_ledger.json"
 NAME_COLS = ("account", "company", "name", "account name", "company name", "organization")
 DOMAIN_COLS = ("website", "domain", "url", "company website")
+
+
+def idem_key(job_id: str, kind: str, company: str, rows: list[str]) -> str:
+    raw = "|".join([job_id, kind, (company or "").lower(), ",".join(sorted(rows))])
+    return hashlib.sha256(raw.encode()).hexdigest()[:16]
 
 
 def _ledger() -> dict:
@@ -68,7 +73,7 @@ def run(csv_text: str, *, emit: Callable = lambda *a, **k: None, job_id: Optiona
     rows = parse_csv(csv_text)
     emit("start", f"{len(rows)} accounts in the CRM export.")
     log = CallLog()
-    cache = checks.CompanyCache(log)
+    cache = companies.CompanyCache(log)
     prev = {}
     if (jdir / "report.json").exists():  # resume: accounts already checked are reused
         prev = {a["row"]: a for a in json.loads((jdir / "report.json").read_text(encoding="utf-8")).get("accounts", [])}
@@ -149,8 +154,11 @@ def run(csv_text: str, *, emit: Callable = lambda *a, **k: None, job_id: Optiona
                                    "RENAMED": "renamed"}[a["status"]],
                 "effective_since": a.get("since"),
                 "people_still_listing_as_current": (a.get("people") or {}).get("still_current"),
-                "evidence": [{"says": s["says"], "url": s.get("url"), "source": s["source"], "retrieved_at": s["retrieved_at"]}
-                             for s in a["signals"] if s["kind"] not in ("alive", "stale_funding")][:6],
+                "confidence": a.get("confidence"),
+                # only the evidence that decided the verdict, each with who said it and when
+                "evidence": [{"says": s["says"], "publisher": s.get("publisher"), "tier": s.get("tier"),
+                              "published": s.get("published"), "url": s.get("url"), "quote": s.get("quote"),
+                              "retrieved_at": s["retrieved_at"]} for s in a["signals"] if s.get("used")][:8],
                 "reason": a["why"],
             })
 
@@ -158,15 +166,18 @@ def run(csv_text: str, *, emit: Callable = lambda *a, **k: None, job_id: Optiona
     with open(jdir / "corrections.jsonl", "w", encoding="utf-8") as f:
         for c in corrections:
             f.write(json.dumps(c, ensure_ascii=False) + "\n")
-    cols = list((rows[0]["raw"].keys()) if rows else []) + ["pulse_status", "pulse_since", "pulse_reason", "pulse_sources",
-                                                           "crustdata_company_id", "merged_into_row"]
+    cols = list((rows[0]["raw"].keys()) if rows else []) + ["pulse_status", "pulse_confidence", "pulse_since", "pulse_reason",
+                                                           "pulse_sources", "crustdata_company_id", "merged_into_row"]
     with open(jdir / "cleaned.csv", "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=cols)
         w.writeheader()
         for a in accounts:
-            w.writerow({**(a.get("crm") or {}), "pulse_status": a["status"], "pulse_since": a.get("since") or "",
-                        "pulse_reason": a["why"],
-                        "pulse_sources": " ; ".join(s["url"] for s in a["signals"] if s.get("url") and s["kind"] != "alive")[:900],
+            used = [s for s in a["signals"] if s.get("used") and s.get("url") and s["kind"] != "alive"]
+            w.writerow({**(a.get("crm") or {}), "pulse_status": a["status"], "pulse_confidence": a.get("confidence") or "",
+                        "pulse_since": a.get("since") or "", "pulse_reason": a["why"],
+                        "pulse_sources": " ; ".join(f"{s.get('publisher')}"
+                                                    f"{' (' + s['published'] + ')' if s.get('published') else ''}: {s['url']}"
+                                                    for s in used)[:1500],
                         "crustdata_company_id": (a.get("canonical") or {}).get("crustdata_company_id") or "",
                         "merged_into_row": a.get("merged_into_row") or ""})
     counts = {}
