@@ -1,6 +1,6 @@
 # Pulse: your CRM says they're alive. They're not.
 
-> **Timing note for the judges:** we understood the start had moved to 10:15 PM and began building then, so the first commit (10:37 PM) predates 11:00 PM. Everything after it was built from 11:00 PM. *(Update this line with what the organisers told you.)*
+
 
 > **Your data is lying to you.** Builder.ai went bankrupt in May 2025. Today the data graph still says it is *active*,
 > with 1,419 employees, and 473 people still list it as their current job. Your CRM still has 6 contacts in an outreach sequence there.
