@@ -22,8 +22,9 @@ Score against hand labels in `sample/crm_truth.json` (current: 15/16; Zepto goes
 
 | Path | What |
 |---|---|
-| `app.py` | FastAPI server: page `/`, `POST /api/pulse` (CSV or `sample=true`), `GET /api/stream/{job}` (SSE), `GET /api/pulse/{job}`, `/api/pulse/{job}/file/{cleaned.csv,corrections.jsonl,report.json}`, `POST /api/pulse/{job}/resume`, `POST /api/pulse_one` (name, domain) |
+| `app.py` | FastAPI server: page `/`, `POST /api/pulse` (CSV or `sample=true`), `GET /api/stream/{job}` (SSE), `GET /api/pulse/{job}`, `/api/pulse/{job}/file/{cleaned.csv,corrections.jsonl,report.json}`, `POST /api/pulse/{job}/resume`, `POST /api/pulse_one` (name, domain; saved to `data/pulse/one_*.json`), `GET /api/guard` |
 | `pramaan/pulse.py` | One company: evidence gathering, news reading, `decide()` rules, `check_company()` |
+| `pramaan/guard.py` | Pre-send guard for agents: `GET /api/guard?to=<email/domain/name>[&check=true]` → block / hold / update / allow / unknown, from the newest stored verdict (`data/pulse/*/report.json`, `data/pulse/one_*.json`) |
 | `pramaan/pulse_batch.py` | Whole CRM: parse CSV, run accounts (3 parallel), merge duplicates, exactly-once actions (`act_once` ledger), write outputs |
 | `pramaan/sources.py` | Citations: resolve google.com/goto redirects, publisher, article date, tier (official / news / trade / weak) |
 | `pramaan/companies.py` | `CompanyCache.canonical_id`: free Company Identify, keeps the largest record with a website (stub duplicates exist, e.g. "Byjus" vs BYJU'S id 5705) |
@@ -46,6 +47,7 @@ Score against hand labels in `sample/crm_truth.json` (current: 15/16; Zepto goes
 - **Death-vs-data chart:** `canonical.headcount_series` (monthly) + `since`, drawn by `deathChart()` in `web/pulse.html`.
 - **Zombie = DEAD while Crustdata says active.** Insolvent / acquired companies still operate; their staff are not zombies.
 - **Strict company matching, no fuzzy matching.** Fuzzy matched NoBroker→NEOBROKER and Chill Hai→CHILL; a wrong match gives a confident wrong verdict.
+- **Alumni = leads.** `alumni_destinations()` reuses the 50 past-employee profiles from `exodus_signal` (no extra call): `people.alumni.top_destinations`. Shown for DEAD / INSOLVENT; `reroute_leads` action; `pulse_alumni_now_at` CSV column.
 - **Exactly once.** CRM actions are written to the ledger before they happen; re-runs must repeat nothing.
 - **Hackathon rule: agents talk only to the team**, never real outsiders. Pulse sends no email; actions are recorded.
 
@@ -64,6 +66,6 @@ Score against hand labels in `sample/crm_truth.json` (current: 15/16; Zepto goes
 
 ## Status and next steps
 
-Done: CRM check, check-any-company, cited and graded sources, confidence, duplicate merge, exactly-once actions, cleaned CSV, correction feed, resume, offline tests, README.
-Ideas: Crustdata watchers for re-checks; MCA company status as a second official source; Person Enrich to find where contacts at dead companies moved; a larger labelled set built by someone who didn't write the rules.
+Done: CRM check, check-any-company, alumni destinations as new leads, pre-send guard API, cited and graded sources, confidence, duplicate merge, exactly-once actions, cleaned CSV, correction feed, resume, offline tests, README.
+Ideas: Crustdata watchers for re-checks; MCA company status as a second official source; Person Enrich on the CRM's own contacts (alumni destinations already shown); a larger labelled set built by someone who didn't write the rules.
 Open item: the README's first line is a placeholder timing note about the 10:37 PM first commit; update it with the organisers' answer.

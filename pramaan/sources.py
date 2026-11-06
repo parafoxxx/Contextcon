@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 import re
 import threading
+import time
 from typing import Optional
 from urllib.parse import urlparse
 
@@ -63,7 +64,9 @@ def resolve(url: str) -> str:
         if url in _resolved:
             return _resolved[url]
     real = url
-    for attempt in range(2):
+    for attempt in range(4):  # parallel runs get throttled by the redirector: back off and retry
+        if attempt:
+            time.sleep(1.5 * attempt)
         try:
             r = httpx.get(url, follow_redirects=False, timeout=8, headers={"user-agent": "Mozilla/5.0"})
             loc = r.headers.get("location")

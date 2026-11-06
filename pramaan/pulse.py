@@ -8,6 +8,7 @@ The LLM only reads news snippets; rules decide.
 from __future__ import annotations
 
 import re
+import time
 from collections import Counter
 from datetime import datetime, timezone
 from typing import Literal, Optional
@@ -124,12 +125,35 @@ def headcount_signals(c, raw) -> list[Signal]:
     return out
 
 
+def alumni_destinations(people, name: str, top: int = 5, per: int = 3) -> dict:
+    """Where ex-employees work now, from profiles already fetched (no extra API call).
+    A dead account's contacts are lost; the companies its people moved to are new leads."""
+    by: dict[str, dict] = {}
+    moved = 0
+    for p in people:
+        if not any(same_company(r.company, name) and not r.is_current for r in p.roles):
+            continue
+        now = [r for r in p.roles if r.is_current and r.company and not same_company(r.company, name)]
+        if not now:
+            continue
+        moved += 1
+        r = now[0]
+        key = (r.company_id and f"id:{r.company_id}") or r.company.lower().strip()
+        d = by.setdefault(key, {"company": r.company, "domain": r.domain, "count": 0, "people": []})
+        d["count"] += 1
+        if len(d["people"]) < per:
+            d["people"].append({"name": p.name, "title": r.title, "profile_url": p.profile_url})
+    ranked = sorted(by.values(), key=lambda d: -d["count"])
+    return {"sampled": len(people), "moved": moved, "companies": len(ranked), "top_destinations": ranked[:top]}
+
+
 def exodus_signal(name: str, log) -> tuple[Optional[Signal], dict]:
     """Departures in the last 18 months vs the 18 before, from Crustdata people data; and who still lists it as current."""
     cur, _ = cd.search_people({"field": "experience.employment_details.current.company_name", "type": "in", "value": [name]}, 1, log)
     past, _ = cd.search_people({"field": "experience.employment_details.past.company_name", "type": "in", "value": [name]}, 50, log)
     ends = []
-    for p in people_from_search(past):
+    past_people = people_from_search(past)
+    for p in past_people:
         for r in p.roles:
             if same_company(r.company, name) and r.end:
                 ends.append(r.end)
@@ -142,7 +166,8 @@ def exodus_signal(name: str, log) -> tuple[Optional[Signal], dict]:
         if months:
             spike_month = fmt(max(months, key=months.get))
     stats = {"still_current": (cur or {}).get("total_count"), "listed_as_past": (past or {}).get("total_count"),
-             "sample_departures_recent_18m": recent, "sample_departures_prior_18m": before, "peak_departure_month": spike_month}
+             "sample_departures_recent_18m": recent, "sample_departures_prior_18m": before, "peak_departure_month": spike_month,
+             "alumni": alumni_destinations(past_people, name)}
     if recent >= 10 and recent >= 2 * max(before, 1):
         return Signal(kind="exodus", strength="strong", source="crustdata:/person/search", value=f"{recent} vs {before}",
                       date=spike_month,
@@ -189,10 +214,18 @@ def news_signals(name: str, log, who: str = "") -> tuple[list[Signal], Optional[
     cited = [sources.cite(r) for r in results]
     listing = "\n".join(f"[{i}] ({c['publisher']}, {c['tier']}{', ' + c['published'] if c['published'] else ''}) "
                         f"{c['title']} | {c['snippet'][:300]}" for i, c in enumerate(cited))
-    try:
-        reading = llm._parse(NewsReading, NEWS_SYSTEM, f"Company: {name}{who}\n\nResults:\n{listing}")
-    except llm.LLMError:
-        return [], None, cited
+    reading = None
+    for attempt in range(2):  # the model is often busy under parallel load: wait and try once more
+        try:
+            reading = llm._parse(NewsReading, NEWS_SYSTEM, f"Company: {name}{who}\n\nResults:\n{listing}")
+            break
+        except llm.LLMError as e:
+            err = str(e)
+            if not attempt:
+                time.sleep(8)
+    if reading is None:
+        return [Signal(kind="unread", strength="support", source="llm", value=err[:200], publisher="model", tier="data",
+                       says=f"{len(cited)} news results found but the model could not read them ({err[:80]}).")], None, cited
     if not reading.about_this_company:
         return [], reading, cited
     idx = [i for i in reading.supporting_results if 0 <= i < len(cited)] or [0]
@@ -204,7 +237,9 @@ def news_signals(name: str, log, who: str = "") -> tuple[list[Signal], Optional[
                       quote=c["snippet"][:280], says=says)
 
     title = lambda i: cited[i]["title"][:110]  # noqa: E731
-    official = [i for i, c in enumerate(cited) if c["tier"] == "official"]
+    # A court's cause list is its daily hearing schedule naming hundreds of companies: not a record about this one
+    cause_list = lambda c: bool(re.search(r"cause[\s_%20-]*list", f"{c['url']} {c['title']}", re.I))  # noqa: E731
+    official = [i for i, c in enumerate(cited) if c["tier"] == "official" and not cause_list(c)]
     out: list[Signal] = []
     if reading.insolvency_or_bankruptcy and reading.subsidiary_or_solvent_only:
         out.append(sig("restructuring", idx[0], f"Subsidiary / solvent liquidation only, not a failure: “{title(idx[0])}”", "support"))
@@ -212,7 +247,7 @@ def news_signals(name: str, log, who: str = "") -> tuple[list[Signal], Optional[
         for i in official[:1]:
             out.append(sig("legal", i, f"Official court / registry record: “{title(i)}”"))
         for i in idx[:4]:
-            if i not in official:
+            if i not in official and not cause_list(cited[i]):
                 out.append(sig("insolvency", i, f"Insolvency / bankruptcy reported: “{title(i)}”"))
     elif official and reading.company_role == "creditor_or_petitioner":
         out.append(sig("court_mention", official[0], "Named in a court case as creditor / petitioner, not as the company being wound up.",
@@ -300,15 +335,18 @@ def decide(signals: list[Signal], reading: Optional[NewsReading], found: bool) -
             return "DEAD", f"Shutdown reported by {_named(shut)}" + (", plus an official court record" if legal else "") + \
                 f"; confirmed by {corr_txt}.", conf, {"shutdown", "insolvency", "legal"} | corr_kinds
         return "DISTRESSED", f"Shutdown reported by {_named(shut)}, but nothing in the data confirms it yet.", "low",             {"shutdown", "insolvency"}
-    if legal and not insol and alive_veto:
+    if legal and not insol and not shut and (openings or site_up or k["alive"] >= 2):
         # NCLT also hears mergers, name changes and petitions that are never admitted: a filing alone isn't insolvency
         return "REVIEW", f"An official court filing ({legal[0].publisher}) names the company, but no news reports insolvency and it " \
-                         "still has open jobs and a working website. A person reads the filing.", "low", {"legal", "alive"}
+                         "shows signs of life. A person reads the filing.", "low", {"legal", "alive"}
     if legal or enough(insol):
         src =(f"official record ({legal[0].publisher})" if legal else "") + (" and " if legal and insol else "") + \
               (_named(insol) if insol else "")
         tail = "; still operating (open jobs, website up)." if alive_veto else (f"; {corr_txt}." if corr else ".")
         return "INSOLVENT", f"Insolvency proceedings: {src}{tail}", "high" if legal else "medium", {"legal", "insolvency"} | corr_kinds
+    if k["unread"]:
+        return "REVIEW", "News results were found but could not be read this time. A person checks, or run it again.", \
+            "low", {"unread"}
     if alive_veto:
         noted = len(shut) + len(insol) + weak("shutdown") + weak("insolvency")
         return "ALIVE", "Open jobs and a working website" + \

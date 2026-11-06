@@ -52,6 +52,12 @@ def act_once(key: str, action: dict) -> str:
     return "done"
 
 
+def alumni_line(a: dict, n: int = 3) -> str:
+    """'Acme (4), Foo (2)': where a company's ex-employees work now, most common first."""
+    top = (((a.get("people") or {}).get("alumni") or {}).get("top_destinations") or [])[:n]
+    return ", ".join(f"{d['company']} ({d['count']})" for d in top)
+
+
 def parse_csv(text: str) -> list[dict]:
     rows = list(csv.DictReader(io.StringIO(text.lstrip("﻿"))))
     out = []
@@ -134,6 +140,9 @@ def run(csv_text: str, *, emit: Callable = lambda *a, **k: None, job_id: Optiona
             todo.append(("pause_sequence", f"Pause outreach to {seq} contact(s) at {a['input']['name']}"))
         if a["status"] in ("DEAD",):
             todo.append(("mark_closed", f"Mark {a['input']['name']} as closed (since {a.get('since') or 'unknown'})"))
+        dest = alumni_line(a)
+        if a["status"] in ("DEAD", "INSOLVENT") and dest and not a.get("merged_into_row"):
+            todo.append(("reroute_leads", f"Suggest new leads: ex-{a['input']['name']} people now at {dest}"))
         if a["status"] in ("ACQUIRED", "RENAMED"):
             todo.append(("update_identity", a["why"]))
         for kind, text in todo:
@@ -167,7 +176,7 @@ def run(csv_text: str, *, emit: Callable = lambda *a, **k: None, job_id: Optiona
         for c in corrections:
             f.write(json.dumps(c, ensure_ascii=False) + "\n")
     cols = list((rows[0]["raw"].keys()) if rows else []) + ["pulse_status", "pulse_confidence", "pulse_since", "pulse_reason",
-                                                           "pulse_sources", "crustdata_company_id", "merged_into_row"]
+                                                           "pulse_sources", "pulse_alumni_now_at", "crustdata_company_id", "merged_into_row"]
     with open(jdir / "cleaned.csv", "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=cols)
         w.writeheader()
@@ -178,6 +187,7 @@ def run(csv_text: str, *, emit: Callable = lambda *a, **k: None, job_id: Optiona
                         "pulse_sources": " ; ".join(f"{s.get('publisher')}"
                                                     f"{' (' + s['published'] + ')' if s.get('published') else ''}: {s['url']}"
                                                     for s in used)[:1500],
+                        "pulse_alumni_now_at": alumni_line(a) if a["status"] in ("DEAD", "INSOLVENT") else "",
                         "crustdata_company_id": (a.get("canonical") or {}).get("crustdata_company_id") or "",
                         "merged_into_row": a.get("merged_into_row") or ""})
     counts = {}
@@ -190,6 +200,8 @@ def run(csv_text: str, *, emit: Callable = lambda *a, **k: None, job_id: Optiona
         "counts": counts, "zombies": len(zombies),
         "zombie_people_still_current": sum(int((a.get("people") or {}).get("still_current") or 0) for a in zombies),
         "actions_done": sum(1 for x in actions if x["result"] == "done"), "duplicates_merged": sum(1 for a in accounts if a.get("merged_into_row")),
+        "alumni_leads": sum(((a.get("people") or {}).get("alumni") or {}).get("moved") or 0 for a in accounts
+                            if a["status"] in ("DEAD", "INSOLVENT") and not a.get("merged_into_row")),
         "contacts_paused": sum(int(x["text"].split(" to ")[1].split()[0]) for x in actions if x["kind"] == "pause_sequence"),
         "credits": log.credits, "api_calls": len(log.calls), "duration_s": round(time.time() - t0, 1),
     }

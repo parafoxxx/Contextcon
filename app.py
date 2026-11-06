@@ -11,7 +11,9 @@ from pathlib import Path
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse
 
-from pramaan import companies, config, pulse, pulse_batch
+import re
+
+from pramaan import companies, config, guard, pulse, pulse_batch
 from pramaan.crustdata import CallLog
 
 app = FastAPI(title="Pulse")
@@ -125,4 +127,26 @@ def pulse_one(name: str = Form(...), domain: str = Form("")):
     dom = domain.strip().lower().removeprefix("https://").removeprefix("http://").removeprefix("www.").split("/")[0] or None
     r = pulse.check_company(name.strip(), dom, companies.CompanyCache(log), log)
     r["credits"] = log.credits
+    _save_one(r)
     return JSONResponse(r)
+
+
+def _save_one(r: dict):
+    """Keep single checks so the guard can answer for them later."""
+    slug = re.sub(r"[^a-z0-9]+", "_", (r["input"].get("domain") or r["input"]["name"]).lower()).strip("_")[:60] or "x"
+    (pulse_batch.PULSE_DIR / f"one_{slug}.json").write_text(json.dumps(r, ensure_ascii=False, default=str), encoding="utf-8")
+
+
+@app.get("/api/guard")
+def guard_check(to: str, check: bool = False):
+    """For outreach agents: call before sending. `to` is an email, a domain or a company name.
+    Returns decision block / hold / update / allow / unknown, with the cited reason and, if blocked, where its people went."""
+    name, dom = guard.parse_target(to)
+    if not name and not dom:
+        raise HTTPException(400, "Pass ?to=<email, domain or company name>")
+    a = guard.lookup(name, dom, guard.accounts_from(pulse_batch.PULSE_DIR))
+    if a is None and check and dom not in guard.FREE_MAIL:
+        log = CallLog()
+        a = pulse.check_company(name or dom.split(".")[0], dom, companies.CompanyCache(log), log)
+        _save_one(a)
+    return JSONResponse(guard.answer(to, a))

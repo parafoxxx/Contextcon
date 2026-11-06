@@ -66,6 +66,13 @@ pre{white-space:pre-wrap;font:12px/1.5 ui-monospace,Consolas,monospace;backgroun
 .log{max-height:120px;overflow:auto;font-size:12px;color:var(--muted)}
 .log .bad{color:var(--bad)}.log .good{color:var(--good)}.log .warn{color:var(--warn)}
 .hidden{display:none}
+.al{margin:6px 0 2px;padding:8px 10px;border-radius:8px;background:var(--good-bg);font-size:12px}
+.al b.h{color:var(--good)}.al a{color:var(--accent)}
+.gd{margin-top:10px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);font-size:13px}
+.gd .dec{font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:6px;margin-right:8px}
+.d-block{background:var(--bad-bg);color:var(--bad)}.d-hold{background:var(--warn-bg);color:var(--warn)}
+.d-update{background:var(--purple-bg);color:var(--purple)}.d-allow{background:var(--good-bg);color:var(--good)}.d-unknown{background:var(--info-bg);color:var(--muted)}
+input.f{font:inherit;padding:7px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
 </style>
 </head>
 <body>
@@ -89,6 +96,13 @@ pre{white-space:pre-wrap;font:12px/1.5 ui-monospace,Consolas,monospace;backgroun
       <button class="btn ghost" id="one_go">Check</button>
     </div>
     <div id="one_out"></div>
+    <div class="row" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
+      <b>Before an agent sends an email:</b>
+      <input id="g_to" class="f" placeholder="priya@builder.ai" style="min-width:220px">
+      <button class="btn ghost" id="g_go">Ask the guard</button>
+      <span class="muted" style="font-size:12px">agents call <code>GET /api/guard?to=…</code></span>
+    </div>
+    <div id="g_out"></div>
     <div class="muted" style="font-size:12px;margin-top:6px">CSV with an <b>account</b> (or company) column and ideally <b>website</b>. Optional: <b>active_sequence_contacts</b> (outreach in progress).</div>
   </div>
 
@@ -145,6 +159,28 @@ function deathChart(series, since){
     <div class="dct">Crustdata headcount <b>${atDeath.toLocaleString()} → ${now.toLocaleString()}</b> (${ch >= 0 ? "+" : ""}${ch}%) <b>after</b> it died.</div></div>`;
 }
 
+// Where a dead company's people work now: the CRM's lost contacts become new leads
+function alumni(people, status){
+  const al = (people || {}).alumni; if (!al || !al.moved || !["DEAD", "INSOLVENT"].includes(status)) return "";
+  const top = al.top_destinations || [];
+  return `<div class="al"><b class="h">Where its people went:</b> ${al.moved} of ${al.sampled} sampled ex-employees now work at ${al.companies} companies. Top: ${top.map(d => `<b>${esc(d.company)}</b> (${d.count})`).join(", ")}
+    <details><summary>new leads</summary>${top.map(d => `<div><b>${esc(d.company)}</b>: ${d.people.map(x => x.profile_url ? `<a href="${esc(x.profile_url)}" target="_blank" rel="noopener">${esc(x.name)}</a>` : esc(x.name)).map((h, i) => h + (d.people[i].title ? ` <span class="muted">(${esc(d.people[i].title)})</span>` : "")).join(", ")}</div>`).join("")}</details></div>`;
+}
+
+$("#g_go").onclick = async () => {
+  const to = $("#g_to").value.trim(); if (!to) return;
+  $("#g_out").innerHTML = `<p class="muted">Asking…</p>`;
+  try {
+    const g = await (await fetch("/api/guard?check=true&to=" + encodeURIComponent(to))).json();
+    $("#g_out").innerHTML = `<div class="gd"><span class="dec d-${esc(g.decision)}">${esc(g.decision)}</span><b>${esc(g.company || g.to)}</b>
+      ${g.status ? `<span class="pill s-${esc(g.status)}" style="margin-left:6px">${LBL[g.status] || esc(g.status)}</span>` : ""}${g.since ? ` <span class="muted">since ${esc(g.since)}</span>` : ""}
+      <div style="margin-top:6px">${esc(g.advice)}${g.why ? ` ${esc(g.why)}` : ""}</div>
+      ${(g.sources || []).length ? `<div class="muted" style="font-size:12px;margin-top:4px">Sources: ${g.sources.map(x => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.publisher)}</a>${x.published ? " (" + esc(x.published) + ")" : ""}`).join(" · ")}</div>` : ""}
+      ${(g.instead || []).length ? `<div style="margin-top:4px;font-size:12px"><b>Instead:</b> its people now work at ${g.instead.map(x => `${esc(x.company)} (${x.ex_employees_there})`).join(", ")}</div>` : ""}
+      <details><summary>what the agent receives (JSON)</summary><pre>${esc(JSON.stringify(g, null, 1))}</pre></details></div>`;
+  } catch (e) { $("#g_out").innerHTML = `<p style="color:var(--bad)">Guard failed: ${esc(e)}</p>`; }
+};
+
 const LBL = {DEAD:"Dead", INSOLVENT:"Insolvent", ACQUIRED:"Acquired", RENAMED:"Renamed", DISTRESSED:"Distressed", REVIEW:"Needs a person", ALIVE:"Alive", CANT_TELL:"Can't tell"};
 const KIND = {legal:"court record", insolvency:"insolvency", shutdown:"shutdown", acquired:"acquired", renamed:"renamed", website:"website",
   hiring_freeze:"hiring", headcount_drop:"headcount", exodus:"exodus", stale_funding:"funding", alive:"sign of life", layoffs:"layoffs",
@@ -169,6 +205,7 @@ $("#one_go").onclick = async () => {
       ${r.since ? `<span class="muted">since ${esc(r.since)}</span>` : ""}<span class="muted" style="margin-left:auto">${cn.crustdata_company_id ? `Crustdata: status <b>${esc(cn.crustdata_status)}</b>, ${(cn.headcount_now || 0).toLocaleString()} employees, ${((r.people || {}).still_current || 0).toLocaleString()} list it as current` : "no Crustdata record"}</span></div>
       <p style="margin:8px 0">${esc(r.why)} ${CONF(r.confidence, r.confidence_score)}</p>
       ${r.status === "DEAD" ? deathChart((r.canonical || {}).headcount_series, r.since) : ""}
+      ${alumni(r.people, r.status)}
       ${breakdown(r.confidence_breakdown, r.confidence_score)}
       ${evidence(r.signals || [])}</div>`;
   } catch (e) { $("#one_out").innerHTML = `<p style="color:var(--bad)">Check failed: ${esc(e)}</p>`; }
@@ -207,7 +244,7 @@ async function show(id){
     [S.accounts, "accounts in CRM"], [S.unique_companies, "unique companies"], [S.duplicates_merged, "duplicates merged"],
     [(c.DEAD || 0), "dead", "--bad"], [(c.INSOLVENT || 0), "insolvent", "--bad"], [(c.ACQUIRED || 0) + (c.RENAMED || 0), "acquired / renamed", "--purple"],
     [(c.REVIEW || 0) + (c.DISTRESSED || 0), "for a person", "--warn"], [(c.ALIVE || 0), "alive", "--good"],
-    [S.contacts_paused, "outreach contacts paused"], [r.corrections.length, "corrections for the data provider"], [S.duration_s + "s", "end to end"],
+    [S.contacts_paused, "outreach contacts paused"], [S.alumni_leads ?? 0, "new leads: where their people went", "--good"], [r.corrections.length, "corrections for the data provider"], [S.duration_s + "s", "end to end"],
   ].map(([v, l, col]) => `<div class="stat"><b ${col ? `style="color:var(${col})"` : ""}>${v}</b><span>${l}</span></div>`).join("");
   $("#progress").textContent = `${S.accounts} checked · ${S.api_calls} data lookups`;
   const order = {DEAD: 0, INSOLVENT: 1, ACQUIRED: 2, RENAMED: 3, REVIEW: 4, DISTRESSED: 5, CANT_TELL: 6, ALIVE: 7};
@@ -219,7 +256,7 @@ async function show(id){
       <td><span class="pill s-${a.status}">${LBL[a.status] || a.status}</span>${a.zombie ? '<span class="z">ZOMBIE</span>' : ""}</td>
       <td class="muted" style="font-size:12px">${cn.crustdata_company_id ? `status <b>${esc(cn.crustdata_status || "?")}</b><br>${(cn.headcount_now || 0).toLocaleString()} employees<br>${((a.people || {}).still_current || 0).toLocaleString()} list it as current` : "no record"}</td>
       <td>${esc(a.since || "")}</td>
-      <td>${esc(a.why)} ${CONF(a.confidence, a.confidence_score)}${a.status === "DEAD" && !a.merged_into_row ? deathChart(cn.headcount_series, a.since) : ""}<details><summary>${uniq(sigs.filter(s => s.used)).length} source(s) decided it · ${uniq(sigs).length} considered · how the score adds up</summary>${breakdown(a.confidence_breakdown, a.confidence_score)}${evidence(sigs)}</details></td>
+      <td>${esc(a.why)} ${CONF(a.confidence, a.confidence_score)}${a.status === "DEAD" && !a.merged_into_row ? deathChart(cn.headcount_series, a.since) : ""}${a.merged_into_row ? "" : alumni(a.people, a.status)}<details><summary>${uniq(sigs.filter(s => s.used)).length} source(s) decided it · ${uniq(sigs).length} considered · how the score adds up</summary>${breakdown(a.confidence_breakdown, a.confidence_score)}${evidence(sigs)}</details></td>
       <td style="font-size:12px">${(acts[a.row] || []).map(x => `<div>✔ ${esc(x.text)}${x.result !== "done" ? ` <span class="muted">(${esc(x.result)})</span>` : ""}</div>`).join("")}</td></tr>`;
   }).join("") + `</table>`;
   $("#outputs").innerHTML = `<h3 style="margin-top:0">Outputs</h3>
